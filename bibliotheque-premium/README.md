@@ -31,7 +31,7 @@ L'année de première publication est inconnue pour les 431 notices supplémenta
 - **Sauvegarde :** export JSON et import volontaire de ses favoris, statuts, notes et évaluations depuis `favoris.html`. L’import remplace les données locales après confirmation.
 - **Liseuse locale :** **44 œuvres distinctes**, disponibles dans **47 éditions linguistiques intégrales** enregistrées dans `lectures/`. Feuillets, thèmes, typographie et reprise automatique.
 - **Langues :** original / français / anglais sur les fiches. Une édition publiée et vérifiée est privilégiée. La traduction automatique à la demande, lorsqu'elle est proposée, est expérimentale et non relue ; elle nécessite un navigateur/modèle compatible.
-- **Salon :** 12 personnages fictifs et 107 messages préécrits, réactions et notes privées sur le navigateur.
+- **Salon :** 33 personnages fictifs, 95 discussions et plus de 700 messages/réponses de démonstration, avec pseudos internet, réactions, notes privées et chargement progressif.
 - **Partage :** lien direct vers chaque fiche.
 
 Les favoris, annotations, évaluations et états de lecture sont conservés **dans le navigateur** avec `localStorage`. Il n'y a pas de compte ni de synchronisation entre appareils. L’export/import JSON permet de transférer volontairement son carnet.
