@@ -194,9 +194,41 @@ async function go(next,focus=false){
  window.scrollTo({top:0,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
  if(focus)$("#reader-paper").focus({preventScroll:true});
 }
+const compatibleModels={
+ "en-fr":"Xenova/opus-mt-en-fr",
+ "fr-en":"Xenova/opus-mt-fr-en",
+ "de-fr":"Xenova/opus-mt-de-fr",
+ "de-en":"Xenova/opus-mt-de-en"
+};
+async function activateFallback(){
+ const modelId=compatibleModels[sourceLang+"-"+targetLang];
+ if(!modelId){showMessage("Modèle indisponible","Aucun modèle de repli ne prend en charge ces deux langues.");return;}
+ showMessage("Téléchargement du traducteur libre…","Le chargement peut représenter plusieurs centaines de mégaoctets. Il est lancé uniquement avec votre accord et peut prendre plusieurs minutes.");
+ try {
+   const module=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1");
+   const pipe=await module.pipeline("translation",modelId,{dtype:"q8",progress_callback(event){
+     const p=document.querySelector(".translation-status p");
+     if(p && typeof event.progress==="number")p.textContent="Modèle de traduction : "+Math.round(event.progress)+" % de l'élément en cours de chargement.";
+   }});
+   model={translate:async text=>{
+     const result=await pipe(text);
+     const output=Array.isArray(result)?result[0]:result;
+     if(!output || typeof output.translation_text!=="string")throw Error("Aucune traduction n'a été générée.");
+     return output.translation_text;
+   }};
+   go(index,true);
+ }catch(err){
+   showMessage("Modèle de repli indisponible","Le traducteur libre n'a pas pu démarrer : "+(err?.message||"erreur inconnue")+". Vous pouvez essayer Chrome récent ou une édition Project Gutenberg.");
+ }
+}
+function unsupportedTranslation(message){
+ if(compatibleModels[sourceLang+"-"+targetLang]){
+  showMessage("Traduction native indisponible",message+" Vous pouvez tenter le modèle open source pour cette combinaison de langues ; son téléchargement est volumineux.","ESSAYER LE MODÈLE LIBRE ↗",activateFallback);
+ }else showMessage("Traduction non disponible ici",message+" Cette combinaison n'a pas encore de modèle de repli configuré.");
+}
 function activateModel(){
  if(!("Translator" in window)||!window.isSecureContext){
-   showMessage("Ce navigateur ne permet pas cette traduction","L'API de traduction locale n'est pas disponible ici. Essayez Chrome récent avec Live Server (localhost) ou un site HTTPS. La traduction intégrale ne peut pas être promise dans ce navigateur.");
+   unsupportedTranslation("L'API de traduction locale n'est pas accessible dans ce navigateur ou hors contexte sécurisé.");
    return;
  }
  if(!canAutoTranslate(sourceLang)||!canAutoTranslate(targetLang)){
@@ -216,9 +248,9 @@ function activateModel(){
        if(p)p.textContent="Téléchargement du modèle de traduction : "+done+" %.";
      });
    }});
- }catch(err){showMessage("Traducteur indisponible",err.message||"Échec du chargement.");return;}
+ }catch(err){unsupportedTranslation(err.message||"Échec du chargement.");return;}
  Promise.resolve(ready).then(t=>{model=t;go(index,true);}).catch(err=>{
-   showMessage("Traduction impossible sur cet appareil","Le navigateur a refusé ou n'a pas pu charger le traducteur ("+(err.message||"erreur inconnue")+"). Les éditions déjà publiées restent accessibles sur la fiche.");
+   unsupportedTranslation("Le navigateur a refusé de charger son traducteur ("+(err.message||"erreur inconnue")+").");
  });
 }
 $("#reader-prev").addEventListener("click",()=>go(index-1,true));
