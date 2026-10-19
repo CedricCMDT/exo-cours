@@ -1,4 +1,4 @@
-/* LA MARGE : textes intégraux et provenance des éditions, avec options de traduction à la demande. */
+/* LA MARGE : fiches, sources littéraires originales et traductions à la demande. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -568,14 +568,14 @@ window.LA_MARGE_BOOKS = [
     "genre": "Classique",
     "origin": "France",
     "language": "Français",
-    "badge": "INCONTOURNABLE",
+    "badge": "LIRE EN LIGNE",
     "tagline": "Et si rêver d'une autre vie finissait par la dévorer ?",
     "short": "Le vertige des désirs et la beauté cruelle des illusions.",
     "description": "Emma Bovary attend de la vie les émotions que ses lectures lui ont promises. Entre ennui, aspirations et désillusions, Flaubert révèle les contradictions d'un destin avec une précision qui bouleverse.",
     "mood": "Pour ressentir et réfléchir",
     "length": "Plusieurs soirées",
     "theme": "Le désir et l'illusion",
-    "gutenberg": 2413,
+    "gutenberg": 14155,
     "number": "13",
     "cover": "assets/covers/madame-bovary.svg",
     "originalLanguage": "fr",
@@ -587,7 +587,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Madame Bovary",
         "gutenberg": 14155,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/madame-bovary-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -595,7 +596,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Madame Bovary",
         "gutenberg": 14155,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/madame-bovary-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -604,7 +606,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Madame Bovary",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/madame-bovary-fr.txt"
   },
   {
     "id": "germinal",
@@ -1018,7 +1021,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Une vie",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "23",
     "tagline": "Une existence entière, et toutes ses espérances.",
     "short": "Une existence entière, et toutes ses espérances.",
@@ -1035,7 +1038,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Une vie",
         "gutenberg": 17457,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/une-vie-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1043,7 +1047,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Une vie",
         "gutenberg": 17457,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/une-vie-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1052,7 +1057,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Une vie",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/une-vie-fr.txt"
   },
   {
     "id": "fleurs-mal",
@@ -1162,7 +1168,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Le Fantôme de l'Opéra",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "26",
     "tagline": "Sous les dorures de l'Opéra, une voix attend.",
     "short": "Sous les dorures de l'Opéra, une voix attend.",
@@ -1179,7 +1185,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Le Fantôme de l'Opéra",
         "gutenberg": 62215,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/fantome-opera-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1187,7 +1194,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Le Fantôme de l'Opéra",
         "gutenberg": 62215,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/fantome-opera-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1196,7 +1204,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Le Fantôme de l'Opéra",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/fantome-opera-fr.txt"
   },
   {
     "id": "chambre-jaune",
@@ -1208,7 +1217,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Le Mystère de la chambre jaune",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "27",
     "tagline": "Une porte fermée, un crime, aucune issue.",
     "short": "Une porte fermée, un crime, aucune issue.",
@@ -1225,7 +1234,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Le Mystère de la chambre jaune",
         "gutenberg": 13765,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/chambre-jaune-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1233,7 +1243,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Le Mystère de la chambre jaune",
         "gutenberg": 13765,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/chambre-jaune-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1242,7 +1253,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Le Mystère de la chambre jaune",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/chambre-jaune-fr.txt"
   },
   {
     "id": "princesse-cleves",
@@ -1343,7 +1355,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "Wuthering Heights",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "30",
     "tagline": "Une passion sauvage sur la lande.",
     "short": "Une passion sauvage sur la lande.",
@@ -1360,7 +1372,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Wuthering Heights",
         "gutenberg": 768,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/hauts-hurlevent-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1375,9 +1388,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Les Hauts de Hurlevent",
         "gutenberg": 768,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/hauts-hurlevent-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/hauts-hurlevent-en.txt"
   },
   {
     "id": "alice-merveilles",
@@ -1489,7 +1504,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "Dracula",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "33",
     "tagline": "Certaines ombres voyagent à la tombée de la nuit.",
     "short": "Certaines ombres voyagent à la tombée de la nuit.",
@@ -1506,7 +1521,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Dracula",
         "gutenberg": 345,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/dracula-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1521,9 +1537,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Dracula",
         "gutenberg": 345,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/dracula-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/dracula-en.txt"
   },
   {
     "id": "jekyll-hyde",
@@ -1830,7 +1848,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "The Secret Garden",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "40",
     "tagline": "Un jardin fermé peut rouvrir des cœurs.",
     "short": "Un jardin fermé peut rouvrir des cœurs.",
@@ -1847,7 +1865,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "The Secret Garden",
         "gutenberg": 17396,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/jardin-secret-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1862,9 +1881,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Le Jardin secret",
         "gutenberg": 17396,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/jardin-secret-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/jardin-secret-en.txt"
   },
   {
     "id": "quatre-filles-march",
@@ -1922,7 +1943,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "The Call of the Wild",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "42",
     "tagline": "Le sauvage murmure sous la neige.",
     "short": "Le sauvage murmure sous la neige.",
@@ -1939,7 +1960,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "The Call of the Wild",
         "gutenberg": 215,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/appel-foret-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1954,9 +1976,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "L'Appel de la forêt",
         "gutenberg": 215,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/appel-foret-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/appel-foret-en.txt"
   },
   {
     "id": "don-quichotte",
