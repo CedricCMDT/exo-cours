@@ -1,75 +1,63 @@
-# LA MARGE — Acte III · La bibliothèque ouverte
+# LA MARGE — Acte IV · La bibliothèque sans frontières
 
-Une expérience littéraire gratuite, pensée comme un site de maison d'édition : **16 classiques**, **6 pages de navigation + une liseuse**, **16 couvertures SVG originales**, un Salon entièrement fictif, et **5 livres complets** à lire sur place.
+LA MARGE rassemble **48 classiques** (32 ajoutés dans cet acte), **48 couvertures SVG locales**, une liseuse avec **10 œuvres intégrales** dans au moins une langue, et le Salon littéraire fictif.
 
-## Démarrer
+## Démarrage
 
-Dans VS Code, lancer **Live Server** (extension recommandée) sur `index.html`.
+Dans VS Code : `git pull origin main` puis démarrer Live Server sur `bibliotheque-premium/index.html`.
 
-> **Important :** la liseuse charge les fichiers texte via `fetch()`. Les navigateurs bloquent souvent les requêtes entre fichiers ouverts directement avec une URL `file://`. Utilisez Live Server ou un serveur HTTP local. Aucune compilation n'est nécessaire.
+La liseuse utilise `fetch()` pour charger des fichiers texte locaux. Elle nécessite un serveur HTTP local (Live Server ou équivalent), sinon `file://` peut bloquer les accès.
 
-## Pages
+## Choix des éditions : VO / FR / EN
 
-- `index.html` — accueil, sélections, aperçu du Salon, bibliomancie, vitrine des textes intégraux.
-- `catalogue.html` — recherche et filtrage parmi 16 œuvres, dont 5 lisibles intégralement.
-- `livre.html?id=candide` — fiches, informations, lien vers liseuse ou édition Project Gutenberg.
-- `lire.html?id=candide` — **liseuse** : feuillets reconstitués, recherche dans le texte, taille réglable, thèmes papier/clair/nuit, navigation au clavier et marque-page conservé.
-- `salon.html` — 12 personnages **fictifs**, 12 discussions scénarisées, 107 messages. Notes et réactions privées (stockage navigateur).
-- `favoris.html` — favoris enregistrés localement.
-- `a-propos.html` — manifeste littéraire.
+Chaque fiche de livre présente systématiquement :
+- **Version originale**, dans la langue d'écriture de l'œuvre.
+- **Version française**.
+- **Version anglaise**.
 
-## Livres en texte intégral dans le dépôt
+Il n'y a **pas de traduction automatique** ni de texte inventé. Pour chaque choix, le site indique honnêtement l'une des trois possibilités :
 
-Les fichiers de `lectures/` reproduisent les **transcriptions Project Gutenberg avec leur texte et leur licence**. Le composant `reader.js` n'affiche pas les notices Gutenberg au milieu du roman : il les conserve cependant dans chaque fichier téléchargé.
+| Statut | Ce qui se passe |
+| --- | --- |
+| Texte intégral dans LA MARGE | Ouvre la liseuse locale à la langue correspondante |
+| Édition Gutenberg vérifiée | Ouvre la fiche de l'édition identifiée sur Project Gutenberg |
+| Traduction non vérifiée | Ouvre **une recherche Gutenberg**, sans garantir qu'une traduction existe |
 
-| Livre | Fichier local complet | Source et édition |
-|---|---|---|
-| *Candide* — Voltaire | `lectures/candide.txt` | Project Gutenberg #59859 — https://www.gutenberg.org/ebooks/59859 |
-| *Le Tour du monde en quatre-vingts jours* — Jules Verne | `lectures/tour-du-monde.txt` | Project Gutenberg #46541 — https://www.gutenberg.org/ebooks/46541 |
-| *Le Horla et autres nouvelles* — Guy de Maupassant | `lectures/le-horla.txt` | Project Gutenberg #10775 — https://www.gutenberg.org/ebooks/10775 |
-| *Arsène Lupin, gentleman-cambrioleur* — Maurice Leblanc | `lectures/arsene-lupin.txt` | Project Gutenberg #32854 — https://www.gutenberg.org/ebooks/32854 |
-| *Voyage au centre de la Terre* — Jules Verne | `lectures/voyage-centre-terre.txt` | Project Gutenberg #4791 — https://www.gutenberg.org/ebooks/4791 |
+Pour une œuvre originellement française, les choix « Originale » et « Française » concernent naturellement la même langue (idem pour « Originale » et « Anglaise » pour les livres anglais).
 
-Les fichiers ont été importés depuis les dépôts **GITenberg**, miroirs publics de transcriptions Gutenberg. La licence Project Gutenberg et les crédits sont conservés dans les fichiers intégraux. Le droit d'auteur dépend des pays ; ces textes originaux français d'auteurs morts avant 1956 appartiennent au domaine public en France en 2026, sous réserve des particularités des éditions et contributions annexes. Pour d'autres juridictions, vérifier les conditions locales.
+## Textes intégraux hébergés dans `lectures/`
 
-Les **11 autres livres** sont des fiches et ne sont **pas** disponibles intégralement dans la liseuse locale ; certaines fiches donnent un lien externe vers Project Gutenberg. Pas de faux « lire » qui afficherait uniquement un extrait.
+**13 fichiers d'éditions complètes, correspondant à 10 œuvres distinctes** :
 
-## Navigation dans la liseuse
+| Œuvre | Langue | Fichier local | Gutenberg |
+| --- | --- | --- | --- |
+| Candide | Français | `lectures/candide.txt` | #59859 |
+| Le Tour du monde en 80 jours | Français | `lectures/tour-du-monde.txt` | #46541 |
+| Le Horla et autres nouvelles | Français | `lectures/le-horla.txt` | #10775 |
+| Arsène Lupin, gentleman-cambrioleur | Français | `lectures/arsene-lupin.txt` | #32854 |
+| Voyage au centre de la Terre | Français | `lectures/voyage-centre-terre.txt` | #4791 |
+| Alice au pays des merveilles | Anglais | `lectures/alice-en.txt` | #11 |
+| Alice au pays des merveilles | Français, traduction d'Henri Bué | `lectures/alice-fr.txt` | #55456 |
+| Le Portrait de Dorian Gray | Anglais | `lectures/dorian-en.txt` | #174 |
+| Le Portrait de Dorian Gray | Français, traduction d'Albert Savine | `lectures/dorian-fr.txt` | #14192 |
+| Dr Jekyll et Mr Hyde | Anglais | `lectures/jekyll-en.txt` | #42 |
+| La Machine à explorer le temps | Anglais | `lectures/time-machine-en.txt` | #35 |
+| La Guerre des mondes | Anglais | `lectures/war-worlds-en.txt` | #36 |
+| La Guerre des mondes | Français, traduction d'Henry-D. Davray | `lectures/war-worlds-fr.txt` | #60656 |
 
-- Flèches gauche/droite pour changer de feuillet hors des champs de saisie.
-- Boutons A− / A+ pour régler la police.
-- Icônes papier / clair / nuit pour changer d'ambiance.
-- Recherche d'un passage à travers le texte intégral, saut au feuillet trouvé.
-- Reprise de la lecture depuis le dernier feuillet sur cet appareil.
+Les fichiers ont été repris de GITenberg/Project Gutenberg, avec les notices et crédits conservés dans le texte. Liens : `https://www.gutenberg.org/ebooks/<numéro>`.
 
-**Note :** un feuillet n'est pas une page imprimée : c'est une portion de texte d'environ 4 300 caractères découpée à des frontières de paragraphes. Toutes les parties du texte situées entre les balises Project Gutenberg `START` et `END` sont conservées dans l'ordre.
+La mention « domaine public » vise les œuvres historiques et les éditions anciennes sélectionnées ; les règles de droit peuvent varier selon les pays, et toutes les traductions d'une même œuvre ne sont pas nécessairement libres. Le catalogue distingue donc les versions effectivement confirmées de celles qui restent à rechercher.
 
-## Architecture
+## Contenu et fonctions
 
-```text
-bibliotheque-premium/
-  index.html
-  catalogue.html
-  livre.html
-  lire.html
-  salon.html
-  favoris.html
-  a-propos.html
-  assets/
-    app.js books.js style.css
-    reader.js reader.css
-    salon.js salon-data.js salon.css
-    experience.js experience.css
-    covers/ (16 couvertures SVG)
-  lectures/
-    candide.txt
-    tour-du-monde.txt
-    le-horla.txt
-    arsene-lupin.txt
-    voyage-centre-terre.txt
-  README.md
-```
+- Accueil éditorial animé, bibliomancie et sélection de livres.
+- Catalogue de **48 titres**, recherche texte, filtre « À lire ici », genres et tri par auteur, titre ou année.
+- Fiches avec choix **Originale / Française / Anglaise**, description, favoris et source vérifiée.
+- Liseuse avec pagination par feuillets, thèmes papier / clair / nuit, taille de police, recherche, retour au dernier feuillet et accès aux éditions locales multilingues.
+- Salon fictif : 12 lecteurs imaginaires, 12 conversations et 107 messages préécrits. Notes et likes locaux.
+- Couvertures SVG propres au projet. Aucun backend, compte ou paiement.
 
-**Aucun compte, aucun paiement, aucun serveur applicatif.** Les favoris et le marque-page utilisent `localStorage` et ne se synchronisent pas entre navigateurs. Le bouton de réservation reste une simulation. Le Salon ne génère aucune réponse IA.
+**Remarque :** les feuillets sont des portions numériques, pas les pages imprimées ; la typographie peut différer des éditions originales. Le roman ou recueil complet est conservé dans le fichier source de chaque édition intégrée.
 
-L'exercice de cours original en HTML pur est préservé séparément dans `exercices-html/ma-bibliotheque/`.
+L'exercice HTML sans CSS ni JavaScript est préservé dans `exercices-html/ma-bibliotheque/`.

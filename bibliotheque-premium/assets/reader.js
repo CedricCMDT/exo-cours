@@ -7,7 +7,7 @@ const book=books.find(b=>b.id===currentId);
 const requestedSlot=new URLSearchParams(location.search).get("lang")||"original";
 const selectedSlot=["original","fr","en"].includes(requestedSlot)?requestedSlot:"original";
 const edition=book?.editions?.[selectedSlot]||book?.editions?.original||null;
-const fileToRead=edition?.file||book?.fullText||null;
+const fileToRead=edition ? (edition.file||null) : (book?.fullText||null);
 const node=$("#reader-text");
 if(!book || !fileToRead){
  $("#reader-title").textContent="Cette histoire n'est pas encore sur nos rayons.";

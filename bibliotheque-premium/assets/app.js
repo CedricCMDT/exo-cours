@@ -104,10 +104,10 @@ function fold(text){return String(text).normalize("NFD").replace(/[\u0300-\u036f
 function setupCatalogue(){
   const search=$("#book-search"),sort=$("#book-sort"),filters=$("#genre-filters"),grid=$("#catalogue-grid");
   let genre="Tous";
-  const genres=["Tous",...new Set(books.map(book=>book.genre))];
+  const genres=["Tous","À lire ici",...new Set(books.map(book=>book.genre))];
   function render(){
     const term=fold(search.value);
-    let matching=books.filter(b=>(genre==="Tous"||b.genre===genre)&&fold(b.title+" "+b.author+" "+b.genre+" "+b.short).includes(term));
+    let matching=books.filter(b=>(genre==="Tous"||genre==="À lire ici"&&Object.values(b.editions||{}).some(e=>e.status==="local")||b.genre===genre)&&fold(b.title+" "+b.author+" "+b.genre+" "+b.short).includes(term));
     const sorting=sort.value;
     if(sorting==="title")matching.sort((a,b)=>a.title.localeCompare(b.title,"fr"));
     if(sorting==="author")matching.sort((a,b)=>a.author.localeCompare(b.author,"fr"));
