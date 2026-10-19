@@ -1,31 +1,56 @@
-(function(){
+(function editionPicker(){
 "use strict";
 if(document.body.dataset.page!=="livre")return;
 const id=new URLSearchParams(location.search).get("id")||"moby-dick";
 const book=(window.LA_MARGE_BOOKS||[]).find(b=>b.id===id);
 const anchor=document.querySelector(".detail-actions");
 if(!book||!anchor||!book.editions)return;
-const outer=document.createElement("section");outer.className="edition-selector";outer.setAttribute("aria-labelledby","edition-heading");
-outer.innerHTML='<p class="eyebrow">ÉDITIONS & TRADUCTIONS</p><h2 id="edition-heading">Une histoire, <em>trois façons de la découvrir.</em></h2><p class="edition-lead">Choisissez le texte original, la version française ou la version anglaise. Si une édition n’a pas été vérifiée, nous vous proposons une recherche clairement indiquée.</p><div class="edition-tabs" role="group" aria-label="Choisir la version du livre"></div><div class="edition-result" aria-live="polite"></div>';
-anchor.before(outer);
-const tabs=outer.querySelector(".edition-tabs"),result=outer.querySelector(".edition-result");
-let current="original";
-const escape=s=>String(s).replace(/[&<>"']/g,x=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[x]));
-const tabsNames={original:"ORIGINAL",fr:"FRANÇAIS",en:"ANGLAIS"};
-for(const slot of ["original","fr","en"]){const edition=book.editions[slot];const btn=document.createElement("button");btn.type="button";btn.className="edition-tab";btn.dataset.edition=slot;btn.setAttribute("aria-pressed",String(slot===current));btn.innerHTML='<span class="edition-tab-icon" aria-hidden="true">'+(slot==="original"?"✳":slot==="fr"?"FR":"EN")+'</span><span><strong>'+tabsNames[slot]+'</strong><small>'+escape(edition.language)+'</small></span>';tabs.appendChild(btn);}
-function render(slot){
-current=slot;const e=book.editions[slot];
-tabs.querySelectorAll(".edition-tab").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.edition===slot)));
-let link,status,explanation;
-if(e.file){link="lire.html?id="+encodeURIComponent(book.id)+"&lang="+slot;status="Texte intégral dans LA MARGE";explanation="Cette édition est intégrée à notre liseuse, avec marque-page, thèmes et lecture sans compte.";}
-else if(e.gutenberg){link="https://www.gutenberg.org/ebooks/"+e.gutenberg;status="Édition vérifiée chez Project Gutenberg";explanation="Le texte est disponible auprès de la bibliothèque libre Project Gutenberg. Il s'ouvrira sur leur site.";}
-else{link="https://www.gutenberg.org/ebooks/search/?query="+encodeURIComponent(book.originalTitle+" "+book.author+" "+e.language);status="Traduction non vérifiée";explanation="Nous n'avons pas identifié de texte intégral pour cette version. Ce lien lance une recherche, sans garantie de disponibilité.";}
-const target=e.file?"":' target="_blank" rel="noopener noreferrer"';
-const action=e.file?"OUVRIR LA LISEUSE ↗":e.gutenberg?"CONSULTER CETTE ÉDITION ↗":"CHERCHER UNE ÉDITION ↗";
-const dup=(slot!=="original"&&book.originalLanguage===e.lang)?" C'est la même langue que le texte original.":"";
-const note=e.note?'<p class="edition-extra">'+escape(e.note)+'</p>':"";
-result.innerHTML='<div><span class="edition-status">'+(e.file?"●":e.gutenberg?"◉":"○")+' '+escape(status)+'</span><h3>'+escape(e.title||book.title)+'</h3><p>'+escape(explanation+dup)+'</p>'+note+'</div><a class="btn '+(e.file?"btn-primary":"btn-outline")+'" href="'+escape(link)+'"'+target+'>'+action+'</a>';
+const root=document.createElement("section");
+root.className="edition-selector";root.setAttribute("aria-labelledby","edition-heading");
+root.innerHTML='<p class="eyebrow">ÉDITIONS, TRADUCTIONS ET LECTURE</p><h2 id="edition-heading">Une histoire, <em>trois langues à explorer.</em></h2><p class="edition-lead">Original, français ou anglais : choisissez votre édition. Si aucun texte publié n’est disponible mais que nous hébergeons une version source, vous pouvez essayer une traduction automatique directement dans la liseuse.</p><div class="edition-tabs" role="group" aria-label="Choisir la version du livre"></div><div class="edition-result" aria-live="polite"></div>';
+anchor.before(root);
+const tabs=root.querySelector(".edition-tabs"),result=root.querySelector(".edition-result");
+const names={original:"ORIGINAL",fr:"FRANÇAIS",en:"ANGLAIS"};
+const safe=v=>String(v??"").replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[s]));
+const viable=["fr","en","es","de","it","ru"];
+const findSource=e=>[book.editions.original,book.editions.fr,book.editions.en].find(s=>s?.file&&s.lang!==e.lang&&viable.includes(s.lang)&&viable.includes(e.lang));
+for(const slot of ["original","fr","en"]){
+ const e=book.editions[slot],button=document.createElement("button");
+ button.className="edition-tab";button.dataset.edition=slot;button.type="button";
+ button.setAttribute("aria-pressed",String(slot==="original"));
+ button.innerHTML='<span class="edition-tab-icon" aria-hidden="true">'+(slot==="original"?"✳":slot.toUpperCase())+'</span><span><strong>'+names[slot]+'</strong><small>'+safe(e.language)+'</small></span>';
+ tabs.append(button);
 }
-tabs.addEventListener("click",ev=>{const btn=ev.target.closest("[data-edition]");if(btn)render(btn.dataset.edition);});
-render(current);
+function render(slot){
+ const e=book.editions[slot],source=findSource(e);
+ tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.edition===slot)));
+ const local=Boolean(e.file),external=Boolean(e.gutenberg);
+ const duplicate=slot!=="original"&&book.originalLanguage===e.lang?" Cette version correspond à la langue originale.":"";
+ const note=e.note?'<p class="edition-extra">'+safe(e.note)+'</p>':"";
+ let status,explanation,buttons;
+ if(local){
+   status="Texte intégral dans LA MARGE";
+   explanation="Cette édition complète est déjà disponible dans notre liseuse."+duplicate;
+   buttons='<a class="btn btn-primary" href="lire.html?id='+encodeURIComponent(book.id)+'&lang='+slot+'">LIRE CETTE ÉDITION ↗</a>';
+ }else{
+   status=external?"Édition publiée sur Project Gutenberg":"Aucune traduction publiée vérifiée";
+   explanation=external?"Une édition libre a été identifiée. Nous vous proposons aussi, lorsque c’est possible, une traduction automatique directement sur LA MARGE.":"Nous n’avons pas d’édition complète vérifiée dans cette langue. Nous pouvons tenter une traduction automatique du texte source lorsqu’il est hébergé localement.";
+   buttons="";
+   if(source){
+     const link="lire.html?id="+encodeURIComponent(book.id)+"&lang="+slot+"&translate=1";
+     buttons+='<a class="btn btn-primary" href="'+safe(link)+'">TRADUIRE ET LIRE ICI ↗</a>';
+     explanation+=" Traduction IA expérimentale, effectuée feuillet par feuillet, nécessitant un navigateur compatible et un modèle de langue local.";
+   }
+   if(external){
+     buttons+='<a class="btn btn-outline" href="https://www.gutenberg.org/ebooks/'+encodeURIComponent(e.gutenberg)+'" target="_blank" rel="noopener noreferrer">ÉDITION GUTENBERG ↗</a>';
+   }else{
+     const q=encodeURIComponent((book.originalTitle||book.title)+" "+book.author+" "+e.language);
+     buttons+='<a class="edition-search-link" href="https://www.gutenberg.org/ebooks/search/?query='+q+'" target="_blank" rel="noopener noreferrer">RECHERCHER UNE ÉDITION ↗</a>';
+   }
+ }
+ if(!source&&!local&&!external)explanation+=" La traduction par IA n'est pas encore possible ici : la version source complète doit d'abord être intégrée.";
+ result.innerHTML='<div><span class="edition-status">✳ '+safe(status)+'</span><h3>'+safe(e.title||book.title)+'</h3><p>'+safe(explanation+duplicate)+'</p>'+note+'</div><div class="edition-choices">'+buttons+'</div>';
+}
+tabs.addEventListener("click",event=>{const button=event.target.closest("[data-edition]");if(button)render(button.dataset.edition);});
+render("original");
 })();
