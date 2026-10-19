@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11120f">
+<meta name="description" content="La liseuse La Marge : lisez gratuitement les classiques du domaine public dans une interface confortable et personnalisable.">
+<title>La Liseuse — LA MARGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css"><link rel="stylesheet" href="assets/reader.css">
+<script defer src="assets/books.js"></script><script defer src="assets/reader.js"></script>
+</head>
+<body data-page="reader">
+<a class="skip-link" href="#page-reading">Aller à la lecture</a>
+<div id="reader-progress" aria-hidden="true"></div>
+<header class="reader-header">
+  <a class="reader-brand" href="index.html" aria-label="Retour à La Marge"><span aria-hidden="true">✳</span> LA MARGE<span class="gold-dot">.</span></a>
+  <a href="catalogue.html" class="reader-back">← RETOUR À LA COLLECTION</a>
+  <span class="reader-header-label">LA LISEUSE <span aria-hidden="true">/</span> 001</span>
+</header>
+<main class="reader-wrapper">
+  <aside class="reader-aside" aria-label="Navigation du livre">
+    <div class="reader-aside-top"><p class="eyebrow">LITTÉRATURE À EMPORTER</p><img src="assets/covers/candide.svg" alt="" id="reader-cover" width="150" height="216"><h2 id="reader-sidebar-title">Un livre vous attend</h2><p id="reader-sidebar-author"></p></div>
+    <div class="reader-sidebar-group">
+      <label for="reader-jump">VOTRE MARQUE-PAGE</label>
+      <select id="reader-jump" aria-label="Aller au feuillet"><option>Chargement…</option></select>
+      <small id="reader-sidebar-progress" aria-live="polite">Chargement du texte…</small>
+    </div>
+    <div class="reader-sidebar-group">
+      <label for="reader-search">RETROUVER UN PASSAGE</label>
+      <form id="reader-search-form" class="reader-search-form"><input id="reader-search" type="search" placeholder="Un mot, un souvenir…" minlength="2"><button type="submit" aria-label="Chercher dans le livre">⌕</button></form>
+      <small id="reader-search-result" aria-live="polite"></small>
+    </div>
+    <div class="reader-source-note"><span aria-hidden="true">✳</span><p>Œuvre du domaine public. Texte intégral conservé avec sa notice et ses crédits.</p><a id="reader-source-link" href="https://www.gutenberg.org/" target="_blank" rel="noopener noreferrer">SOURCE PROJECT GUTENBERG ↗</a><a id="reader-download" href="#" download>TÉLÉCHARGER LE TEXTE INTÉGRAL ↓</a></div>
+  </aside>
+  <section class="reader-main" id="page-reading">
+    <div class="reader-options"><div class="reader-options-caption"><span class="reader-live-dot"></span> VOTRE SALON DE LECTURE</div><div class="reader-options-inner">
+      <div class="reader-font-controls" role="group" aria-label="Taille des caractères"><button type="button" id="reader-font-minus" aria-label="Réduire le texte">A−</button><span>TAILLE</span><button type="button" id="reader-font-plus" aria-label="Agrandir le texte">A+</button></div>
+      <div class="reader-theme-controls" role="group" aria-label="Thème de lecture"><button type="button" data-theme="sepia" aria-label="Thème papier" aria-pressed="true">◐</button><button type="button" data-theme="light" aria-label="Thème clair" aria-pressed="false">☼</button><button type="button" data-theme="dark" aria-label="Thème nuit" aria-pressed="false">☾</button></div>
+    </div></div>
+    <article class="reader-paper" id="reader-paper" tabindex="-1">
+      <div class="reader-article-header"><p class="reader-overline" id="reader-overline">BIBLIOTHÈQUE / TEXTE INTÉGRAL</p><h1 id="reader-title">Les livres ont leurs secrets.</h1><p id="reader-author"></p><div class="reader-ornament" aria-hidden="true">✳</div></div>
+      <div id="reader-text" class="reader-text" aria-live="polite"><p>Ouverture du livre…</p></div>
+      <div class="reader-bookmark"><span aria-hidden="true">✳</span> VOTRE POSITION EST SAUVEGARDÉE AUTOMATIQUEMENT</div>
+    </article>
+    <div class="reader-navigation"><button type="button" id="reader-prev">← FEUILLET PRÉCÉDENT</button><div class="reader-counter"><span id="reader-current">—</span><span class="reader-counter-slash">/</span><span id="reader-total">—</span><small>FEUILLETS</small></div><button type="button" id="reader-next">FEUILLET SUIVANT →</button></div>
+    <p class="reader-footnote">Chaque feuillet est une portion de texte, pas une page de l'édition imprimée. Les livres complets proviennent de transcriptions libres du domaine public.</p>
+  </section>
+</main>
+<div class="reader-bottom-bar"><span>LA MARGE — L'ART DE PRENDRE SON TEMPS</span><a href="catalogue.html">DÉCOUVRIR D'AUTRES HISTOIRES ↗</a></div>
+</body></html>
