@@ -94,7 +94,7 @@ Sept nouvelles transcriptions intégrales libres dans `lectures/`, conservant le
 | *Poil de Carotte* de Jules Renard | Français | Gutenberg #4559 |
 | *Les Fleurs du mal* de Charles Baudelaire | Français | Gutenberg #6099 |
 
-En tout : **25 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 23 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
+En tout : **31 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 17 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
 
 Documentations des moteurs :
 - https://developer.mozilla.org/en-US/docs/Web/API/Translator
@@ -117,6 +117,20 @@ Cette fonction est expérimentale : à tester sur Chrome ou Opera avec **Live Se
 | *Madame Bovary* — Gustave Flaubert | `lectures/madame-bovary-fr.txt` | #14155 |
 | *Dracula* — Bram Stoker | `lectures/dracula-en.txt` | #345 |
 
-Au total, le dépôt héberge **28 fichiers d'éditions complètes, couvrant 25 œuvres distinctes** : ces 25 œuvres sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
+Au total, le dépôt héberge **34 fichiers d'éditions complètes, couvrant 31 œuvres distinctes** : ces 31 œuvres sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
 
 **Compatibilité :** sur Opera, l'API `Translator` native peut être absente. Un modèle de repli compatible Transformers.js / Opus-MT peut être proposé pour les paires `en↔fr`, `de→fr`, `de→en`, à condition d'accepter le téléchargement d'un modèle volumineux. Il n'existe pas actuellement de garantie de traduction universelle sur tous les navigateurs.
+
+
+### Six autres textes intégraux ajoutés
+
+| Œuvre | Version intégrée | Source |
+|---|---|---|
+| *Frankenstein* — Mary Shelley | Anglaise originale | Gutenberg #84, `lectures/frankenstein-en.txt` |
+| *Orgueil et Préjugés* — Jane Austen | Anglaise originale | Gutenberg #1342, `lectures/orgueil-et-prejuges-en.txt` |
+| *La Princesse de Clèves* — Mme de La Fayette | Française originale | Gutenberg #18797, `lectures/princesse-cleves-fr.txt` |
+| *La Divine Comédie* — Dante | Italienne originale | Gutenberg #1000, `lectures/divine-comedie-it.txt` |
+| *Le Père Goriot* — Honoré de Balzac | Traduction anglaise publiée | Gutenberg #1237, `lectures/pere-goriot-en.txt` |
+| *L'Odyssée* — Homère | Traduction française publiée (Leconte de Lisle) | Gutenberg #14286, `lectures/odyssee-fr.txt` |
+
+Les deux dernières œuvres ne sont **pas** intégrées dans leur langue d'origine ; la liseuse indique la langue réelle du texte disponible. Les traductions générées à partir d'une traduction déjà publiée (traduction indirecte) ne constituent pas une édition de référence.
