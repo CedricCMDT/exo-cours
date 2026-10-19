@@ -35,9 +35,9 @@ if(!book || !edition || !fileToRead) {
 }
 document.title = (edition.title||book.title)+" — "+(edition.language||"")+" | LA MARGE";
 $("#reader-title").textContent=edition.title||book.title;
-$("#reader-author").textContent=book.author+" · "+book.year;
+$("#reader-author").textContent=book.author+" · "+(Number.isFinite(book.year)?book.year:"édition libre");
 $("#reader-sidebar-title").textContent=book.title;
-$("#reader-sidebar-author").textContent=book.author+" · "+book.year+" · "+(edition.language||"");
+$("#reader-sidebar-author").textContent=book.author+" · "+(Number.isFinite(book.year)?book.year:"édition libre")+" · "+(edition.language||"");
 $("#reader-cover").src=book.cover;
 $("#reader-cover").alt="Couverture de "+book.title;
 $("#reader-download").href=translationMode ? sourceEdition.file : filename;
