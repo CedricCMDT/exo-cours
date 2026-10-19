@@ -1,4 +1,4 @@
-/* LA MARGE — 48 classiques, éditions réelles vérifiées et recherche explicite des traductions absentes. */
+/* LA MARGE : textes intégraux et provenance des éditions, avec options de traduction à la demande. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -791,7 +791,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Eugénie Grandet",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "18",
     "tagline": "La fortune peut-elle acheter ce qui compte ?",
     "short": "La fortune peut-elle acheter ce qui compte ?",
@@ -808,7 +808,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Eugénie Grandet",
         "gutenberg": 11049,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/eugenie-grandet-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -816,7 +817,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Eugénie Grandet",
         "gutenberg": 11049,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/eugenie-grandet-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -825,7 +827,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Eugénie Grandet",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/eugenie-grandet-fr.txt"
   },
   {
     "id": "peau-de-chagrin",
@@ -1061,7 +1064,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Les Fleurs du mal",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "24",
     "tagline": "Trouver le beau dans la faille et la contradiction.",
     "short": "Trouver le beau dans la faille et la contradiction.",
@@ -1078,7 +1081,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Les Fleurs du mal",
         "gutenberg": 6099,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/fleurs-mal-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1086,7 +1090,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Les Fleurs du mal",
         "gutenberg": 6099,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/fleurs-mal-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1095,7 +1100,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Les Fleurs du mal",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/fleurs-mal-fr.txt"
   },
   {
     "id": "poil-carotte",
@@ -1107,7 +1113,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Poil de Carotte",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "25",
     "tagline": "L'enfance a parfois le goût piquant de l'ironie.",
     "short": "L'enfance a parfois le goût piquant de l'ironie.",
@@ -1124,7 +1130,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Poil de Carotte",
         "gutenberg": 4559,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/poil-carotte-fr.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1132,7 +1139,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Poil de Carotte",
         "gutenberg": 4559,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/poil-carotte-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1141,7 +1149,8 @@ window.LA_MARGE_BOOKS = [
         "title": "Poil de Carotte",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/poil-carotte-fr.txt"
   },
   {
     "id": "fantome-opera",
@@ -1575,7 +1584,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "Treasure Island",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "35",
     "tagline": "Une carte, un navire et la promesse de l'inconnu.",
     "short": "Une carte, un navire et la promesse de l'inconnu.",
@@ -1592,7 +1601,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Treasure Island",
         "gutenberg": 120,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/ile-tresor-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1607,9 +1617,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "L'Île au trésor",
         "gutenberg": 120,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/ile-tresor-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/ile-tresor-en.txt"
   },
   {
     "id": "machine-temps",
@@ -1720,7 +1732,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "The Adventures of Sherlock Holmes",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "38",
     "tagline": "Un détail suffit quand on sait observer.",
     "short": "Un détail suffit quand on sait observer.",
@@ -1737,7 +1749,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "The Adventures of Sherlock Holmes",
         "gutenberg": 1661,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/sherlock-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1752,9 +1765,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Les Aventures de Sherlock Holmes",
         "gutenberg": 1661,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/sherlock-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/sherlock-en.txt"
   },
   {
     "id": "etude-rouge",
@@ -1766,7 +1781,7 @@ window.LA_MARGE_BOOKS = [
     "language": "anglais",
     "originalLanguage": "en",
     "originalTitle": "A Study in Scarlet",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "39",
     "tagline": "La première rencontre d'un duo mythique.",
     "short": "La première rencontre d'un duo mythique.",
@@ -1783,7 +1798,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "A Study in Scarlet",
         "gutenberg": 244,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/etude-rouge-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -1798,9 +1814,11 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Une étude en rouge",
         "gutenberg": 244,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/etude-rouge-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/etude-rouge-en.txt"
   },
   {
     "id": "jardin-secret",
@@ -1997,7 +2015,7 @@ window.LA_MARGE_BOOKS = [
     "language": "allemand",
     "originalLanguage": "de",
     "originalTitle": "Die Verwandlung",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "44",
     "tagline": "Un matin, le monde n'a plus la même forme.",
     "short": "Un matin, le monde n'a plus la même forme.",
@@ -2014,7 +2032,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Die Verwandlung",
         "gutenberg": 22367,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/metamorphose-de.txt"
       },
       "fr": {
         "lang": "fr",
@@ -2030,7 +2049,8 @@ window.LA_MARGE_BOOKS = [
         "title": "La Métamorphose",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/metamorphose-de.txt"
   },
   {
     "id": "crime-chatiment",
