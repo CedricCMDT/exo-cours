@@ -39,6 +39,8 @@ const sort=document.querySelector("#salon-sort");
 const dialog=document.querySelector("#salon-thread-dialog");
 const compose=document.querySelector("#salon-compose-dialog");
 const info=document.querySelector("#salon-count");
+const cast=document.querySelector("#salon-cast");if(cast){cast.innerHTML=people.slice(0,5).map(p=>'<div class="salon-cast-row"><span class="salon-avatar small" style="background:'+esc(p.color)+'">'+esc(p.initials)+'</span><div><strong>'+esc(p.name)+'</strong><br><span>'+esc(p.bio.slice(0,37))+'…</span></div></div>').join("");}
+
 let genre="Tous", currentThread=null,lastTrigger=null;
 const topics=["Tous","Débat","Question","Émotions","Coup de cœur","Journal de lecture","Mon carnet"];
 filters.innerHTML=topics.map(x=>`<button type="button" class="salon-filter" data-filter="${esc(x)}" aria-pressed="${x==="Tous"}">${esc(x)}</button>`).join("");
@@ -63,7 +65,7 @@ filters.addEventListener("click",e=>{const btn=e.target.closest("[data-filter]")
 search.addEventListener("input",render);
 sort.addEventListener("change",render);
 function dismiss(d){if(d.open)d.close(); if(lastTrigger?.isConnected)lastTrigger.focus();lastTrigger=null;}
-function popup(d,trigger){lastTrigger=trigger;if(typeof d.showModal==="function")d.showModal();else d.setAttribute("open","");}
+function popup(d,trigger){if(d.open)return;lastTrigger=trigger;if(typeof d.showModal==="function")d.showModal();else d.setAttribute("open","");}
 function notice(text){const el=document.querySelector("#toast");if(!el)return;el.textContent=text;el.classList.add("visible");clearTimeout(notice.timer);notice.timer=setTimeout(()=>el.classList.remove("visible"),3000);}
 function openThread(id,trigger){
   const t=getThread(id);
@@ -112,7 +114,7 @@ document.querySelector("#salon-reply-form").addEventListener("submit",e=>{
  list.lastElementChild?.scrollIntoView({block:"nearest",behavior:"smooth"});
  notice("Votre note est visible uniquement sur ce navigateur.");
 });
-const titleInput=document.querySelector("#salon-compose-title");
+const titleInput=document.querySelector("#salon-compose-title-input");
 const bodyInput=document.querySelector("#salon-compose-body");
 bodyInput.addEventListener("input",()=>document.querySelector("#salon-compose-count").textContent=bodyInput.value.length+" / 1000");
 document.querySelector("#salon-compose-form").addEventListener("submit",e=>{

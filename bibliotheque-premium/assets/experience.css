@@ -27,3 +27,6 @@ body[data-page="home"] .hero-copy{animation:enter-up .85s both cubic-bezier(.16,
 @media(max-width:450px){.salon-feature{padding-bottom:65px}.salon-feature-frame{padding:35px 22px}.salon-feature-sample{padding:20px}.salon-feature-sample h3{font-size:24px}.fate-panel{padding:32px 22px}.fate-section{padding-bottom:75px}}
 @media(hover:none),(pointer:coarse){#cursor-aura{display:none}}
 @media(prefers-reduced-motion:reduce){body.is-exiting main,body.is-exiting .site-footer{transition:none;filter:none;transform:none}body[data-page="home"] .hero-copy,body[data-page="home"] .hero-visual{animation:none}.fate-result .fate-glyph{animation:none}}
+
+.nav-new{display:inline-block;margin-left:3px;font:800 7px/1 var(--display);letter-spacing:.09em;color:#231d12;background:var(--gold);padding:4px 5px;border-radius:2px;vertical-align:middle}
+@media(max-width:760px){.nav-new{margin-left:8px}}
