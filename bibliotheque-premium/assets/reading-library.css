@@ -1,0 +1,35 @@
+/* LA MARGE — bibliothèque des textes réellement hébergés */
+.reading-library-intro{padding-bottom:45px}
+.reading-library-intro .intro-headline{align-items:flex-end}
+.reading-library-intro>p:not(.eyebrow){max-width:660px}
+.reading-library-intro>p strong{color:var(--gold);font-weight:600}
+.reading-library-hero-stats{display:flex;gap:0;align-items:stretch;max-width:730px;margin-top:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.reading-library-hero-stats>div{padding:22px 30px 22px 0;flex:1}
+.reading-library-hero-stats>div+div{border-left:1px solid var(--line);padding-left:30px}
+.reading-library-hero-stats strong{display:block;font:500 clamp(24px,4vw,37px)/1.2 var(--serif);color:var(--ink)}
+.reading-library-hero-stats span{display:block;margin-top:7px;font:800 9px var(--display);letter-spacing:.11em;color:var(--muted)}
+.reading-library-section{padding-bottom:100px}
+.reading-library-toolbar{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap;margin:12px 0 15px}
+.reading-library-search{display:flex;align-items:center;gap:8px;flex:1 1 280px;border:1px solid var(--line);min-width:0;padding:0 13px;background:var(--panel)}
+.reading-library-search span{font-size:25px;color:var(--gold)}
+.reading-library-search input{width:100%;border:0;background:none;color:var(--ink);padding:14px 0;outline:none;font-size:14px}
+.reading-library-search:focus-within{border-color:var(--gold)}
+.reading-library-search input::placeholder{color:var(--muted)}
+.reading-library-select{display:flex;align-items:center;gap:10px;font:800 10px var(--display);letter-spacing:.06em;color:var(--muted);border:1px solid var(--line);padding:0 12px}
+.reading-library-select select{min-width:110px;max-width:205px;padding:13px 3px;border:0;color:var(--ink);background:var(--bg);font-size:12px}
+.reading-library-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--line);padding:14px 0 27px;margin-bottom:32px}
+.reading-library-filters button{border:1px solid var(--line);background:none;color:var(--muted);padding:10px 14px;font:800 10px var(--display);letter-spacing:.035em;transition:background .15s,color .15s,border .15s}
+.reading-library-filters button:hover,.reading-library-filters button[aria-pressed=true]{background:var(--gold);border-color:var(--gold);color:#161713}
+#reading-count{margin-left:auto;font:800 10px var(--display);color:var(--muted);letter-spacing:.07em}
+.reading-library-grid{align-items:stretch}
+.reading-library-card .book-information{display:flex;flex-direction:column;align-items:flex-start}
+.reading-edition-links{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 8px}
+.reading-edition-link{display:inline-flex;align-items:center;border:1px solid var(--gold-deep);color:var(--gold);padding:9px 11px;font:800 9px var(--display);letter-spacing:.03em;transition:background .18s,color .18s}
+.reading-edition-link:hover{background:var(--gold);color:var(--bg)}
+.reading-book-detail{font:700 9px var(--display);letter-spacing:.08em;color:var(--muted);text-decoration:underline;text-underline-offset:4px;margin-top:auto;padding-top:5px}
+.reading-book-detail:hover{color:var(--gold)}
+.reading-library-bottom{border-top:1px solid var(--line);margin-top:55px;padding-top:30px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.reading-library-bottom p{margin:0;color:var(--muted);max-width:540px;font-size:14px}
+@media(max-width:750px){.reading-library-hero-stats>div{padding:15px 10px 15px 0}.reading-library-hero-stats>div+div{padding-left:12px}.reading-library-select{flex:1 1 175px;justify-content:space-between}.reading-library-select select{max-width:150px}#reading-count{flex-basis:100%;margin:6px 0 0}}
+@media(max-width:440px){.reading-library-hero-stats strong{font-size:24px}.reading-library-hero-stats span{font-size:8px}.reading-library-filters{gap:6px}.reading-library-filters button{padding:9px}.reading-library-section{padding-bottom:50px}}
+@media(prefers-reduced-motion:reduce){.reading-library-filters button,.reading-edition-link{transition:none}}

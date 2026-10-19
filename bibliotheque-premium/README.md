@@ -56,6 +56,8 @@ Les favoris, annotations, évaluations et états de lecture sont conservés **da
 
 `livre.html?id=...` — Fiche de l'ouvrage, éditions, favoris, journal de lecture, sources.
 
+`lectures-en-ligne.html` — Sélection de toutes les œuvres intégrales hébergées dans LA MARGE, recherche, filtres de langue et liens de lecture directs.
+
 `lire.html?id=...` — Liseuse pour les textes complets locaux.
 
 `favoris.html` — Ma sélection et le journal des livres lus/en cours/à lire.

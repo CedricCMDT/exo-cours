@@ -22,7 +22,7 @@ const nav = () => `<header class="site-header"><div class="shell nav-container">
 <nav id="primary-nav" class="primary-nav" aria-label="Navigation principale">
 <a href="index.html" ${page==="home"?'aria-current="page"':""}>Accueil</a>
 <a href="catalogue.html" ${page==="catalogue"?'aria-current="page"':""}>Collection</a>
-<a href="lire.html?id=candide">Lire en ligne <span class="nav-new">GRATUIT</span></a>
+<a href="lectures-en-ligne.html" ${page==="reading" ? 'aria-current="page"' : ""}>Lire en ligne <span class="nav-new">GRATUIT</span></a>
 <a href="salon.html" ${page==="salon"?'aria-current="page"':""}>Le Salon <span class="nav-new">NOUVEAU</span></a>
 <a href="a-propos.html" ${page==="about"?'aria-current="page"':""}>Notre histoire</a>
 <a class="nav-favorites" href="favoris.html" ${page==="favoris"?'aria-current="page"':""}>Ma sélection <span class="fav-count" data-fav-count>0</span></a>
@@ -30,7 +30,7 @@ const nav = () => `<header class="site-header"><div class="shell nav-container">
 const footer = () => `<footer class="site-footer"><div class="shell footer-inner"><div class="footer-brand-col">
 <a class="brand" href="index.html"><span class="brand-glyph" aria-hidden="true">✳</span>LA MARGE<span class="gold-dot">.</span></a>
 <p>Une bibliothèque imaginée pour ceux<br>qui aiment se perdre entre les lignes.</p></div>
-<nav class="footer-links" aria-label="Liens de pied de page"><a href="catalogue.html">La collection</a><a href="lire.html?id=candide">La liseuse</a><a href="salon.html">Le Salon</a><a href="favoris.html">Mes favoris</a><a href="a-propos.html">Notre histoire</a></nav>
+<nav class="footer-links" aria-label="Liens de pied de page"><a href="catalogue.html">La collection</a><a href="lectures-en-ligne.html">La liseuse</a><a href="salon.html">Le Salon</a><a href="favoris.html">Mes favoris</a><a href="a-propos.html">Notre histoire</a></nav>
 <div class="footer-poem">ÉCRIT AVEC PASSION.<br>LU SANS MODÉRATION.</div></div>
 <div class="shell footer-base"><span>© <span id="copyright-year">2026</span> LA MARGE — PROJET CRÉATIF</span><span>DES LIVRES, PAS DES ALGORITHMES.</span><a href="#contenu">REMONTER ↑</a></div></footer>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>`;
@@ -60,7 +60,7 @@ ${cover(byId("moby-dick"),"hero-book hero-book-main")}
 <section class="shell reading-showcase" aria-labelledby="reading-showcase-title">
 <div class="reading-showcase-header"><p class="eyebrow">04 — LA BIBLIOTHÈQUE OUVERTE</p><span>44 TEXTES INTÉGRAUX LOCAUX / 500 ŒUVRES AU CATALOGUE</span></div>
 <div class="reading-showcase-grid">
-<div class="reading-showcase-copy"><h2 id="reading-showcase-title">Tournez la page.<br><em>Pour de vrai.</em></h2><p>Plus que des couvertures, des livres entiers. Notre liseuse vous attend avec quarante-quatre classiques dans leur intégralité, des thèmes papier, nuit et clair, une recherche et un marque-page automatique.</p><a class="btn btn-primary" href="lire.html?id=candide">OUVRIR LA LISEUSE <span aria-hidden="true">↗</span></a></div>
+<div class="reading-showcase-copy"><h2 id="reading-showcase-title">Tournez la page.<br><em>Pour de vrai.</em></h2><p>Plus que des couvertures, des livres entiers. Notre liseuse vous attend avec quarante-quatre classiques dans leur intégralité, des thèmes papier, nuit et clair, une recherche et un marque-page automatique.</p><a class="btn btn-primary" href="lectures-en-ligne.html">CHOISIR UN LIVRE À LIRE <span aria-hidden="true">↗</span></a></div>
 <div class="reading-showcase-gallery" aria-label="Cinq livres à lire gratuitement">
 <a href="lire.html?id=candide" aria-label="Lire Candide">${cover(byId("candide"))}</a><a href="lire.html?id=tour-du-monde" aria-label="Lire Le Tour du monde en quatre-vingts jours">${cover(byId("tour-du-monde"))}</a><a href="lire.html?id=arsene-lupin" aria-label="Lire Arsène Lupin">${cover(byId("arsene-lupin"))}</a><span class="reading-showcase-stamp" aria-hidden="true">44<br><small>LIVRES ENTIERS</small></span></div>
 </div></section>
@@ -80,6 +80,46 @@ ${cover(byId("moby-dick"),"hero-book hero-book-main")}
 <button class="fate-button" type="button" id="fate-pick">CHOISISSEZ POUR MOI ✳</button></div>
 <div class="fate-result" id="fate-result"><div class="fate-placeholder"><span class="fate-glyph" aria-hidden="true">✳</span><span class="fate-caption">UNE HISTOIRE VOUS ATTEND</span><h3>Vous laissez faire le destin ?</h3><p>Six classiques, un seul prochain voyage.</p></div><div class="fate-output" aria-live="polite"></div></div></div></section>
 <section class="shell cta-section"><div class="cta-panel"><div><p class="eyebrow">VOTRE PROCHAINE HISTOIRE COMMENCE ICI</p><h2>Faites de la place<br><em>aux livres.</em></h2><p>Constituez votre sélection personnelle et retrouvez vos livres préférés à tout moment.</p></div><a class="btn btn-ink" href="catalogue.html">COMMENCER À EXPLORER ↗</a><span class="cta-ornament" aria-hidden="true">✳</span></div></section></main>`,
+reading: function readingPage(){
+ const available = books.filter(b => !b.copyrighted && Object.values(b.editions||{}).some(e => !!e?.file));
+ return `<main id="contenu">
+  <section class="shell page-intro reading-library-intro">
+    <p class="eyebrow">LA BIBLIOTHÈQUE OUVERTE · ACCÈS GRATUIT</p>
+    <div class="intro-headline"><h1>Lire <em>en ligne.</em></h1><span>LA MARGE / LA LISEUSE</span></div>
+    <p>Choisissez votre prochaine lecture. <strong>${available.length} œuvres complètes</strong> sont accessibles directement ici, sans compte et sans commande.</p>
+    <div class="reading-library-hero-stats">
+      <div><strong>${available.length}</strong><span>LIVRES INTÉGRAUX</span></div>
+      <div><strong>FR / EN</strong><span>ÉDITIONS À EXPLORER</span></div>
+      <div><strong>100 %</strong><span>LECTURE SUR LE SITE</span></div>
+    </div>
+  </section>
+  <section class="shell reading-library-section" aria-label="Les livres disponibles dans la liseuse">
+    <div class="reading-library-toolbar">
+      <label class="reading-library-search"><span aria-hidden="true">⌕</span><span class="sr-only">Rechercher un livre disponible</span><input type="search" id="reading-search" placeholder="Chercher un livre ou un auteur…" autocomplete="off"></label>
+      <label class="reading-library-select">CATÉGORIE <select id="reading-category"><option value="all">Toutes les catégories</option></select></label>
+      <label class="reading-library-select">TRIER <select id="reading-sort"><option value="selection">Sélection</option><option value="title">Titre A–Z</option><option value="author">Auteur A–Z</option></select></label>
+    </div>
+    <div class="reading-library-filters" role="group" aria-label="Filtrer par langue">
+      <button type="button" data-reading-lang="all" aria-pressed="true">TOUTES LES LANGUES</button>
+      <button type="button" data-reading-lang="fr" aria-pressed="false">FRANÇAIS</button>
+      <button type="button" data-reading-lang="en" aria-pressed="false">ANGLAIS</button>
+      <button type="button" data-reading-lang="other" aria-pressed="false">AUTRES LANGUES</button>
+      <span id="reading-count" role="status" aria-live="polite"></span>
+    </div>
+    <div id="reading-grid" class="book-grid reading-library-grid"></div>
+    <div id="reading-empty" class="empty-state" hidden>
+      <span class="empty-symbol" aria-hidden="true">⌕</span>
+      <h2>Aucune édition trouvée.</h2>
+      <p>Essayez un autre titre, une autre langue ou une autre catégorie.</p>
+      <button id="reading-clear" type="button" class="btn btn-outline">RÉINITIALISER LES FILTRES</button>
+    </div>
+    <div class="reading-library-bottom">
+      <p>Pour explorer les autres classiques et les ouvrages référencés dans LA MARGE, rendez-vous dans la collection générale.</p>
+      <a class="btn btn-outline" href="catalogue.html">EXPLORER LES 500 ŒUVRES <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+ </main>`;
+},
 catalogue: () => `<main id="contenu"><section class="shell page-intro"><p class="eyebrow">TOUT COMMENCE PAR UNE PAGE</p><div class="intro-headline"><h1>La <em>collection.</em></h1><span>INDEX / 001—500</span></div><p>Des histoires fascinantes, des univers singuliers.<br>Trouvez le livre qui vous attendait.</p></section>
 <section class="shell catalogue-section"><div class="tools-row"><label class="search-box"><span class="search-symbol" aria-hidden="true">⌕</span><span class="sr-only">Rechercher un titre ou un auteur</span><input id="book-search" type="search" placeholder="Un titre, un auteur, une envie…" autocomplete="off"></label><label class="sort-box">TRIER PAR <select id="book-sort" aria-label="Trier la collection"><option value="curated">Notre sélection</option><option value="title">Titre A–Z</option><option value="author">Auteur A–Z</option><option value="oldest">Les plus anciens</option><option value="newest">Les plus récents</option></select></label></div>
 <div class="filter-row"><div id="genre-filters" class="filter-buttons" role="group" aria-label="Filtrer par genre"></div><span id="result-count" class="result-count" role="status"></span></div>
@@ -106,6 +146,60 @@ document.addEventListener("click",event=>{
   if(share){if(navigator.clipboard && navigator.clipboard.writeText){navigator.clipboard.writeText(location.href).then(()=>notice("Lien copié !")).catch(()=>notice("Copiez l'adresse du navigateur pour partager."));}else notice("Copiez l'adresse du navigateur pour partager.");}
 });
 function fold(text){return String(text).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase("fr").trim();}
+function setupReadingLibrary(){
+ const available=books.filter(b=>!b.copyrighted&&Object.values(b.editions||{}).some(e=>!!e?.file));
+ const grid=$("#reading-grid"),search=$("#reading-search"),sort=$("#reading-sort"),category=$("#reading-category"),count=$("#reading-count"),empty=$("#reading-empty");
+ if(!grid || !search || !category || !sort)return;
+ const genres=[...new Set(available.map(b=>b.genre))].sort((a,b)=>a.localeCompare(b,"fr"));
+ for(const genre of genres){
+   const option=document.createElement("option");option.value=genre;option.textContent=genre;category.append(option);
+ }
+ let language="all";
+ const choices=book=>{
+   const langs=new Set();
+   return ["fr","en","original"].map(slot=>({slot,edition:book.editions?.[slot]})).filter(({edition})=>{
+     if(!edition?.file || langs.has(edition.lang))return false;
+     langs.add(edition.lang);return true;
+   });
+ };
+ const readable=book=>{
+   const list=choices(book);
+   return language==="all" || list.some(({edition})=>language==="other"?!["fr","en"].includes(edition.lang):edition.lang===language);
+ };
+ const editionLabel=edition=>({fr:"FRANÇAIS",en:"ANGLAIS",de:"ALLEMAND",it:"ITALIEN",es:"ESPAGNOL",ru:"RUSSE"})[edition.lang] || String(edition.language||edition.lang).toLocaleUpperCase("fr");
+ const textKey=str=>fold(str);
+ const render=()=>{
+   const term=textKey(search.value);
+   const items=available.filter(b=>readable(b)&&(category.value==="all"||b.genre===category.value)&&textKey(b.title+" "+b.author+" "+(b.originalTitle||"")+" "+b.genre).includes(term));
+   if(sort.value==="title")items.sort((a,b)=>a.title.localeCompare(b.title,"fr"));
+   else if(sort.value==="author")items.sort((a,b)=>a.author.localeCompare(b.author,"fr"));
+   count.textContent=items.length+" LIVRE"+(items.length>1?"S":"")+" DISPONIBLE"+(items.length>1?"S":"");
+   grid.innerHTML=items.map(b=>{
+     const local=choices(b).filter(({edition})=>language==="all" || (language==="other"?!["fr","en"].includes(edition.lang):edition.lang===language));
+     const primary=local[0];
+     const href="lire.html?id="+encodeURIComponent(b.id)+"&lang="+encodeURIComponent(primary.slot);
+     const links=local.map(({slot,edition})=>'<a href="lire.html?id='+encodeURIComponent(b.id)+'&lang='+encodeURIComponent(slot)+'" class="reading-edition-link" aria-label="Lire '+escapeHtml(b.title)+' en '+escapeHtml(edition.language||edition.lang)+'">LIRE EN '+escapeHtml(editionLabel(edition))+' ↗</a>').join("");
+     return '<article class="book-card reading-library-card"><div class="book-cover-wrap"><a class="book-cover-link" href="'+href+'" aria-label="Lire '+escapeHtml(b.title)+' dans la liseuse">'+cover(b)+'</a><span class="book-badge">TEXTE INTÉGRAL</span>'+heartButton(b)+'</div><div class="book-information"><span class="book-index">'+escapeHtml(b.genre.toUpperCase())+(Number.isFinite(b.year)?" · "+b.year:"")+'</span><h3><a href="'+href+'">'+escapeHtml(b.title)+'</a></h3><p class="book-author">'+escapeHtml(b.author)+'</p><div class="reading-edition-links">'+links+'</div><a class="reading-book-detail" href="'+bookUrl(b)+'">FICHE DU LIVRE ↗</a></div></article>';
+   }).join("");
+   empty.hidden=items.length!==0;
+   updateButtons();
+ };
+ const filterButtons=document.querySelectorAll("[data-reading-lang]");
+ filterButtons.forEach(button=>button.addEventListener("click",()=>{
+   language=button.dataset.readingLang;
+   filterButtons.forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
+   render();
+ }));
+ search.addEventListener("input",render);
+ category.addEventListener("change",render);
+ sort.addEventListener("change",render);
+ $("#reading-clear").addEventListener("click",()=>{
+   search.value="";category.value="all";sort.value="selection";
+   document.querySelector('[data-reading-lang="all"]').click();
+   search.focus();
+ });
+ render();
+}
 function setupCatalogue(){
  const search=$("#book-search"),sort=$("#book-sort"),filters=$("#genre-filters"),grid=$("#catalogue-grid");
  let access="Tous",category="Toutes les catégories",pageNo=1;
@@ -180,6 +274,7 @@ function setupBook(){
 const menu=$("#primary-nav");
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&menu?.classList.contains("is-open")){menu.classList.remove("is-open");$(".menu-toggle").setAttribute("aria-expanded","false");$(".menu-toggle").focus();}});
 if(page==="catalogue")setupCatalogue();
+if(page==="reading")setupReadingLibrary();
 if(page==="favoris")renderFavorites();
 if(page==="livre")setupBook();
 updateCount();
