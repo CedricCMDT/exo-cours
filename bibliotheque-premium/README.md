@@ -1,4 +1,4 @@
-# LA MARGE — Acte IV · La bibliothèque sans frontières
+# LA MARGE — Acte V · Lecture et traduction
 
 LA MARGE rassemble **48 classiques** (32 ajoutés dans cet acte), **48 couvertures SVG locales**, une liseuse avec **10 œuvres intégrales** dans au moins une langue, et le Salon littéraire fictif.
 
@@ -61,3 +61,44 @@ La mention « domaine public » vise les œuvres historiques et les éditions an
 **Remarque :** les feuillets sont des portions numériques, pas les pages imprimées ; la typographie peut différer des éditions originales. Le roman ou recueil complet est conservé dans le fichier source de chaque édition intégrée.
 
 L'exercice HTML sans CSS ni JavaScript est préservé dans `exercices-html/ma-bibliotheque/`.
+
+
+## Acte V — Traduction à la demande
+
+**Les éditions qui n'existent pas encore en traduction littéraire identifiée ne sont pas remplacées par une fausse édition.** Nous proposons une traduction automatique progressive lorsque le livre original complet est hébergé localement :
+
+1. Ouvrir une fiche, puis choisir « Original », « Français » ou « Anglais ».
+2. Si la traduction choisie manque mais qu'un fichier source existe, cliquer sur **« Traduire et lire ici »**.
+3. La liseuse explique le procédé et demande de cliquer sur **« Activer la traduction »**.
+4. Le moteur traduit **feuillet par feuillet** et non le roman entier à l'avance.
+
+### Moteurs utilisés
+
+- **API native du navigateur** (`Translator`) quand elle est disponible sur un navigateur compatible, en contexte sécurisé (`localhost` ou HTTPS). Le modèle de langue peut être téléchargé lors de la première utilisation. La compatibilité n'est pas universelle.
+- Si elle n'est pas accessible, un bouton de secours permet d'essayer **Transformers.js** avec des modèles ONNX open source *Opus-MT* pour `en→fr`, `fr→en`, `de→fr` et `de→en`. Les modèles peuvent faire plusieurs centaines de mégaoctets ; ils ne sont téléchargés qu'après consentement explicite. La disponibilité dépend de la mémoire du navigateur, du réseau et des fichiers hébergés par Hugging Face.
+- L'ancienne fonction « édition publiée sur Gutenberg » reste disponible lorsqu'une traduction littéraire existante a été vérifiée.
+
+**Limites :** il s'agit de traduction automatique à la demande, non relue, avec de possibles erreurs de style ou de sens. Elle n'est **pas** enregistrée comme une traduction intégrale publiée dans GitHub. La recherche dans la langue traduite couvre uniquement les feuillets déjà générés pendant la session.
+
+### Textes originaux ajoutés pour préparer la traduction
+
+Sept nouvelles transcriptions intégrales libres dans `lectures/`, conservant leurs notices Project Gutenberg :
+
+| Ouvrage | Langue originale | Source |
+|---|---|---|
+| *La Métamorphose* de Franz Kafka | Allemand | Gutenberg #22367 |
+| *L'Île au trésor* de R. L. Stevenson | Anglais | Gutenberg #120 |
+| *Une étude en rouge* d'Arthur Conan Doyle | Anglais | Gutenberg #244 |
+| *Les Aventures de Sherlock Holmes* d'Arthur Conan Doyle | Anglais | Gutenberg #1661 |
+| *Eugénie Grandet* d'Honoré de Balzac | Français | Gutenberg #11049 |
+| *Poil de Carotte* de Jules Renard | Français | Gutenberg #4559 |
+| *Les Fleurs du mal* de Charles Baudelaire | Français | Gutenberg #6099 |
+
+En tout : **17 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 31 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
+
+Documentations des moteurs :
+- https://developer.mozilla.org/en-US/docs/Web/API/Translator
+- https://huggingface.co/docs/transformers.js
+- https://huggingface.co/Xenova/opus-mt-en-fr
+
+Cette fonction est expérimentale : à tester sur Chrome ou Opera avec **Live Server**, notamment le premier téléchargement d'un modèle.
