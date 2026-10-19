@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moby-Dick — Ma bibliothèque</title>
+</head>
+<body>
+  <header>
+    <nav aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+      </ul>
+    </nav>
+    <hr>
+  </header>
+  <main>
+    <article>
+      <h1>Moby-Dick</h1>
+      <img src="moby-dick.png" alt="Couverture du roman Moby-Dick de Herman Melville" width="200">
+      <section>
+        <h2>Informations sur le livre</h2>
+        <dl>
+          <dt>Auteur</dt>
+          <dd>Herman Melville</dd>
+          <dt>Première publication</dt>
+          <dd><time datetime="1851">1851</time></dd>
+          <dt>Langue originale</dt>
+          <dd>Anglais</dd>
+          <dt>Genre</dt>
+          <dd>Roman d'aventures</dd>
+        </dl>
+      </section>
+      <section>
+        <h2>Résumé du roman</h2>
+        <details>
+          <summary>Lire le résumé de Moby-Dick</summary>
+          <p>Ismaël monte à bord du Pequod, un navire baleinier dirigé par le capitaine Achab.</p>
+          <p>Obsédé par la baleine blanche qui l'a mutilé, Achab entraîne son équipage dans une poursuite périlleuse à travers les océans.</p>
+        </details>
+      </section>
+      <section>
+        <h2>Commander le livre</h2>
+        <button type="button" command="show-modal" commandfor="command-dialog">Commander le livre</button>
+        <dialog id="command-dialog" aria-labelledby="command-title">
+          <h2 id="command-title">Confirmation de commande</h2>
+          <p>Il s'agit d'une simulation : aucune commande n'a été enregistrée.</p>
+          <form method="dialog">
+            <button type="submit">Fermer</button>
+          </form>
+        </dialog>
+      </section>
+      <p><a href="index.html">Retour au catalogue</a></p>
+    </article>
+  </main>
+  <footer>
+    <hr>
+    <p>&copy; 2026 — Ma bibliothèque.</p>
+  </footer>
+</body>
+</html>
