@@ -94,7 +94,7 @@ Sept nouvelles transcriptions intégrales libres dans `lectures/`, conservant le
 | *Poil de Carotte* de Jules Renard | Français | Gutenberg #4559 |
 | *Les Fleurs du mal* de Charles Baudelaire | Français | Gutenberg #6099 |
 
-En tout : **17 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 31 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
+En tout : **25 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 23 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
 
 Documentations des moteurs :
 - https://developer.mozilla.org/en-US/docs/Web/API/Translator
@@ -102,3 +102,21 @@ Documentations des moteurs :
 - https://huggingface.co/Xenova/opus-mt-en-fr
 
 Cette fonction est expérimentale : à tester sur Chrome ou Opera avec **Live Server**, notamment le premier téléchargement d'un modèle.
+
+
+### Huit autres romans intégraux ajoutés
+
+| Ouvrage | Texte source | Gutenberg |
+|---|---|---|
+| *Une vie* — Guy de Maupassant | `lectures/une-vie-fr.txt` | #17457 |
+| *Le Fantôme de l'Opéra* — Gaston Leroux | `lectures/fantome-opera-fr.txt` | #62215 |
+| *Le Mystère de la chambre jaune* — Gaston Leroux | `lectures/chambre-jaune-fr.txt` | #13765 |
+| *Les Hauts de Hurlevent* — Emily Brontë | `lectures/hauts-hurlevent-en.txt` | #768 |
+| *L'Appel de la forêt* — Jack London | `lectures/appel-foret-en.txt` | #215 |
+| *Le Jardin secret* — Frances Hodgson Burnett | `lectures/jardin-secret-en.txt` | #17396 |
+| *Madame Bovary* — Gustave Flaubert | `lectures/madame-bovary-fr.txt` | #14155 |
+| *Dracula* — Bram Stoker | `lectures/dracula-en.txt` | #345 |
+
+Au total, le dépôt héberge **25 fichiers de livres sources supplémentaires, en plus des différentes éditions linguistiques** : 25 œuvres distinctes sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
+
+**Compatibilité :** sur Opera, l'API `Translator` native peut être absente. Un modèle de repli compatible Transformers.js / Opus-MT peut être proposé pour les paires `en↔fr`, `de→fr`, `de→en`, à condition d'accepter le téléchargement d'un modèle volumineux. Il n'existe pas actuellement de garantie de traduction universelle sur tous les navigateurs.
