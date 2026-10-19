@@ -71,3 +71,10 @@ Les favoris, annotations, évaluations et états de lecture sont conservés **da
 Aucune simulation de commande ou de réservation n'est présente dans l'interface. **Le TP original en HTML pur** reste dans `exercices-html/ma-bibliotheque/`.
 
 La navigation du site peut être testée avec Live Server ; les scripts ont fait l'objet de contrôles de syntaxe et les ressources GitHub ont été vérifiées, mais un audit visuel/navigateur complet reste utile.
+
+## Mise à jour du Salon et de la liseuse — octobre 2026
+
+- Le Salon comprend désormais **95 discussions fictionnelles** (les 12 initiales plus 83 nouvelles), **21 profils supplémentaires** et des pseudonymes de style internet ; plus de **700 messages/réponses** fictionnels au total.
+- `assets/salon-extra.js` ajoute l'univers fictif et `assets/salon.js` affiche les discussions par groupes de 18 pour conserver la fluidité.
+- Les trois choix de langue de la liseuse vont directement à l'édition disponible, à son alias local ou au mode de traduction lorsque la source locale est présente et que la langue est prise en charge.
+- Les traductions IA restent expérimentales et ne sont pas une édition officielle : la compatibilité dépend du navigateur, des modèles disponibles et du couple de langues.
