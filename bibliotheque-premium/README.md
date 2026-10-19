@@ -1,49 +1,75 @@
-# LA MARGE — Acte II
+# LA MARGE — Acte III · La bibliothèque ouverte
 
-Une expérience littéraire interactive : direction artistique éditoriale, six couvertures SVG originales, catalogue, sélection personnelle et **Le Salon**, une communauté **entièrement fictive**.
+Une expérience littéraire gratuite, pensée comme un site de maison d'édition : **16 classiques**, **6 pages de navigation + une liseuse**, **16 couvertures SVG originales**, un Salon entièrement fictif, et **5 livres complets** à lire sur place.
 
-## Démarrage
+## Démarrer
 
-Ouvrir `index.html` ou utiliser l'extension **Live Server** de VS Code. Le site ne nécessite pas de compilation, de framework ou de compte.
+Dans VS Code, lancer **Live Server** (extension recommandée) sur `index.html`.
+
+> **Important :** la liseuse charge les fichiers texte via `fetch()`. Les navigateurs bloquent souvent les requêtes entre fichiers ouverts directement avec une URL `file://`. Utilisez Live Server ou un serveur HTTP local. Aucune compilation n'est nécessaire.
 
 ## Pages
 
-| Page | Contenu |
-| --- | --- |
-| `index.html` | Accueil cinématographique, sélection, aperçu du Salon et bibliomancie |
-| `catalogue.html` | Recherche, genres, tri et six livres |
-| `livre.html?id=moby-dick` | Fiche détaillée, favoris et réservation **simulée** |
-| `favoris.html` | Votre sélection sur cet appareil |
-| `salon.html` | 12 profils fictifs, 12 fils de discussion, 107 messages, filtre, recherche, réactions, notes |
-| `a-propos.html` | Le manifeste littéraire |
+- `index.html` — accueil, sélections, aperçu du Salon, bibliomancie, vitrine des textes intégraux.
+- `catalogue.html` — recherche et filtrage parmi 16 œuvres, dont 5 lisibles intégralement.
+- `livre.html?id=candide` — fiches, informations, lien vers liseuse ou édition Project Gutenberg.
+- `lire.html?id=candide` — **liseuse** : feuillets reconstitués, recherche dans le texte, taille réglable, thèmes papier/clair/nuit, navigation au clavier et marque-page conservé.
+- `salon.html` — 12 personnages **fictifs**, 12 discussions scénarisées, 107 messages. Notes et réactions privées (stockage navigateur).
+- `favoris.html` — favoris enregistrés localement.
+- `a-propos.html` — manifeste littéraire.
 
-## Fonctionnalités de l'Acte II
+## Livres en texte intégral dans le dépôt
 
-- Micro-interactions, animations au défilement, transitions de pages, ambiance lumineuse et progression de lecture.
-- **Bibliomancie** : sélection aléatoire d'un prochain livre avec résultat animé.
-- Le Salon : conversations fictives écrites pour la démo, **pas de vraies publications de lecteurs**.
-- Possibilité de liker, de laisser une note personnelle dans un fil et de créer une discussion locale. Vos textes ne sont pas envoyés à un serveur. Les personnages **ne répondent pas** à vos messages.
-- Sauvegarde des favoris et notes en `localStorage`. Aucune synchronisation multi-appareils.
-- Support du clavier et de `prefers-reduced-motion`.
-- CSS, JavaScript natif, SVG locaux. Google Fonts est optionnel : polices de secours prévues.
+Les fichiers de `lectures/` reproduisent les **transcriptions Project Gutenberg avec leur texte et leur licence**. Le composant `reader.js` n'affiche pas les notices Gutenberg au milieu du roman : il les conserve cependant dans chaque fichier téléchargé.
 
-## Structure
+| Livre | Fichier local complet | Source et édition |
+|---|---|---|
+| *Candide* — Voltaire | `lectures/candide.txt` | Project Gutenberg #59859 — https://www.gutenberg.org/ebooks/59859 |
+| *Le Tour du monde en quatre-vingts jours* — Jules Verne | `lectures/tour-du-monde.txt` | Project Gutenberg #46541 — https://www.gutenberg.org/ebooks/46541 |
+| *Le Horla et autres nouvelles* — Guy de Maupassant | `lectures/le-horla.txt` | Project Gutenberg #10775 — https://www.gutenberg.org/ebooks/10775 |
+| *Arsène Lupin, gentleman-cambrioleur* — Maurice Leblanc | `lectures/arsene-lupin.txt` | Project Gutenberg #32854 — https://www.gutenberg.org/ebooks/32854 |
+| *Voyage au centre de la Terre* — Jules Verne | `lectures/voyage-centre-terre.txt` | Project Gutenberg #4791 — https://www.gutenberg.org/ebooks/4791 |
+
+Les fichiers ont été importés depuis les dépôts **GITenberg**, miroirs publics de transcriptions Gutenberg. La licence Project Gutenberg et les crédits sont conservés dans les fichiers intégraux. Le droit d'auteur dépend des pays ; ces textes originaux français d'auteurs morts avant 1956 appartiennent au domaine public en France en 2026, sous réserve des particularités des éditions et contributions annexes. Pour d'autres juridictions, vérifier les conditions locales.
+
+Les **11 autres livres** sont des fiches et ne sont **pas** disponibles intégralement dans la liseuse locale ; certaines fiches donnent un lien externe vers Project Gutenberg. Pas de faux « lire » qui afficherait uniquement un extrait.
+
+## Navigation dans la liseuse
+
+- Flèches gauche/droite pour changer de feuillet hors des champs de saisie.
+- Boutons A− / A+ pour régler la police.
+- Icônes papier / clair / nuit pour changer d'ambiance.
+- Recherche d'un passage à travers le texte intégral, saut au feuillet trouvé.
+- Reprise de la lecture depuis le dernier feuillet sur cet appareil.
+
+**Note :** un feuillet n'est pas une page imprimée : c'est une portion de texte d'environ 4 300 caractères découpée à des frontières de paragraphes. Toutes les parties du texte situées entre les balises Project Gutenberg `START` et `END` sont conservées dans l'ordre.
+
+## Architecture
 
 ```text
 bibliotheque-premium/
-├── index.html
-├── catalogue.html
-├── livre.html
-├── favoris.html
-├── salon.html
-├── a-propos.html
-├── assets/
-│   ├── app.js / books.js
-│   ├── salon.js / salon-data.js / salon.css
-│   ├── experience.js / experience.css
-│   ├── style.css
-│   └── covers/ (6 SVG)
-└── README.md
+  index.html
+  catalogue.html
+  livre.html
+  lire.html
+  salon.html
+  favoris.html
+  a-propos.html
+  assets/
+    app.js books.js style.css
+    reader.js reader.css
+    salon.js salon-data.js salon.css
+    experience.js experience.css
+    covers/ (16 couvertures SVG)
+  lectures/
+    candide.txt
+    tour-du-monde.txt
+    le-horla.txt
+    arsene-lupin.txt
+    voyage-centre-terre.txt
+  README.md
 ```
 
-**Important :** Ce projet enrichi est distinct du devoir HTML sans CSS/JS qui reste dans `exercices-html/ma-bibliotheque/`. Pour des conversations multijoueurs réelles ou des réponses par IA, il faudrait développer un backend, des comptes, une modération et une API sécurisée.
+**Aucun compte, aucun paiement, aucun serveur applicatif.** Les favoris et le marque-page utilisent `localStorage` et ne se synchronisent pas entre navigateurs. Le bouton de réservation reste une simulation. Le Salon ne génère aucune réponse IA.
+
+L'exercice de cours original en HTML pur est préservé séparément dans `exercices-html/ma-bibliotheque/`.
