@@ -45,7 +45,7 @@ function render(slot){
    buttons='<a class="btn btn-primary" href="lire.html?id='+encodeURIComponent(book.id)+'&lang='+slot+'">LIRE CETTE ÉDITION ↗</a>';
  }else{
    status=external?"Édition publiée sur Project Gutenberg":"Aucune traduction publiée vérifiée";
-   explanation=external?"Une édition libre a été identifiée. Nous vous proposons aussi, lorsque c’est possible, une traduction automatique directement sur LA MARGE.":"Nous n’avons pas d’édition complète vérifiée dans cette langue. Nous pouvons tenter une traduction automatique du texte source lorsqu’il est hébergé localement.";
+   explanation=external?"Une édition libre est répertoriée par Project Gutenberg. Téléchargez un fichier .txt depuis sa page pour le lire dans LA MARGE avec la liseuse et votre marque-page. Une traduction automatique expérimentale est également possible dans certains cas.":"Nous n’avons pas d’édition complète vérifiée dans cette langue. Nous pouvons tenter une traduction automatique du texte source lorsqu’il est hébergé localement.";
    buttons="";
    if(source){
      const link="lire.html?id="+encodeURIComponent(book.id)+"&lang="+slot+"&translate=1";
@@ -53,7 +53,7 @@ function render(slot){
      explanation+=" Traduction IA expérimentale, effectuée feuillet par feuillet, nécessitant un navigateur compatible et un modèle de langue local.";
    }
    if(external){
-     buttons+='<a class="btn btn-outline" href="https://www.gutenberg.org/ebooks/'+encodeURIComponent(e.gutenberg)+'" target="_blank" rel="noopener noreferrer">ÉDITION GUTENBERG ↗</a>';
+     buttons+='<a class="btn btn-primary" href="lire.html?id='+encodeURIComponent(book.id)+'&lang='+slot+'">OUVRIR DANS LA LISEUSE (.TXT) ↗</a><a class="btn btn-outline" href="https://www.gutenberg.org/ebooks/'+encodeURIComponent(e.gutenberg)+'" target="_blank" rel="noopener noreferrer">RÉCUPÉRER L’ÉDITION LIBRE ↗</a>';
    }else{
      const q=encodeURIComponent((book.originalTitle||book.title)+" "+book.author+" "+e.language);
      buttons+='<a class="edition-search-link" href="https://www.gutenberg.org/ebooks/search/?query='+q+'" target="_blank" rel="noopener noreferrer">RECHERCHER UNE ÉDITION ↗</a>';
