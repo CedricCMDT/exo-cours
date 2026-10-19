@@ -117,6 +117,6 @@ Cette fonction est expérimentale : à tester sur Chrome ou Opera avec **Live Se
 | *Madame Bovary* — Gustave Flaubert | `lectures/madame-bovary-fr.txt` | #14155 |
 | *Dracula* — Bram Stoker | `lectures/dracula-en.txt` | #345 |
 
-Au total, le dépôt héberge **25 fichiers de livres sources supplémentaires, en plus des différentes éditions linguistiques** : 25 œuvres distinctes sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
+Au total, le dépôt héberge **28 fichiers d'éditions complètes, couvrant 25 œuvres distinctes** : ces 25 œuvres sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
 
 **Compatibilité :** sur Opera, l'API `Translator` native peut être absente. Un modèle de repli compatible Transformers.js / Opus-MT peut être proposé pour les paires `en↔fr`, `de→fr`, `de→en`, à condition d'accepter le téléchargement d'un modèle volumineux. Il n'existe pas actuellement de garantie de traduction universelle sur tous les navigateurs.
