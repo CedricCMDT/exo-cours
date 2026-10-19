@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogue — Ma bibliothèque</title>
+</head>
+<body>
+  <header>
+    <nav aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html" aria-current="page">Accueil</a></li>
+      </ul>
+    </nav>
+    <hr>
+  </header>
+  <main>
+    <h1>Bienvenue dans ma bibliothèque</h1>
+    <p>Découvrez trois grands classiques de la littérature, pour voyager au fil des pages.</p>
+    <p><strong>La lecture est ouverte à tous.</strong> Prenez le temps d'<em>explorer de nouveaux horizons</em>.</p>
+    <section aria-labelledby="catalogue-title">
+      <h2 id="catalogue-title">Catalogue des livres</h2>
+      <form action="index.html" method="get">
+        <label for="recherche">Rechercher un livre :</label>
+        <input type="search" id="recherche" name="recherche" placeholder="Ex. : Moby-Dick">
+        <button type="submit">Rechercher</button>
+      </form>
+      <ul>
+        <li><a href="book.html">Moby-Dick</a> — Herman Melville</li>
+        <li><a href="book.html">Les Misérables</a> — Victor Hugo</li>
+        <li><a href="book.html">Le Petit Prince</a> — Antoine de Saint-Exupéry</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <hr>
+    <p>&copy; 2026 — Ma bibliothèque.</p>
+  </footer>
+</body>
+</html>
