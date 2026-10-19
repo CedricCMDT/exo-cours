@@ -53,3 +53,14 @@ body[data-theme=dark] .reader-article-header p:not(.reader-overline){color:#b1aa
 .reader-language-link:hover,.reader-language-link.selected{background:rgba(228,189,119,.12);border-color:var(--gold);color:var(--gold)}
 @media(max-width:700px){.reader-language-box{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.reader-language-title{grid-column:1/-1}.reader-language-link{font-size:8px;text-align:center;padding:9px 5px}}
 @media(max-width:420px){.reader-language-box{grid-template-columns:1fr}}
+
+/* Atelier de traduction — indication honnête et activation consciente */
+.machine-disclaimer{background:rgba(226,178,101,.08);border:1px solid rgba(228,189,119,.33);color:#dbd0b8;padding:20px 24px;margin:0 0 20px}
+.machine-disclaimer strong{font:800 10px var(--display);color:var(--gold);letter-spacing:.14em}
+.machine-disclaimer p{font-size:12px;line-height:1.8;color:#b5b6a7;margin:9px 0 0}
+.translation-status{border:1px solid rgba(102,77,40,.25);padding:40px 30px;text-align:center;background:rgba(197,162,108,.09);margin:10px auto 45px;max-width:700px}
+.translation-status h2{font:500 clamp(24px,3vw,33px)/1.3 var(--serif);letter-spacing:-.03em;color:inherit;margin-bottom:15px}
+.translation-status p{font:400 14px/1.9 Georgia,serif;max-width:500px;margin:0 auto 23px;color:inherit;opacity:.8}
+.reader-translate-button{background:#a97942;color:#fff6e5;border:0;padding:17px 21px;font:800 10px var(--display);letter-spacing:.1em;transition:transform .2s}
+.reader-translate-button:hover{transform:translateY(-3px);background:#865e34}
+@media(max-width:600px){.translation-status{padding:26px 15px}.machine-disclaimer{padding:14px 18px}}

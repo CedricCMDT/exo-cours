@@ -69,3 +69,9 @@ body[data-page="home"] .hero-copy{animation:enter-up .85s both cubic-bezier(.16,
 .edition-result h3{font:500 23px var(--serif);margin:12px 0 6px}.edition-result p{color:var(--muted);font-size:12px;line-height:1.8;margin:0}
 .edition-result .btn{justify-self:start;min-height:46px;font-size:9px}.edition-result .edition-extra{margin-top:10px;font-style:italic}
 @media(max-width:580px){.edition-tabs{gap:4px}.edition-tab{flex-direction:column;padding:9px 5px;text-align:center}.edition-tab strong{font-size:8px}.edition-tab small{font-size:9px}.edition-result{padding:15px}}
+
+/* Options de traduction dans les fiches */
+.edition-choices{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.edition-choices .btn{min-height:47px;padding:12px 17px}
+.edition-search-link{font:800 9px/1.5 var(--display);letter-spacing:.09em;color:var(--gold);text-decoration:underline;text-underline-offset:6px}
+.edition-search-link:hover{color:#f4d9a0}
