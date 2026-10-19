@@ -25,21 +25,23 @@ L'année de première publication est inconnue pour les 431 notices supplémenta
 
 - **Catalogue paginé :** 24 ouvrages affichés à la fois, recherche en direct, tris et catégories ; filtres « À lire ici », « Éditions libres », « Sous droits » et « Documents ».
 - **Couvertures :** 48 couvertures SVG individuelles conservées pour la première sélection et nouvelles couvertures typographiques originales générées par CSS pour les autres références.
-- **Favoris :** cœur sur les vignettes et sur chaque fiche ; retrouve-les dans `favoris.html`.
-- **Journal personnel :** statut « À lire », « En cours » ou « Terminé » depuis chaque fiche ; tableau de suivi dans `favoris.html`.
+- **Favoris :** cœur sur les vignettes et sur chaque fiche ; retrouve-les dans `favoris.html`, avec un filtre dédié « Mes favoris » dans le catalogue.
+- **Journal personnel :** statut « À lire », « En cours » ou « Terminé » depuis chaque fiche ; tableau de suivi dans `favoris.html` et filtre « Mon journal » dans le catalogue.
+- **Carnet de lecture :** évaluation de 1 à 5 étoiles et annotations privées pour chaque titre, retrouvées dans `favoris.html`.
+- **Sauvegarde :** export JSON et import volontaire de ses favoris, statuts, notes et évaluations depuis `favoris.html`. L’import remplace les données locales après confirmation.
 - **Liseuse locale :** **44 œuvres distinctes**, disponibles dans **47 éditions linguistiques intégrales** enregistrées dans `lectures/`. Feuillets, thèmes, typographie et reprise automatique.
 - **Langues :** original / français / anglais sur les fiches. Une édition publiée et vérifiée est privilégiée. La traduction automatique à la demande, lorsqu'elle est proposée, est expérimentale et non relue ; elle nécessite un navigateur/modèle compatible.
 - **Salon :** 12 personnages fictifs et 107 messages préécrits, réactions et notes privées sur le navigateur.
 - **Partage :** lien direct vers chaque fiche.
 
-Les favoris, notes et états de lecture sont conservés **dans le navigateur** avec `localStorage`. Il n'y a pas de compte ni de synchronisation entre appareils.
+Les favoris, annotations, évaluations et états de lecture sont conservés **dans le navigateur** avec `localStorage`. Il n'y a pas de compte ni de synchronisation entre appareils. L’export/import JSON permet de transférer volontairement son carnet.
 
 ### Lecture des œuvres libres
 
 | Cas | Action |
 | --- | --- |
 | Édition complète intégrée | **Lire dans LA MARGE**, avec les outils de la liseuse |
-| Autre édition libre référencée | Ouvrir sa fiche vérifiable chez **Project Gutenberg**, sans prétendre que le texte est hébergé localement |
+| Autre édition libre référencée | Ouvrir la fiche chez **Project Gutenberg**, télécharger un fichier `.txt`, puis l’importer dans la **liseuse LA MARGE** pour lire avec pagination, recherche et marque-page. Le téléchargement n’est pas automatisé et le fichier n’est pas réhébergé. |
 | Traduction absente, source locale disponible | Possibilité d'essayer une **traduction automatique feuillet par feuillet**, avec mention de ses limites |
 | Œuvre encore protégée | **Fiche documentaire et favoris uniquement**, lien vers une recherche en bibliothèque |
 | DDHC 1789 | Accéder au **texte officiel** sur Légifrance |
@@ -64,7 +66,7 @@ Les favoris, notes et états de lecture sont conservés **dans le navigateur** a
 
 ## Structure et intégrité
 
-`assets/books.js` contient les 500 métadonnées. `assets/app.js` génère les pages. `assets/library.js` gère le suivi de lecture. Les fichiers `lectures/*.txt` conservent les notices et crédits des transcriptions Project Gutenberg.
+`assets/books.js` contient les 500 métadonnées. `assets/app.js` génère les pages. `assets/library.js` gère le suivi de lecture. `assets/personal.js` et `assets/personal.css` ajoutent les notes, évaluations et sauvegardes. `assets/reader.js` prend aussi en charge l’ouverture manuelle des fichiers texte libres. Les fichiers `lectures/*.txt` conservent les notices et crédits des transcriptions Project Gutenberg.
 
 Aucune simulation de commande ou de réservation n'est présente dans l'interface. **Le TP original en HTML pur** reste dans `exercices-html/ma-bibliotheque/`.
 
