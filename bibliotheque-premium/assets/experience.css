@@ -75,3 +75,35 @@ body[data-page="home"] .hero-copy{animation:enter-up .85s both cubic-bezier(.16,
 .edition-choices .btn{min-height:47px;padding:12px 17px}
 .edition-search-link{font:800 9px/1.5 var(--display);letter-spacing:.09em;color:var(--gold);text-decoration:underline;text-underline-offset:6px}
 .edition-search-link:hover{color:#f4d9a0}
+
+
+/* LA MARGE — 500 œuvres, couvertures typographiques et navigation de grande collection */
+.generated-cover{height:100%;width:100%;min-height:300px;position:relative;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;gap:11px;overflow:hidden;padding:23px 20px 20px;background:linear-gradient(145deg,#324e4a,#142e3b);color:#f5e8d3;box-shadow:12px 5px 20px rgba(0,0,0,.21)}
+.generated-cover:before{content:"";position:absolute;inset:11px;border:1px solid rgba(255,240,211,.39);pointer-events:none;z-index:1}
+.generated-cover:after{content:"";position:absolute;inset:-25%;background:radial-gradient(circle at 48% 46%,rgba(249,228,182,.3),transparent 28%),repeating-linear-gradient(30deg,transparent,transparent 32px,rgba(255,255,255,.025) 32px,rgba(255,255,255,.025) 33px);pointer-events:none}
+.generated-cover-0{background:linear-gradient(150deg,#264d52,#13313d)}.generated-cover-1{background:linear-gradient(145deg,#66463d,#382c32)}.generated-cover-2{background:linear-gradient(145deg,#334d37,#192e31)}.generated-cover-3{background:linear-gradient(145deg,#5c3748,#292336)}.generated-cover-4{background:linear-gradient(145deg,#64523a,#372c2d)}.generated-cover-5{background:linear-gradient(145deg,#3b405b,#25263b)}.generated-cover-6{background:linear-gradient(145deg,#805b55,#403638)}.generated-cover-7{background:linear-gradient(145deg,#52605c,#293c40)}.generated-cover-8{background:linear-gradient(145deg,#4a3f5b,#2e2b42)}.generated-cover-9{background:linear-gradient(145deg,#776447,#332d31)}.generated-cover-10{background:linear-gradient(145deg,#46615a,#1d3732)}.generated-cover-11{background:linear-gradient(145deg,#665b65,#322f39)}
+.generated-cover-edition,.generated-cover-serial{font:800 8px/1.3 var(--display);letter-spacing:.15em;position:relative;z-index:1;text-align:center;opacity:.87}
+.generated-cover-ornament{font:75px/.9 var(--serif);color:rgba(253,235,187,.63);position:absolute;top:27%;left:50%;transform:translate(-50%,-50%);z-index:0}
+.generated-cover-title{font:600 clamp(16px,1.8vw,25px)/1.18 var(--serif);letter-spacing:-.026em;position:relative;z-index:2;text-shadow:0 1px 5px rgba(0,0,0,.2);text-align:center;overflow-wrap:break-word;margin:auto 0 0}
+.generated-cover-author{font:700 10px/1.3 var(--sans);text-align:center;position:relative;z-index:2;opacity:.95;overflow-wrap:break-word}
+.generated-cover-serial{border-top:1px solid rgba(255,255,255,.3);padding-top:10px;margin-top:3px}
+.book-cover-wrap .book-cover-link:has(.generated-cover){height:100%;width:100%;display:block}
+.book-cover-wrap:has(.generated-cover){padding:15px 21px 0;background:radial-gradient(circle at 47% 33%,#3b443c,#1c211f)}
+.detail-cover:has(.generated-cover){width:305px;max-width:100%;height:440px;transform:rotate(-5deg)}
+.detail-cover .generated-cover{min-height:100%;padding:32px 28px 24px}
+.detail-cover .generated-cover-ornament{font-size:125px}.detail-cover .generated-cover-title{font-size:clamp(29px,3vw,42px)}.detail-cover .generated-cover-author{font-size:14px}
+.book-badge.badge-protected{background:rgba(68,39,36,.92);color:#ffdcc5}
+.library-fast-filters{display:flex;flex-wrap:wrap;gap:9px}
+#genre-filters{display:flex;flex:1;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap}
+.library-category{display:flex;align-items:center;gap:13px;font:800 9px var(--display);color:var(--gold);letter-spacing:.13em;white-space:nowrap}
+.library-category select{max-width:240px;background:#1b1e18;color:var(--ink);border:1px solid var(--line);min-height:42px;padding:9px 12px;font:600 12px var(--sans);cursor:pointer}
+.library-category select:focus-visible{border-color:var(--gold)}
+.catalogue-pages{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:60px 0 0;padding:20px;border-top:1px solid var(--line)}
+.catalogue-pages button{display:grid;place-items:center;min-width:43px;height:43px;background:transparent;border:1px solid rgba(228,189,119,.25);color:#d0ccbe;font:800 12px var(--display);transition:background .2s,color .2s}
+.catalogue-pages button[aria-current=page],.catalogue-pages button:hover:not(:disabled){background:var(--gold);color:#29271e;border-color:var(--gold)}
+.catalogue-pages button:disabled{opacity:.25;cursor:not-allowed}
+.catalogue-section{scroll-margin-top:25px}
+.edition-protected{background:rgba(222,164,129,.085);border:1px solid rgba(228,189,119,.23);padding:20px;margin-bottom:13px;color:#dfd5c7}
+.edition-protected strong{font:800 10px var(--display);color:#eab58b;letter-spacing:.1em}.edition-protected p{font:400 12px/1.85 var(--sans);color:var(--muted);margin:10px 0 0}
+@media(max-width:760px){.generated-cover{padding:17px 13px 15px}.generated-cover-title{font-size:clamp(17px,3vw,23px)}.generated-cover-ornament{font-size:55px}.generated-cover-author{font-size:9px}.library-category{flex:1;justify-content:space-between}.book-cover-wrap:has(.generated-cover){padding:10px 12px 0}.detail-cover:has(.generated-cover){width:235px;height:350px}.detail-cover .generated-cover-title{font-size:28px}}
+@media(max-width:450px){.generated-cover{padding:14px 8px 10px}.generated-cover-title{font-size:16px}.generated-cover-edition,.generated-cover-serial{font-size:6px}.generated-cover-author{font-size:8px}.generated-cover:before{inset:6px}.generated-cover-ornament{font-size:44px}.library-fast-filters{gap:6px}.filter-pill{padding:8px 11px;font-size:10px}.library-category{display:grid;justify-content:stretch}.library-category select{max-width:100%}.catalogue-pages button{min-width:34px;height:39px;font-size:10px}}
