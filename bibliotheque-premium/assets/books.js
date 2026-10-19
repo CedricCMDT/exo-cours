@@ -1,4 +1,4 @@
-/* LA MARGE : 48 classiques et toutes les éditions intégrales disponibles localement. */
+/* LA MARGE : 48 classiques et leurs textes publiés ou originaux identifiés. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -187,7 +187,7 @@ window.LA_MARGE_BOOKS = [
     "genre": "Fantastique",
     "origin": "Royaume-Uni",
     "language": "Anglais",
-    "badge": "CULTISSIME",
+    "badge": "LIRE EN LIGNE",
     "number": "05",
     "tagline": "Créer la vie n'apprend pas à en prendre soin.",
     "short": "Un créateur, une créature, et la solitude entre les deux.",
@@ -205,7 +205,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Frankenstein",
         "gutenberg": 84,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/frankenstein-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -220,9 +221,12 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Frankenstein",
         "gutenberg": 84,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/frankenstein-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/frankenstein-en.txt",
+    "gutenberg": 84
   },
   {
     "id": "orgueil-et-prejuges",
@@ -232,7 +236,7 @@ window.LA_MARGE_BOOKS = [
     "genre": "Romance",
     "origin": "Royaume-Uni",
     "language": "Anglais",
-    "badge": "DÉLICIEUX",
+    "badge": "LIRE EN LIGNE",
     "number": "06",
     "tagline": "Les premières impressions font parfois de bien mauvaises histoires.",
     "short": "Entre ironie, sentiments et conventions sociales.",
@@ -250,7 +254,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "Pride and Prejudice",
         "gutenberg": 1342,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/orgueil-et-prejuges-en.txt"
       },
       "fr": {
         "lang": "fr",
@@ -265,9 +270,12 @@ window.LA_MARGE_BOOKS = [
         "label": "Version anglaise",
         "title": "Pride and Prejudice",
         "gutenberg": 1342,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/orgueil-et-prejuges-en.txt"
       }
-    }
+    },
+    "fullText": "lectures/orgueil-et-prejuges-en.txt",
+    "gutenberg": 1342
   },
   {
     "id": "candide",
@@ -751,7 +759,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "Le Père Goriot",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "17",
     "tagline": "Une pension parisienne, des ambitions dévorantes et l'amour d'un père.",
     "short": "Une pension parisienne, des ambitions dévorantes et l'amour d'un père.",
@@ -780,7 +788,9 @@ window.LA_MARGE_BOOKS = [
         "language": "anglais",
         "label": "Version anglaise",
         "title": "Le Père Goriot",
-        "status": "search"
+        "status": "local",
+        "file": "lectures/pere-goriot-en.txt",
+        "gutenberg": 1237
       }
     }
   },
@@ -1266,7 +1276,7 @@ window.LA_MARGE_BOOKS = [
     "language": "français",
     "originalLanguage": "fr",
     "originalTitle": "La Princesse de Clèves",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "28",
     "tagline": "Le devoir et le désir ne parlent pas la même langue.",
     "short": "Le devoir et le désir ne parlent pas la même langue.",
@@ -1281,14 +1291,18 @@ window.LA_MARGE_BOOKS = [
         "language": "français",
         "label": "Version originale",
         "title": "La Princesse de Clèves",
-        "status": "search"
+        "status": "local",
+        "file": "lectures/princesse-cleves-fr.txt",
+        "gutenberg": 18797
       },
       "fr": {
         "lang": "fr",
         "language": "français",
         "label": "Version française",
         "title": "La Princesse de Clèves",
-        "status": "search"
+        "status": "local",
+        "file": "lectures/princesse-cleves-fr.txt",
+        "gutenberg": 18797
       },
       "en": {
         "lang": "en",
@@ -1297,7 +1311,9 @@ window.LA_MARGE_BOOKS = [
         "title": "La Princesse de Clèves",
         "status": "search"
       }
-    }
+    },
+    "fullText": "lectures/princesse-cleves-fr.txt",
+    "gutenberg": 18797
   },
   {
     "id": "jane-eyre",
@@ -2177,7 +2193,7 @@ window.LA_MARGE_BOOKS = [
     "language": "italien",
     "originalLanguage": "it",
     "originalTitle": "La Divina Commedia",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "47",
     "tagline": "De l'ombre vers les étoiles.",
     "short": "De l'ombre vers les étoiles.",
@@ -2194,7 +2210,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version originale",
         "title": "La Divina Commedia",
         "gutenberg": 1000,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/divine-comedie-it.txt"
       },
       "fr": {
         "lang": "fr",
@@ -2211,7 +2228,8 @@ window.LA_MARGE_BOOKS = [
         "gutenberg": 1004,
         "status": "external"
       }
-    }
+    },
+    "fullText": "lectures/divine-comedie-it.txt"
   },
   {
     "id": "odyssee",
@@ -2223,7 +2241,7 @@ window.LA_MARGE_BOOKS = [
     "language": "grec ancien",
     "originalLanguage": "grc",
     "originalTitle": "Ὀδύσσεια",
-    "badge": "À DÉCOUVRIR",
+    "badge": "LIRE EN LIGNE",
     "number": "48",
     "tagline": "Rentrer chez soi peut être la plus grande aventure.",
     "short": "Rentrer chez soi peut être la plus grande aventure.",
@@ -2246,7 +2264,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "L'Odyssée",
         "gutenberg": 14286,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/odyssee-fr.txt"
       },
       "en": {
         "lang": "en",
