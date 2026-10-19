@@ -1,61 +1,78 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!DOCTYPE html><html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moby-Dick — Ma bibliothèque</title>
+ <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="Présentation de Moby-Dick d'Herman Melville, informations, résumé et commande fictive.">
+ <title>Moby-Dick — Ma bibliothèque</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="book.css">
+ <script defer src="motion.js"></script>
 </head>
 <body>
-  <header>
-    <nav aria-label="Navigation principale">
-      <ul>
-        <li><a href="index.html">Accueil</a></li>
-      </ul>
-    </nav>
-    <hr>
-  </header>
-  <main>
-    <article>
-      <h1>Moby-Dick</h1>
-      <img src="moby-dick.png" alt="Couverture du roman Moby-Dick de Herman Melville" width="200">
-      <section>
-        <h2>Informations sur le livre</h2>
-        <dl>
-          <dt>Auteur</dt>
-          <dd>Herman Melville</dd>
-          <dt>Première publication</dt>
-          <dd><time datetime="1851">1851</time></dd>
-          <dt>Langue originale</dt>
-          <dd>Anglais</dd>
-          <dt>Genre</dt>
-          <dd>Roman d'aventures</dd>
-        </dl>
-      </section>
-      <section>
-        <h2>Résumé du roman</h2>
-        <details>
-          <summary>Lire le résumé de Moby-Dick</summary>
-          <p>Ismaël monte à bord du Pequod, un navire baleinier dirigé par le capitaine Achab.</p>
-          <p>Obsédé par la baleine blanche qui l'a mutilé, Achab entraîne son équipage dans une poursuite périlleuse à travers les océans.</p>
-        </details>
-      </section>
-      <section>
-        <h2>Commander le livre</h2>
-        <button type="button" command="show-modal" commandfor="command-dialog">Commander le livre</button>
-        <dialog id="command-dialog" aria-labelledby="command-title">
-          <h2 id="command-title">Confirmation de commande</h2>
-          <p>Il s'agit d'une simulation : aucune commande n'a été enregistrée.</p>
-          <form method="dialog">
-            <button type="submit">Fermer</button>
-          </form>
-        </dialog>
-      </section>
-      <p><a href="index.html">Retour au catalogue</a></p>
-    </article>
-  </main>
-  <footer>
-    <hr>
-    <p>&copy; 2026 — Ma bibliothèque.</p>
-  </footer>
-</body>
-</html>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<header class="site-header"><div class="container header-inner">
+  <a class="site-brand" href="index.html" aria-label="Retour à l'accueil de Ma bibliothèque"><span class="brand-icon" aria-hidden="true">✳</span><span>LES PAGES<span class="brand-accent">.</span></span></a>
+  <nav class="main-nav" aria-label="Navigation principale">
+    <a href="index.html" >La collection</a>
+    <a href="book.html" aria-current="page">Livre à la une</a>
+    <a href="#footer">À propos</a>
+  </nav></div></header>
+<main id="contenu" class="book-page-main">
+ <div class="container">
+  <nav class="breadcrumbs" aria-label="Fil d'Ariane">
+   <a href="index.html">Accueil</a><span aria-hidden="true">/</span>
+   <a href="index.html#catalogue-title">Collection</a><span aria-hidden="true">/</span>
+   <span aria-current="page">Moby-Dick</span>
+  </nav>
+  <article class="detail-layout" aria-labelledby="book-title">
+   <div class="detail-left">
+    <div class="featured-cover"><img src="assets/images/moby-dick.svg" alt="Couverture du roman Moby-Dick de Herman Melville" width="390" height="566"></div>
+    <div class="detail-actions">
+     <button class="btn btn-primary" type="button" command="show-modal" commandfor="command-dialog"><span aria-hidden="true">↗</span> Commander le livre</button>
+     <a href="#resume" class="btn btn-secondary"><span aria-hidden="true">↓</span> Lire le résumé</a>
+    </div>
+    <p class="purchase-note">Commande fictive : aucun achat ou paiement possible.</p>
+   </div>
+   <div class="detail-right">
+    <p class="eyebrow">LE CLASSIQUE À LA UNE / 001</p>
+    <h1 id="book-title">Moby-<em>Dick.</em></h1>
+    <p class="detail-byline">HERMAN MELVILLE <span aria-hidden="true">✳</span> 1851</p>
+    <div class="detail-rule" aria-hidden="true"></div>
+    <p class="detail-lead">Une baleine blanche. Un capitaine consumé par l'obsession. Et l'océan, immense, entre les deux.</p>
+    <dl class="book-metadata">
+     <div><dt>Auteur</dt><dd>Herman Melville</dd></div>
+     <div><dt>Première publication</dt><dd><time datetime="1851">1851</time></dd></div>
+     <div><dt>Langue originale</dt><dd>Anglais</dd></div>
+     <div><dt>Genre</dt><dd>Roman d'aventures</dd></div>
+    </dl>
+    <section class="book-summary" id="resume" aria-labelledby="summary-title">
+     <p class="eyebrow">L'HISTOIRE</p>
+     <h2 id="summary-title">Une traversée <em>sans retour.</em></h2>
+     <p>Ismaël embarque à bord du <cite>Pequod</cite>, un baleinier commandé par le capitaine Achab. Au fil des jours, l'équipage découvre que son capitaine ne cherche pas seulement à chasser : il poursuit une obsession.</p>
+     <p>Une baleine blanche, Moby Dick, l'a autrefois mutilé. Désormais, Achab entraîne ses marins dans une quête périlleuse à travers les océans, entre aventure, vertige et fatalité.</p>
+     <details class="more-summary">
+      <summary>Pourquoi lire ce roman ? <span aria-hidden="true">+</span></summary>
+      <p>Publié en 1851, <cite>Moby-Dick</cite> traverse les genres : récit d'aventures, réflexion sur la nature et exploration des limites de l'homme.</p>
+     </details>
+    </section>
+    <a class="back-link" href="index.html">← Revenir au catalogue</a>
+   </div>
+  </article>
+ </div>
+ <dialog id="command-dialog" aria-labelledby="command-title">
+  <div class="dialog-inner">
+   <span class="dialog-icon" aria-hidden="true">✳</span>
+   <p class="eyebrow">MA BIBLIOTHÈQUE</p>
+   <h2 id="command-title">Confirmer la commande ?</h2>
+   <p>Cette fenêtre est un exercice HTML/CSS. Aucune commande n'a été effectuée et aucune donnée de paiement n'est demandée.</p>
+   <form method="dialog"><button class="btn btn-primary" type="submit">Fermer la fenêtre</button></form>
+  </div>
+ </dialog>
+</main>
+<footer id="footer" class="site-footer"><div class="container footer-inner">
+  <div><a class="footer-brand" href="index.html">LES PAGES <span aria-hidden="true">✳</span></a><p>La lecture commence ici, sans se presser.</p></div>
+  <p class="footer-caption">Projet HTML &amp; CSS · Bachelor développement applicatif<br>© 2026 — Ma bibliothèque</p>
+</div></footer>
+</body></html>
