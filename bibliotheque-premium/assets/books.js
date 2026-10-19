@@ -1,4 +1,4 @@
-/* LA MARGE : fiches, sources littéraires originales et traductions à la demande. */
+/* LA MARGE : 48 classiques et toutes les éditions intégrales disponibles localement. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -1431,7 +1431,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Alice au pays des merveilles",
         "gutenberg": 55456,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/alice-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1481,7 +1482,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "Le Portrait de Dorian Gray",
         "gutenberg": 14192,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/dorian-fr.txt"
       },
       "en": {
         "lang": "en",
@@ -1727,7 +1729,8 @@ window.LA_MARGE_BOOKS = [
         "label": "Version française",
         "title": "La Guerre des mondes",
         "gutenberg": 60656,
-        "status": "external"
+        "status": "local",
+        "file": "lectures/war-worlds-fr.txt"
       },
       "en": {
         "lang": "en",
