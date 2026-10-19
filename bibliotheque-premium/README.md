@@ -1,136 +1,71 @@
-# LA MARGE — Acte V · Lecture et traduction
+# LA MARGE — La Grande Bibliothèque · 500 œuvres
 
-LA MARGE rassemble **48 classiques** (32 ajoutés dans cet acte), **48 couvertures SVG locales**, une liseuse avec **10 œuvres intégrales** dans au moins une langue, et le Salon littéraire fictif.
+**LA MARGE** est une bibliothèque littéraire statique (HTML / CSS / JavaScript natif) avec catalogue paginé, favoris, journal de lecture, Salon fictif et liseuse.
 
 ## Démarrage
 
-Dans VS Code : `git pull origin main` puis démarrer Live Server sur `bibliotheque-premium/index.html`.
+Depuis VS Code, exécuter `git pull origin main`, puis lancer **Live Server** sur `bibliotheque-premium/index.html`.
 
-La liseuse utilise `fetch()` pour charger des fichiers texte locaux. Elle nécessite un serveur HTTP local (Live Server ou équivalent), sinon `file://` peut bloquer les accès.
+La liseuse charge les fichiers locaux avec `fetch()` ; le protocole `file://` peut donc bloquer l’ouverture des textes complets.
 
-## Choix des éditions : VO / FR / EN
+## Le catalogue : exactement 500 œuvres
 
-Chaque fiche de livre présente systématiquement :
-- **Version originale**, dans la langue d'écriture de l'œuvre.
-- **Version française**.
-- **Version anglaise**.
+- **48 œuvres** héritées du catalogue précédent.
+- **431 nouvelles notices bibliographiques réelles** extraites d’un catalogue de métadonnées Project Gutenberg (identifiant, titre, auteur, langue et catégorie).
+- **20 titres contemporains protégés**, notamment *Harry Potter*, *Le Hobbit*, *Le Seigneur des anneaux*, *Dune*, *Fondation*, *Fahrenheit 451* : fiches et favoris seulement, **aucun texte intégral reproduit**.
+- **1 document historique**, la Déclaration des droits de l'homme et du citoyen de 1789, avec renvoi au [texte officiel sur Légifrance](https://www.legifrance.gouv.fr/loda/id/JORFTEXT000000697056).
 
-Il n'y a **pas de traduction automatique** ni de texte inventé. Pour chaque choix, le site indique honnêtement l'une des trois possibilités :
+Les notices Gutenberg couvrent français, anglais, allemand, espagnol, italien, russe et latin. Les catégories rassemblent littérature, théâtre, poésie, sciences, histoire, droits, philosophie, jeunesse, aventure, fantastique, science-fiction, enquêtes, etc.
 
-| Statut | Ce qui se passe |
+**Provenance des métadonnées :** [Project Gutenberg metadata CSV](https://github.com/sehgalvibhor/gutenberg-metadata/blob/main/gutenberg_metadata.csv), qui reprend les identifiants Project Gutenberg. Les notices pointent vers leur page `https://www.gutenberg.org/ebooks/ID`. L'attribution d'une catégorie est une classification pratique dérivée des rayons et titres, et peut être affinée.
+
+L'année de première publication est inconnue pour les 431 notices supplémentaires (le CSV ne la fournit pas) : aucune date n'a été inventée.
+
+## Fonctionnalités
+
+- **Catalogue paginé :** 24 ouvrages affichés à la fois, recherche en direct, tris et catégories ; filtres « À lire ici », « Éditions libres », « Sous droits » et « Documents ».
+- **Couvertures :** 48 couvertures SVG individuelles conservées pour la première sélection et nouvelles couvertures typographiques originales générées par CSS pour les autres références.
+- **Favoris :** cœur sur les vignettes et sur chaque fiche ; retrouve-les dans `favoris.html`.
+- **Journal personnel :** statut « À lire », « En cours » ou « Terminé » depuis chaque fiche ; tableau de suivi dans `favoris.html`.
+- **Liseuse locale :** **44 œuvres distinctes**, disponibles dans **47 éditions linguistiques intégrales** enregistrées dans `lectures/`. Feuillets, thèmes, typographie et reprise automatique.
+- **Langues :** original / français / anglais sur les fiches. Une édition publiée et vérifiée est privilégiée. La traduction automatique à la demande, lorsqu'elle est proposée, est expérimentale et non relue ; elle nécessite un navigateur/modèle compatible.
+- **Salon :** 12 personnages fictifs et 107 messages préécrits, réactions et notes privées sur le navigateur.
+- **Partage :** lien direct vers chaque fiche.
+
+Les favoris, notes et états de lecture sont conservés **dans le navigateur** avec `localStorage`. Il n'y a pas de compte ni de synchronisation entre appareils.
+
+### Lecture des œuvres libres
+
+| Cas | Action |
 | --- | --- |
-| Texte intégral dans LA MARGE | Ouvre la liseuse locale à la langue correspondante |
-| Édition Gutenberg vérifiée | Ouvre la fiche de l'édition identifiée sur Project Gutenberg |
-| Traduction non vérifiée | Ouvre **une recherche Gutenberg**, sans garantir qu'une traduction existe |
+| Édition complète intégrée | **Lire dans LA MARGE**, avec les outils de la liseuse |
+| Autre édition libre référencée | Ouvrir sa fiche vérifiable chez **Project Gutenberg**, sans prétendre que le texte est hébergé localement |
+| Traduction absente, source locale disponible | Possibilité d'essayer une **traduction automatique feuillet par feuillet**, avec mention de ses limites |
+| Œuvre encore protégée | **Fiche documentaire et favoris uniquement**, lien vers une recherche en bibliothèque |
+| DDHC 1789 | Accéder au **texte officiel** sur Légifrance |
 
-Pour une œuvre originellement française, les choix « Originale » et « Française » concernent naturellement la même langue (idem pour « Originale » et « Anglaise » pour les livres anglais).
+**Important :** les droits de reproduction varient selon les pays, éditions et traductions. L'étiquette « Gutenberg » indique une édition disponible dans leur collection, **pas une garantie universelle de domaine public dans tous les territoires**. Les notices contemporaines n'ont pas de lien de lecture intégrale gratuite.
 
-## Textes intégraux hébergés dans `lectures/`
+## Principales pages
 
-**13 fichiers d'éditions complètes, correspondant à 10 œuvres distinctes** :
+`index.html` — Accueil, sélection éditoriale et expérience visuelle.
 
-| Œuvre | Langue | Fichier local | Gutenberg |
-| --- | --- | --- | --- |
-| Candide | Français | `lectures/candide.txt` | #59859 |
-| Le Tour du monde en 80 jours | Français | `lectures/tour-du-monde.txt` | #46541 |
-| Le Horla et autres nouvelles | Français | `lectures/le-horla.txt` | #10775 |
-| Arsène Lupin, gentleman-cambrioleur | Français | `lectures/arsene-lupin.txt` | #32854 |
-| Voyage au centre de la Terre | Français | `lectures/voyage-centre-terre.txt` | #4791 |
-| Alice au pays des merveilles | Anglais | `lectures/alice-en.txt` | #11 |
-| Alice au pays des merveilles | Français, traduction d'Henri Bué | `lectures/alice-fr.txt` | #55456 |
-| Le Portrait de Dorian Gray | Anglais | `lectures/dorian-en.txt` | #174 |
-| Le Portrait de Dorian Gray | Français, traduction d'Albert Savine | `lectures/dorian-fr.txt` | #14192 |
-| Dr Jekyll et Mr Hyde | Anglais | `lectures/jekyll-en.txt` | #42 |
-| La Machine à explorer le temps | Anglais | `lectures/time-machine-en.txt` | #35 |
-| La Guerre des mondes | Anglais | `lectures/war-worlds-en.txt` | #36 |
-| La Guerre des mondes | Français, traduction d'Henry-D. Davray | `lectures/war-worlds-fr.txt` | #60656 |
+`catalogue.html` — 500 entrées, recherche, filtres, pagination et couverture typographique.
 
-Les fichiers ont été repris de GITenberg/Project Gutenberg, avec les notices et crédits conservés dans le texte. Liens : `https://www.gutenberg.org/ebooks/<numéro>`.
+`livre.html?id=...` — Fiche de l'ouvrage, éditions, favoris, journal de lecture, sources.
 
-La mention « domaine public » vise les œuvres historiques et les éditions anciennes sélectionnées ; les règles de droit peuvent varier selon les pays, et toutes les traductions d'une même œuvre ne sont pas nécessairement libres. Le catalogue distingue donc les versions effectivement confirmées de celles qui restent à rechercher.
+`lire.html?id=...` — Liseuse pour les textes complets locaux.
 
-## Contenu et fonctions
+`favoris.html` — Ma sélection et le journal des livres lus/en cours/à lire.
 
-- Accueil éditorial animé, bibliomancie et sélection de livres.
-- Catalogue de **48 titres**, recherche texte, filtre « À lire ici », genres et tri par auteur, titre ou année.
-- Fiches avec choix **Originale / Française / Anglaise**, description, favoris et source vérifiée.
-- Liseuse avec pagination par feuillets, thèmes papier / clair / nuit, taille de police, recherche, retour au dernier feuillet et accès aux éditions locales multilingues.
-- Salon fictif : 12 lecteurs imaginaires, 12 conversations et 107 messages préécrits. Notes et likes locaux.
-- Couvertures SVG propres au projet. Aucun backend, compte ou paiement.
+`salon.html` — Discussions fictives et carnet local.
 
-**Remarque :** les feuillets sont des portions numériques, pas les pages imprimées ; la typographie peut différer des éditions originales. Le roman ou recueil complet est conservé dans le fichier source de chaque édition intégrée.
+`a-propos.html` — Le manifeste de La Marge.
 
-L'exercice HTML sans CSS ni JavaScript est préservé dans `exercices-html/ma-bibliotheque/`.
+## Structure et intégrité
 
+`assets/books.js` contient les 500 métadonnées. `assets/app.js` génère les pages. `assets/library.js` gère le suivi de lecture. Les fichiers `lectures/*.txt` conservent les notices et crédits des transcriptions Project Gutenberg.
 
-## Acte V — Traduction à la demande
+Aucune simulation de commande ou de réservation n'est présente dans l'interface. **Le TP original en HTML pur** reste dans `exercices-html/ma-bibliotheque/`.
 
-**Les éditions qui n'existent pas encore en traduction littéraire identifiée ne sont pas remplacées par une fausse édition.** Nous proposons une traduction automatique progressive lorsque le livre original complet est hébergé localement :
-
-1. Ouvrir une fiche, puis choisir « Original », « Français » ou « Anglais ».
-2. Si la traduction choisie manque mais qu'un fichier source existe, cliquer sur **« Traduire et lire ici »**.
-3. La liseuse explique le procédé et demande de cliquer sur **« Activer la traduction »**.
-4. Le moteur traduit **feuillet par feuillet** et non le roman entier à l'avance.
-
-### Moteurs utilisés
-
-- **API native du navigateur** (`Translator`) quand elle est disponible sur un navigateur compatible, en contexte sécurisé (`localhost` ou HTTPS). Le modèle de langue peut être téléchargé lors de la première utilisation. La compatibilité n'est pas universelle.
-- Si elle n'est pas accessible, un bouton de secours permet d'essayer **Transformers.js** avec des modèles ONNX open source *Opus-MT* pour `en→fr`, `fr→en`, `de→fr` et `de→en`. Les modèles peuvent faire plusieurs centaines de mégaoctets ; ils ne sont téléchargés qu'après consentement explicite. La disponibilité dépend de la mémoire du navigateur, du réseau et des fichiers hébergés par Hugging Face.
-- L'ancienne fonction « édition publiée sur Gutenberg » reste disponible lorsqu'une traduction littéraire existante a été vérifiée.
-
-**Limites :** il s'agit de traduction automatique à la demande, non relue, avec de possibles erreurs de style ou de sens. Elle n'est **pas** enregistrée comme une traduction intégrale publiée dans GitHub. La recherche dans la langue traduite couvre uniquement les feuillets déjà générés pendant la session.
-
-### Textes originaux ajoutés pour préparer la traduction
-
-Sept nouvelles transcriptions intégrales libres dans `lectures/`, conservant leurs notices Project Gutenberg :
-
-| Ouvrage | Langue originale | Source |
-|---|---|---|
-| *La Métamorphose* de Franz Kafka | Allemand | Gutenberg #22367 |
-| *L'Île au trésor* de R. L. Stevenson | Anglais | Gutenberg #120 |
-| *Une étude en rouge* d'Arthur Conan Doyle | Anglais | Gutenberg #244 |
-| *Les Aventures de Sherlock Holmes* d'Arthur Conan Doyle | Anglais | Gutenberg #1661 |
-| *Eugénie Grandet* d'Honoré de Balzac | Français | Gutenberg #11049 |
-| *Poil de Carotte* de Jules Renard | Français | Gutenberg #4559 |
-| *Les Fleurs du mal* de Charles Baudelaire | Français | Gutenberg #6099 |
-
-En tout : **31 œuvres complètes disponibles au moins dans une langue**, avec leurs traductions éventuellement générables à la lecture dans un navigateur compatible. Les 17 autres fiches nécessitent encore d'intégrer une transcription originale complète avant de permettre une traduction propre à LA MARGE.
-
-Documentations des moteurs :
-- https://developer.mozilla.org/en-US/docs/Web/API/Translator
-- https://huggingface.co/docs/transformers.js
-- https://huggingface.co/Xenova/opus-mt-en-fr
-
-Cette fonction est expérimentale : à tester sur Chrome ou Opera avec **Live Server**, notamment le premier téléchargement d'un modèle.
-
-
-### Huit autres romans intégraux ajoutés
-
-| Ouvrage | Texte source | Gutenberg |
-|---|---|---|
-| *Une vie* — Guy de Maupassant | `lectures/une-vie-fr.txt` | #17457 |
-| *Le Fantôme de l'Opéra* — Gaston Leroux | `lectures/fantome-opera-fr.txt` | #62215 |
-| *Le Mystère de la chambre jaune* — Gaston Leroux | `lectures/chambre-jaune-fr.txt` | #13765 |
-| *Les Hauts de Hurlevent* — Emily Brontë | `lectures/hauts-hurlevent-en.txt` | #768 |
-| *L'Appel de la forêt* — Jack London | `lectures/appel-foret-en.txt` | #215 |
-| *Le Jardin secret* — Frances Hodgson Burnett | `lectures/jardin-secret-en.txt` | #17396 |
-| *Madame Bovary* — Gustave Flaubert | `lectures/madame-bovary-fr.txt` | #14155 |
-| *Dracula* — Bram Stoker | `lectures/dracula-en.txt` | #345 |
-
-Au total, le dépôt héberge **34 fichiers d'éditions complètes, couvrant 31 œuvres distinctes** : ces 31 œuvres sont consultables intégralement, à partir desquelles une traduction à la demande peut être proposée dans un navigateur compatible.
-
-**Compatibilité :** sur Opera, l'API `Translator` native peut être absente. Un modèle de repli compatible Transformers.js / Opus-MT peut être proposé pour les paires `en↔fr`, `de→fr`, `de→en`, à condition d'accepter le téléchargement d'un modèle volumineux. Il n'existe pas actuellement de garantie de traduction universelle sur tous les navigateurs.
-
-
-### Six autres textes intégraux ajoutés
-
-| Œuvre | Version intégrée | Source |
-|---|---|---|
-| *Frankenstein* — Mary Shelley | Anglaise originale | Gutenberg #84, `lectures/frankenstein-en.txt` |
-| *Orgueil et Préjugés* — Jane Austen | Anglaise originale | Gutenberg #1342, `lectures/orgueil-et-prejuges-en.txt` |
-| *La Princesse de Clèves* — Mme de La Fayette | Française originale | Gutenberg #18797, `lectures/princesse-cleves-fr.txt` |
-| *La Divine Comédie* — Dante | Italienne originale | Gutenberg #1000, `lectures/divine-comedie-it.txt` |
-| *Le Père Goriot* — Honoré de Balzac | Traduction anglaise publiée | Gutenberg #1237, `lectures/pere-goriot-en.txt` |
-| *L'Odyssée* — Homère | Traduction française publiée (Leconte de Lisle) | Gutenberg #14286, `lectures/odyssee-fr.txt` |
-
-Les deux dernières œuvres ne sont **pas** intégrées dans leur langue d'origine ; la liseuse indique la langue réelle du texte disponible. Les traductions générées à partir d'une traduction déjà publiée (traduction indirecte) ne constituent pas une édition de référence.
+La navigation du site peut être testée avec Live Server ; les scripts ont fait l'objet de contrôles de syntaxe et les ressources GitHub ont été vérifiées, mais un audit visuel/navigateur complet reste utile.
