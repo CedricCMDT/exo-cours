@@ -13,6 +13,7 @@ const sourceLang = sourceEdition?.lang;
 const targetLang = edition?.lang;
 const translationMode = Boolean(book && edition && !edition.file && translationRequested && sourceEdition && sourceLang !== targetLang);
 const fileToRead = translationMode ? sourceEdition.file : edition?.file || null;
+const externallyReferenced = Boolean(book && edition && !book.copyrighted && !fileToRead && Number.isInteger(Number(edition.gutenberg)) && Number(edition.gutenberg)>0);
 const canAutoTranslate = lang => ["fr","en","de","es","ru","it"].includes(lang);
 const pageEl = $("#reader-text");
 const storage = key => {try {return JSON.parse(localStorage.getItem(key)||"null");}catch(_) {return null;}};
@@ -25,7 +26,7 @@ let pages=[],index=0,query="",model=null,job=0,loadState="loading";
 const cache=new Map();
 const lastPageKey="lamarge-reader-v2-"+bookId+"-"+slot+"-"+(translationMode?"machine":"edition");
 const filename=translationMode ? null:fileToRead;
-if(!book || !edition || !fileToRead) {
+if(!book || !edition || (!fileToRead && !externallyReferenced)) {
   $("#reader-title").textContent="Édition indisponible";
   pageEl.textContent="Cette édition complète n'est pas encore hébergée ici. Choisissez une édition vérifiée ou revenez à la fiche du livre.";
   $("#reader-sidebar-title").textContent="Pas de livre chargé";
@@ -40,9 +41,15 @@ $("#reader-sidebar-title").textContent=book.title;
 $("#reader-sidebar-author").textContent=book.author+" · "+(Number.isFinite(book.year)?book.year:"édition libre")+" · "+(edition.language||"");
 $("#reader-cover").src=book.cover;
 $("#reader-cover").alt="Couverture de "+book.title;
-$("#reader-download").href=translationMode ? sourceEdition.file : filename;
-$("#reader-download").download=book.id+"-"+(translationMode?sourceLang:targetLang)+".txt";
-$("#reader-download").textContent=translationMode ? "TÉLÉCHARGER LE TEXTE ORIGINAL ↓" : "TÉLÉCHARGER LE TEXTE INTÉGRAL ↓";
+if(fileToRead){
+ $("#reader-download").href=translationMode ? sourceEdition.file : filename;
+ $("#reader-download").download=book.id+"-"+(translationMode?sourceLang:targetLang)+".txt";
+ $("#reader-download").textContent=translationMode ? "TÉLÉCHARGER LE TEXTE ORIGINAL ↓" : "TÉLÉCHARGER LE TEXTE INTÉGRAL ↓";
+}else{
+ $("#reader-download").hidden=true;
+ $("#reader-import-label").hidden=false;
+ document.querySelector(".reader-source-note p").textContent="Cette édition est référencée par Project Gutenberg, mais son fichier n’est pas hébergé ici. Téléchargez l’édition texte sur le site source, puis ouvrez votre fichier .txt avec la liseuse.";
+}
 $("#reader-source-link").href="https://www.gutenberg.org/ebooks/"+(translationMode?sourceEdition.gutenberg:edition.gutenberg);
 const languageBox=document.createElement("div");
 languageBox.className="reader-language-box";
@@ -53,7 +60,7 @@ for(const choice of ["original","fr","en"]){
  a.className="reader-language-link"+(slot===choice?" selected":"");
  a.textContent=(choice==="original"?"ORIGINAL":choice==="fr"?"FRANÇAIS":"ANGLAIS")+" · "+(e.file?"SUR LE SITE":e.gutenberg?"GUTENBERG":"NON VÉRIFIÉ");
  if(e.file)a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice;
- else if(e.gutenberg){a.href="https://www.gutenberg.org/ebooks/"+e.gutenberg;a.target="_blank";a.rel="noopener noreferrer";}
+ else if(e.gutenberg){a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice;a.title="Ouvrir dans LA MARGE avec un fichier texte libre";}
  else if(sourceEdition && sourceEdition.lang!==e.lang && canAutoTranslate(sourceEdition.lang)&&canAutoTranslate(e.lang))a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice+"&translate=1";
  else {a.href="livre.html?id="+encodeURIComponent(book.id);a.title="Revenir à la fiche pour chercher une édition";}
  if(choice===slot)a.setAttribute("aria-current","page");
@@ -80,7 +87,7 @@ function stripGutenberg(raw){
  const normalized=raw.replace(/^\uFEFF/,"").replace(/\r\n?/g,"\n");
  const start=/\*\*\*\s*START OF (?:THIS |THE )?PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i.exec(normalized);
  const end=/\*\*\*\s*END OF (?:THIS |THE )?PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i.exec(normalized);
- if(!start||!end||end.index<=start.index)throw new Error("Le début ou la fin du texte Gutenberg est introuvable.");
+ if(!start||!end||end.index<=start.index){if(normalized.trim().length>1800)return normalized.trim();throw new Error("Le texte est trop court ou ne contient pas une transcription lisible.");}
  return normalized.slice(start.index+start[0].length,end.index).trim();
 }
 function paginate(raw){
@@ -280,8 +287,8 @@ $("#reader-search-form").addEventListener("submit",e=>{
  go(found,true);
  result.textContent="Passage trouvé au feuillet "+(found+1)+".";
 });
-fetch(fileToRead).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.text();}).then(raw=>{
- if(raw.length<20000)throw new Error("Fichier trop court pour être un livre entier.");
+function initializeText(raw){
+ if(raw.length<(externallyReferenced?1800:20000))throw new Error("Fichier trop court pour cette édition.");
  const fullText=stripGutenberg(raw);
  pages=paginate(fullText);
  if(!pages.length)throw new Error("Texte introuvable.");
@@ -290,9 +297,26 @@ fetch(fileToRead).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.t
  loadState="ready";
  const stored=Number(storage(lastPageKey)||0);
  go(Number.isFinite(stored)?stored:0);
-}).catch(err=>{
+}
+function loadFailure(err){
  loadState="failed";
  showMessage("Impossible de charger ce texte",location.protocol==="file:"?"Lancez ce site avec Live Server dans VS Code : le protocole file:// peut bloquer la lecture.":err.message);
  $("#reader-sidebar-progress").textContent="Chargement impossible";
-});
+}
+if(fileToRead){
+ fetch(fileToRead).then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.text();}).then(initializeText).catch(loadFailure);
+}else if(externallyReferenced){
+ $("#reader-sidebar-progress").textContent="En attente d’un fichier texte libre.";
+ showMessage("Une édition libre à découvrir","Ce livre est référencé sur Project Gutenberg. Ouvrez sa fiche source, téléchargez une version texte (.txt), puis importez-la ici : vous pourrez lire, chercher et retrouver votre progression.","CHOISIR MON FICHIER .TXT",()=>$("#reader-import-file").click());
+ const input=$("#reader-import-file");
+ input.addEventListener("change",async event=>{
+  const file=event.target.files?.[0];if(!file)return;
+  try{
+   if(file.size>12_000_000)throw new Error("Le fichier dépasse 12 Mo.");
+   showMessage("Ouverture de l’édition…","Lecture du texte local en cours.");
+   await initializeText(await file.text());
+  }catch(err){loadFailure(err);}
+  finally{input.value="";}
+ });
+}
 })();
