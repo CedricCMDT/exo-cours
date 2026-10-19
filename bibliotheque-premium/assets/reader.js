@@ -8,7 +8,7 @@ const book = books.find(b => b.id === bookId);
 const slot = ["original","fr","en"].includes(params.get("lang")) ? params.get("lang") : "original";
 const edition = book?.editions?.[slot] || null;
 const sourceEdition = book ? [book.editions?.original,book.editions?.fr,book.editions?.en].find(x => x?.file && x.lang !== edition?.lang) : null;
-const translationRequested = params.get("translate") === "1";
+const translationRequested = params.get("translate") === "1" || (params.get("translate") === null && Boolean(book && edition && !edition.file && sourceEdition && sourceEdition.lang !== edition.lang));
 const sourceLang = sourceEdition?.lang;
 const targetLang = edition?.lang;
 const translationMode = Boolean(book && edition && !edition.file && translationRequested && sourceEdition && sourceLang !== targetLang);
@@ -57,12 +57,16 @@ languageBox.innerHTML='<p class="reader-language-title">CHOISIR UNE ÉDITION</p>
 for(const choice of ["original","fr","en"]){
  const e=book.editions[choice];if(!e)continue;
  const a=document.createElement("a");
+ const localAlias=["original","fr","en"].find(key=>book.editions[key]?.file && book.editions[key]?.lang===e.lang);
+ const localSource=["original","fr","en"].map(key=>book.editions[key]).find(item=>item?.file&&item.lang!==e.lang);
+ const canTranslate=Boolean(!e.file&&!localAlias&&localSource&&canAutoTranslate(localSource.lang)&&canAutoTranslate(e.lang));
  a.className="reader-language-link"+(slot===choice?" selected":"");
- a.textContent=(choice==="original"?"ORIGINAL":choice==="fr"?"FRANÇAIS":"ANGLAIS")+" · "+(e.file?"SUR LE SITE":e.gutenberg?"GUTENBERG":"NON VÉRIFIÉ");
+ a.textContent=(choice==="original"?"ORIGINAL":choice==="fr"?"FRANÇAIS":"ANGLAIS")+" · "+(e.file||localAlias?"TEXTE SUR LE SITE":canTranslate?"TRADUCTION IA":e.gutenberg?"IMPORT .TXT":"NON VÉRIFIÉ");
  if(e.file)a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice;
- else if(e.gutenberg){a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice;a.title="Ouvrir dans LA MARGE avec un fichier texte libre";}
- else if(sourceEdition && sourceEdition.lang!==e.lang && canAutoTranslate(sourceEdition.lang)&&canAutoTranslate(e.lang))a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice+"&translate=1";
- else {a.href="livre.html?id="+encodeURIComponent(book.id);a.title="Revenir à la fiche pour chercher une édition";}
+ else if(localAlias)a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+localAlias;
+ else if(canTranslate)a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice+"&translate=1";
+ else if(e.gutenberg){a.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+choice;a.title="Importer un fichier texte libre Gutenberg dans la liseuse";}
+ else {a.href="livre.html?id="+encodeURIComponent(book.id)+"#edition-heading";a.title="Édition non disponible dans la liseuse";}
  if(choice===slot)a.setAttribute("aria-current","page");
  languageBox.appendChild(a);
 }
