@@ -32,7 +32,7 @@ function decorateBook(){
  });
 }
 function decorateFavorites(){
- const area=document.querySelector(".favorites-area");
+ const area=document.querySelector(".favorite-section");
  if(!area)return;
  const panel=document.createElement("section");panel.className="reading-dashboard";
  area.prepend(panel);
