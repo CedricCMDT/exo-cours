@@ -30,3 +30,26 @@ body[data-page="home"] .hero-copy{animation:enter-up .85s both cubic-bezier(.16,
 
 .nav-new{display:inline-block;margin-left:3px;font:800 7px/1 var(--display);letter-spacing:.09em;color:#231d12;background:var(--gold);padding:4px 5px;border-radius:2px;vertical-align:middle}
 @media(max-width:760px){.nav-new{margin-left:8px}}
+
+
+/* La bibliothèque ouverte — vitrine pour les œuvres intégrales */
+.reading-showcase{padding-top:35px;padding-bottom:105px}
+.reading-showcase-header{display:flex;justify-content:space-between;gap:18px;align-items:center;border-top:1px solid rgba(228,189,119,.25);padding-top:25px;margin-bottom:24px}
+.reading-showcase-header .eyebrow{margin:0}.reading-showcase-header>span{font:800 9px var(--display);color:#8d9183;letter-spacing:.14em}
+.reading-showcase-grid{min-height:455px;display:grid;grid-template-columns:1.06fr 1fr;gap:3%;align-items:center;position:relative;background:radial-gradient(ellipse at 75% 45%,rgba(234,191,110,.14),transparent 62%),#23261f;border:1px solid rgba(228,189,119,.2);overflow:hidden;padding:50px 5%}
+.reading-showcase-grid:before{content:"";position:absolute;width:570px;height:570px;right:4%;top:-70px;border-radius:50%;border:1px solid rgba(228,189,119,.16);pointer-events:none}
+.reading-showcase-copy{position:relative;z-index:2}
+.reading-showcase-copy h2{font:500 clamp(40px,4.5vw,65px)/1.16 var(--serif);letter-spacing:-.05em;margin:0 0 22px}.reading-showcase-copy h2 em{font-weight:400;color:var(--gold)}
+.reading-showcase-copy p{font:400 13px/2 var(--sans);max-width:470px;color:#bbb9aa;margin:0 0 28px}
+.reading-showcase-gallery{position:relative;min-height:380px;display:flex;align-items:center;justify-content:center}
+.reading-showcase-gallery a{display:block;width:35%;min-width:155px;box-shadow:21px 24px 39px rgba(0,0,0,.47);position:absolute;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.reading-showcase-gallery a img{width:100%;height:auto}
+.reading-showcase-gallery a:first-child{left:9%;z-index:3;transform:rotate(-12deg)}.reading-showcase-gallery a:nth-child(2){left:35%;z-index:4;transform:rotate(5deg) translateY(-14px)}.reading-showcase-gallery a:nth-child(3){left:55%;z-index:2;transform:rotate(17deg)}
+.reading-showcase-gallery a:hover{z-index:7;transform:rotate(0deg) translateY(-19px)}
+.reading-showcase-stamp{position:absolute;z-index:6;right:3%;bottom:0;background:var(--gold);color:#25231b;width:112px;height:112px;border-radius:50%;display:grid;align-content:center;justify-items:center;line-height:1;font:600 36px var(--serif);transform:rotate(9deg);box-shadow:0 0 0 9px #24261f}
+.reading-showcase-stamp small{font:800 8px/2 var(--display);letter-spacing:.08em}
+.detail-gutenberg{font:800 9px var(--display);letter-spacing:.1em;color:var(--gold);padding:10px 5px;text-decoration:underline;text-underline-offset:6px}
+.detail-gutenberg:hover{color:#f5dbab}
+@media(max-width:1020px){.reading-showcase-grid{grid-template-columns:1fr;padding:50px 30px}.reading-showcase-gallery{min-height:320px;max-width:650px;width:100%;margin:auto}.reading-showcase-gallery a{width:30%}.reading-showcase-stamp{right:11%}}
+@media(max-width:650px){.reading-showcase{padding-bottom:65px}.reading-showcase-header{flex-direction:column;align-items:start}.reading-showcase-grid{padding:43px 25px}.reading-showcase-gallery{min-height:270px}.reading-showcase-gallery a{min-width:95px;width:31%}.reading-showcase-gallery a:first-child{left:2%}.reading-showcase-gallery a:nth-child(2){left:29%}.reading-showcase-gallery a:nth-child(3){left:57%}.reading-showcase-stamp{width:85px;height:85px;font-size:28px;right:0}.reading-showcase-stamp small{font-size:6px}}
+@media(min-width:761px) and (max-width:1160px){.primary-nav{gap:12px}.primary-nav a{font-size:11px}.primary-nav .nav-favorites{padding:9px 12px}}
