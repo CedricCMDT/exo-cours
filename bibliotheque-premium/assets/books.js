@@ -1,4 +1,4 @@
-/* LA MARGE — catalogue de 48 livres. Éditions local / source Gutenberg / recherche explicite. */
+/* LA MARGE, 48 œuvres, 3 sélections de langue chacune : local, source vérifiée ou recherche clairement indiquée. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -70,23 +70,26 @@ window.LA_MARGE_BOOKS = [
         "language": "français",
         "label": "Version originale",
         "title": "Les Misérables",
-        "gutenberg": 135,
-        "status": "external"
+        "gutenberg": 17489,
+        "status": "external",
+        "note": "Édition française publiée en plusieurs volumes : vérifier la pagination et les tomes chez Gutenberg."
       },
       "fr": {
         "lang": "fr",
         "language": "français",
         "label": "Version française",
         "title": "Les Misérables",
-        "gutenberg": 135,
-        "status": "external"
+        "gutenberg": 17489,
+        "status": "external",
+        "note": "Édition française publiée en plusieurs volumes : vérifier la pagination et les tomes chez Gutenberg."
       },
       "en": {
         "lang": "en",
         "language": "anglais",
         "label": "Version anglaise",
         "title": "Les Misérables",
-        "status": "search"
+        "gutenberg": 135,
+        "status": "external"
       }
     }
   },

@@ -4,8 +4,12 @@ const $=s=>document.querySelector(s);
 const books=window.LA_MARGE_BOOKS||[];
 const currentId=new URLSearchParams(location.search).get("id")||"candide";
 const book=books.find(b=>b.id===currentId);
+const requestedSlot=new URLSearchParams(location.search).get("lang")||"original";
+const selectedSlot=["original","fr","en"].includes(requestedSlot)?requestedSlot:"original";
+const edition=book?.editions?.[selectedSlot]||book?.editions?.original||null;
+const fileToRead=edition?.file||book?.fullText||null;
 const node=$("#reader-text");
-if(!book || !book.fullText){
+if(!book || !fileToRead){
  $("#reader-title").textContent="Cette histoire n'est pas encore sur nos rayons.";
  node.textContent="Cette édition n'est pas disponible dans la liseuse intégrée. Retournez au catalogue pour découvrir les cinq textes intégraux proposés.";
  $("#reader-sidebar-title").textContent="Livre indisponible";
@@ -21,16 +25,31 @@ if(!settings||typeof settings!=="object")settings={theme:"sepia",font:19};
 settings.font=Math.max(15,Math.min(26,Number(settings.font)||19));
 if(!["sepia","light","dark"].includes(settings.theme))settings.theme="sepia";
 let pages=[],current=0,lastQuery="";
-$("#reader-title").textContent=book.title;
+$("#reader-title").textContent=edition?.title||book.title;
 $("#reader-author").textContent=book.author+" · "+book.year;
 $("#reader-sidebar-title").textContent=book.title;
-$("#reader-sidebar-author").textContent=book.author+" · "+book.year;
+$("#reader-sidebar-author").textContent=book.author+" · "+book.year+" · "+(edition?.language||book.language);
 $("#reader-cover").src=book.cover;
 $("#reader-cover").alt="Couverture de "+book.title;
-$("#reader-download").href=book.fullText;
-$("#reader-download").setAttribute("download",book.id+".txt");
-$("#reader-source-link").href="https://www.gutenberg.org/ebooks/"+book.gutenberg;
-document.title=book.title+" — Lire en ligne | LA MARGE";
+$("#reader-download").href=fileToRead;
+$("#reader-download").setAttribute("download",book.id+"-"+(edition?.lang||"original")+".txt");
+$("#reader-source-link").href="https://www.gutenberg.org/ebooks/"+(edition?.gutenberg||book.gutenberg||"");
+const menu=document.createElement("div");menu.className="reader-language-box";
+const menuTitle=document.createElement("p");menuTitle.className="reader-language-title";menuTitle.textContent="CHOISIR LA LANGUE";
+menu.appendChild(menuTitle);
+for(const slot of ["original","fr","en"]){
+  const e=book.editions?.[slot];if(!e)continue;
+  const item=document.createElement("a");
+  item.className="reader-language-link"+(slot===selectedSlot?" selected":"");
+  item.textContent=(slot==="original"?"ORIGINAL":"fr"===slot?"FRANÇAIS":"ANGLAIS")+" — "+(e.status==="local"?"SUR LE SITE":e.status==="external"?"GUTENBERG":"À RECHERCHER");
+  if(e.file)item.href="lire.html?id="+encodeURIComponent(book.id)+"&lang="+slot;
+  else if(e.gutenberg){item.href="https://www.gutenberg.org/ebooks/"+e.gutenberg;item.target="_blank";item.rel="noopener noreferrer";}
+  else {item.href="https://www.gutenberg.org/ebooks/search/?query="+encodeURIComponent(book.originalTitle+" "+book.author+" "+e.language);item.target="_blank";item.rel="noopener noreferrer";}
+  if(slot===selectedSlot)item.setAttribute("aria-current","page");
+  menu.appendChild(item);
+}
+document.querySelector(".reader-aside-top").after(menu);
+document.title=(edition?.title||book.title)+" — "+(edition?.language||"")+" | LA MARGE";
 function applySettings(){
 document.documentElement.style.setProperty("--book-font",settings.font+"px");
 document.body.dataset.theme=settings.theme;
@@ -132,7 +151,7 @@ if(found<0){msg.textContent="Aucun passage trouvé.";return;}
 go(found,true);
 msg.textContent="Passage trouvé au feuillet "+(found+1)+".";
 });
-fetch(book.fullText).then(res=>{if(!res.ok)throw new Error("Réponse HTTP "+res.status);return res.text();}).then(raw=>{
+fetch(fileToRead).then(res=>{if(!res.ok)throw new Error("Réponse HTTP "+res.status);return res.text();}).then(raw=>{
  if(raw.length<20000)throw new Error("Le fichier semble incomplet");
  const text=removeGutenbergFraming(raw);
  pages=paginate(text);
