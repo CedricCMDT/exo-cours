@@ -41,7 +41,7 @@ const compose=document.querySelector("#salon-compose-dialog");
 const info=document.querySelector("#salon-count");
 const cast=document.querySelector("#salon-cast");if(cast){cast.innerHTML=people.slice(0,5).map(p=>'<div class="salon-cast-row"><span class="salon-avatar small" style="background:'+esc(p.color)+'">'+esc(p.initials)+'</span><div><strong>'+esc(p.name)+'</strong><br><span>'+esc(p.bio.slice(0,37))+'…</span></div></div>').join("");}
 
-let genre="Tous", currentThread=null,lastTrigger=null;
+let genre="Tous", currentThread=null,lastTrigger=null, visibleCount=18;
 const topics=["Tous","Débat","Question","Émotions","Coup de cœur","Journal de lecture","Mon carnet"];
 filters.innerHTML=topics.map(x=>`<button type="button" class="salon-filter" data-filter="${esc(x)}" aria-pressed="${x==="Tous"}">${esc(x)}</button>`).join("");
 const norm=s=>String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
@@ -52,18 +52,20 @@ function render(){
   if(mode==="popular")threads.sort((a,b)=>(b.likes||0)+(likes.includes(b.id)?1:0)-(a.likes||0)-(likes.includes(a.id)?1:0));
   else if(mode==="discussion")threads.sort((a,b)=>totalReplies(b)-totalReplies(a));
   else threads.sort((a,b)=>all().indexOf(a)-all().indexOf(b));
-  root.innerHTML=threads.map(threadCard).join("");
+  root.innerHTML=threads.slice(0,visibleCount).map(threadCard).join("")+(threads.length>visibleCount?'<div class="salon-showmore"><button type="button" id="salon-showmore">AFFICHER 18 DISCUSSIONS DE PLUS ↓</button><p>'+visibleCount+" sur "+threads.length+" conversations affichées</p></div>":"");
   if(!threads.length)root.innerHTML='<div class="salon-emptiness"><span>⌕</span><h3>Pas un murmure.</h3><p>Essayez un autre mot ou une autre catégorie.</p></div>';
   info.textContent=threads.length+" CONVERSATION"+(threads.length>1?"S":"");
 }
 function filterChange(value){
   genre=value;
+  visibleCount=18;
   filters.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.filter===value)));
   render();
 }
 filters.addEventListener("click",e=>{const btn=e.target.closest("[data-filter]");if(btn)filterChange(btn.dataset.filter);});
-search.addEventListener("input",render);
-sort.addEventListener("change",render);
+search.addEventListener("input",()=>{visibleCount=18;render();});
+sort.addEventListener("change",()=>{visibleCount=18;render();});
+document.addEventListener("click",event=>{if(event.target.closest("#salon-showmore")){visibleCount+=18;render();}});
 function dismiss(d){if(d.open)d.close(); if(lastTrigger?.isConnected)lastTrigger.focus();lastTrigger=null;}
 function popup(d,trigger){if(d.open)return;lastTrigger=trigger;if(typeof d.showModal==="function")d.showModal();else d.setAttribute("open","");}
 function notice(text){const el=document.querySelector("#toast");if(!el)return;el.textContent=text;el.classList.add("visible");clearTimeout(notice.timer);notice.timer=setTimeout(()=>el.classList.remove("visible"),3000);}
