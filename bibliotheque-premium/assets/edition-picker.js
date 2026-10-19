@@ -23,7 +23,18 @@ for(const slot of ["original","fr","en"]){
 }
 function render(slot){
  const e=book.editions[slot],source=findSource(e);
- tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.edition===slot)));
+ tabs.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.edition===slot))); 
+ if(book.copyrighted){
+   const query=encodeURIComponent((slot==="original"?book.originalTitle:book.title)+" "+book.author);
+   result.innerHTML='<div class="edition-protected"><strong>ŒUVRE SOUS DROITS — FICHE DE DÉCOUVERTE</strong><p>Cette œuvre n’est pas librement reproductible. LA MARGE conserve sa notice et ses favoris, sans proposer son texte intégral ni de traduction illégale. Pour lire dans cette langue, cherchez une édition publiée en librairie ou en bibliothèque.</p></div><div><span class="edition-status">VERSION '+safe(e.language.toUpperCase())+'</span><h3>'+safe(slot==="original"?book.originalTitle:book.title)+'</h3><p>Pas de lecture intégrale gratuite sur ce site pour ce titre.</p></div><div class="edition-choices"><a class="btn btn-outline" href="https://openlibrary.org/search?q='+query+'" target="_blank" rel="noopener noreferrer">RECHERCHER EN BIBLIOTHÈQUE ↗</a></div>';
+   return;
+ }
+ if(book.id==="ddhc-1789"){
+   const original=slot!=="en",status=original?"Document officiel français":"Traduction anglaise non intégrée";
+   result.innerHTML='<div><span class="edition-status">✳ '+safe(status)+'</span><h3>'+safe(book.title)+'</h3><p>La Déclaration est consultable intégralement sur Légifrance. LA MARGE donne priorité à cette source officielle plutôt qu’à une copie non vérifiée.</p></div><div class="edition-choices"><a class="btn btn-primary" href="'+safe(book.sourceUrl)+'" target="_blank" rel="noopener noreferrer">VOIR LE TEXTE OFFICIEL ↗</a></div>';
+   return;
+ }
+
  const local=Boolean(e.file),external=Boolean(e.gutenberg);
  const duplicate=slot!=="original"&&book.originalLanguage===e.lang?" Cette version correspond à la langue originale.":"";
  const note=e.note?'<p class="edition-extra">'+safe(e.note)+'</p>':"";
