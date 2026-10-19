@@ -96,7 +96,7 @@ function updateCount(){document.querySelectorAll("[data-fav-count]").forEach(el=
 function notice(message){const el=$("#toast");el.textContent=message;el.classList.add("visible");clearTimeout(notice.timer);notice.timer=setTimeout(()=>el.classList.remove("visible"),2800);}
 function updateButtons(){document.querySelectorAll("[data-favorite]").forEach(button=>{const book=byId(button.dataset.favorite);const liked=favorites.includes(book.id);button.classList.toggle("is-active",liked);button.setAttribute("aria-pressed",String(liked));button.setAttribute("aria-label",(liked?"Retirer ":"Ajouter ")+book.title+(liked?" des favoris":" aux favoris"));button.querySelector("span").textContent=liked?"♥":"♡";});}
 function renderFavorites(){const grid=$("#favorites-grid");if(!grid)return;const saved=favorites.map(byId).filter(Boolean);grid.innerHTML=saved.map(card).join("");$("#favorites-empty").hidden=saved.length>0;updateButtons();}
-function toggleFavorite(id){const book=byId(id);if(!book)return;if(favorites.includes(id)){favorites=favorites.filter(f=>f!==id);notice(book.title+" retiré de votre sélection.");}else{favorites.push(id);notice(book.title+" ajouté à votre sélection.");}try{localStorage.setItem(key,JSON.stringify(favorites));}catch(_){notice("Favori modifié pour cette session uniquement.");}updateCount();if(page==="favoris")renderFavorites();else updateButtons();}
+function toggleFavorite(id){const book=byId(id);if(!book)return;if(favorites.includes(id)){favorites=favorites.filter(f=>f!==id);notice(book.title+" retiré de votre sélection.");}else{favorites.push(id);notice(book.title+" ajouté à votre sélection.");}try{localStorage.setItem(key,JSON.stringify(favorites));}catch(_){notice("Favori modifié pour cette session uniquement.");}updateCount();if(page==="favoris")renderFavorites();else updateButtons();if(page==="catalogue"&&typeof window.LA_MARGE_REFRESH_CATALOGUE==="function")window.LA_MARGE_REFRESH_CATALOGUE();}
 document.addEventListener("click",event=>{
   const fav=event.target.closest("[data-favorite]");
   if(fav){toggleFavorite(fav.dataset.favorite);return;}
@@ -111,14 +111,15 @@ function setupCatalogue(){
  let access="Tous",category="Toutes les catégories",pageNo=1;
  const pageSize=24;
  const genres=[...new Set(books.map(b=>b.genre))].sort((a,b)=>a.localeCompare(b,"fr"));
- const quick=["Tous","À lire ici","Éditions libres","Sous droits","Documents"];
+ const quick=["Tous","À lire ici","Éditions libres","Sous droits","Documents","Mes favoris","Mon journal"];
  filters.innerHTML='<div class="library-fast-filters">'+quick.map(g=>'<button class="filter-pill'+(g==="Tous"?" selected":"")+'" type="button" data-access="'+g+'" aria-pressed="'+(g==="Tous")+'">'+g+'</button>').join("")+'</div><label class="library-category">CATÉGORIE <select id="genre-category" aria-label="Choisir une catégorie"><option>Toutes les catégories</option>'+genres.map(g=>'<option>'+escapeHtml(g)+'</option>').join("")+'</select></label>';
  const categorySelect=$("#genre-category");
  const existingGridParent=grid.parentElement;
  const controls=document.createElement("nav");controls.className="catalogue-pages";controls.id="catalogue-pages";controls.setAttribute("aria-label","Pages du catalogue");
  grid.after(controls);
  const isLocal=b=>Object.values(b.editions||{}).some(e=>e.file);
- const matchesAccess=b=>access==="Tous"||access==="À lire ici"&&isLocal(b)||access==="Éditions libres"&&!b.copyrighted||access==="Sous droits"&&b.copyrighted||access==="Documents"&&b.id==="ddhc-1789";
+ const getReadingStatus=id=>{try{const statuses=JSON.parse(localStorage.getItem("lamarge-reading-status-v1")||"{}");return ["a-lire","en-cours","termine"].includes(statuses[id])?statuses[id]:"";}catch(_){return "";}};
+ const matchesAccess=b=>access==="Tous"||access==="À lire ici"&&isLocal(b)||access==="Éditions libres"&&!b.copyrighted||access==="Sous droits"&&b.copyrighted||access==="Documents"&&b.id==="ddhc-1789"||access==="Mes favoris"&&favorites.includes(b.id)||access==="Mon journal"&&Boolean(getReadingStatus(b.id));
  function render(){
   const term=fold(search.value);
   const matching=books.filter(b=>matchesAccess(b)&&(category==="Toutes les catégories"||b.genre===category)&&fold(b.title+" "+b.author+" "+b.genre+" "+(b.short||"")+" "+(b.originalTitle||"")).includes(term));
@@ -149,6 +150,7 @@ function setupCatalogue(){
  search.addEventListener("input",changed);sort.addEventListener("change",changed);
  $("#clear-filters").addEventListener("click",()=>{search.value="";sort.value="curated";categorySelect.value="Toutes les catégories";category="Toutes les catégories";filters.querySelector('[data-access="Tous"]').click();search.focus();});
  const initial=new URLSearchParams(location.search).get("q");if(initial)search.value=initial;
+ window.LA_MARGE_REFRESH_CATALOGUE=render;
  render();
 }
 function setupBook(){
