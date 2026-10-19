@@ -64,3 +64,8 @@ body[data-theme=dark] .reader-article-header p:not(.reader-overline){color:#b1aa
 .reader-translate-button{background:#a97942;color:#fff6e5;border:0;padding:17px 21px;font:800 10px var(--display);letter-spacing:.1em;transition:transform .2s}
 .reader-translate-button:hover{transform:translateY(-3px);background:#865e34}
 @media(max-width:600px){.translation-status{padding:26px 15px}.machine-disclaimer{padding:14px 18px}}
+
+/* Import d'editions Gutenberg disponibles legalement : chargement manuel de fichier texte. */
+.reader-source-note [hidden]{display:none!important}
+.reader-import-label{display:block;border:1px solid rgba(228,189,119,.5);color:#e7c687;padding:12px;margin-top:16px;text-align:center;font:800 9px/1.6 var(--display);letter-spacing:.06em;cursor:pointer}
+.reader-import-label:hover{background:#e7c687;color:#171915}
