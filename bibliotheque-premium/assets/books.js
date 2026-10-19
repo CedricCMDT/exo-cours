@@ -1,4 +1,4 @@
-/* Catalogue de LA MARGE : le champ fullText renvoie vers une transcription intégrale disponible localement. */
+/* LA MARGE — catalogue de 48 livres. Éditions local / source Gutenberg / recherche explicite. */
 window.LA_MARGE_BOOKS = [
   {
     "id": "moby-dick",
@@ -16,7 +16,34 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour prendre le large",
     "length": "Un long voyage",
     "theme": "L'obsession et le destin",
-    "cover": "assets/covers/moby-dick.svg"
+    "cover": "assets/covers/moby-dick.svg",
+    "originalLanguage": "en",
+    "originalTitle": "Moby-Dick",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Moby-Dick",
+        "gutenberg": 2701,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Moby-Dick",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Moby-Dick",
+        "gutenberg": 2701,
+        "status": "external"
+      }
+    }
   },
   {
     "id": "les-miserables",
@@ -34,7 +61,34 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour ressentir intensément",
     "length": "Un très long voyage",
     "theme": "La justice et la rédemption",
-    "cover": "assets/covers/les-miserables.svg"
+    "cover": "assets/covers/les-miserables.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Les Misérables",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Les Misérables",
+        "gutenberg": 135,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Misérables",
+        "gutenberg": 135,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Misérables",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "le-petit-prince",
@@ -52,7 +106,32 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour rêver un peu",
     "length": "Une soirée",
     "theme": "L'amitié et l'essentiel",
-    "cover": "assets/covers/le-petit-prince.svg"
+    "cover": "assets/covers/le-petit-prince.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Petit Prince",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Petit Prince",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Petit Prince",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Petit Prince",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "1984",
@@ -70,7 +149,32 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour questionner le monde",
     "length": "Quelques soirées",
     "theme": "La liberté et la surveillance",
-    "cover": "assets/covers/1984.svg"
+    "cover": "assets/covers/1984.svg",
+    "originalLanguage": "en",
+    "originalTitle": "1984",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "1984",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "1984",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "1984",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "frankenstein",
@@ -88,7 +192,34 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour frissonner et réfléchir",
     "length": "Quelques soirées",
     "theme": "La création et le rejet",
-    "cover": "assets/covers/frankenstein.svg"
+    "cover": "assets/covers/frankenstein.svg",
+    "originalLanguage": "en",
+    "originalTitle": "Frankenstein",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Frankenstein",
+        "gutenberg": 84,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Frankenstein",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Frankenstein",
+        "gutenberg": 84,
+        "status": "external"
+      }
+    }
   },
   {
     "id": "orgueil-et-prejuges",
@@ -106,7 +237,34 @@ window.LA_MARGE_BOOKS = [
     "mood": "Pour sourire et vibrer",
     "length": "Quelques soirées",
     "theme": "Les apparences et l'amour",
-    "cover": "assets/covers/orgueil-et-prejuges.svg"
+    "cover": "assets/covers/orgueil-et-prejuges.svg",
+    "originalLanguage": "en",
+    "originalTitle": "Orgueil et Préjugés",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Orgueil et Préjugés",
+        "gutenberg": 1342,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Orgueil et Préjugés",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Orgueil et Préjugés",
+        "gutenberg": 1342,
+        "status": "external"
+      }
+    }
   },
   {
     "id": "candide",
@@ -126,7 +284,36 @@ window.LA_MARGE_BOOKS = [
     "fullText": "lectures/candide.txt",
     "gutenberg": 59859,
     "number": "07",
-    "cover": "assets/covers/candide.svg"
+    "cover": "assets/covers/candide.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Candide",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Candide",
+        "gutenberg": 59859,
+        "file": "lectures/candide.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Candide",
+        "gutenberg": 59859,
+        "file": "lectures/candide.txt",
+        "status": "local"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Candide",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "tour-du-monde",
@@ -146,7 +333,36 @@ window.LA_MARGE_BOOKS = [
     "fullText": "lectures/tour-du-monde.txt",
     "gutenberg": 46541,
     "number": "08",
-    "cover": "assets/covers/tour-du-monde.svg"
+    "cover": "assets/covers/tour-du-monde.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Tour du monde en 80 jours",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Tour du monde en 80 jours",
+        "gutenberg": 46541,
+        "file": "lectures/tour-du-monde.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Tour du monde en 80 jours",
+        "gutenberg": 46541,
+        "file": "lectures/tour-du-monde.txt",
+        "status": "local"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Tour du monde en 80 jours",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "le-horla",
@@ -166,7 +382,36 @@ window.LA_MARGE_BOOKS = [
     "fullText": "lectures/le-horla.txt",
     "gutenberg": 10775,
     "number": "09",
-    "cover": "assets/covers/le-horla.svg"
+    "cover": "assets/covers/le-horla.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Horla et autres nouvelles",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Horla et autres nouvelles",
+        "gutenberg": 10775,
+        "file": "lectures/le-horla.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Horla et autres nouvelles",
+        "gutenberg": 10775,
+        "file": "lectures/le-horla.txt",
+        "status": "local"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Horla et autres nouvelles",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "arsene-lupin",
@@ -186,7 +431,36 @@ window.LA_MARGE_BOOKS = [
     "fullText": "lectures/arsene-lupin.txt",
     "gutenberg": 32854,
     "number": "10",
-    "cover": "assets/covers/arsene-lupin.svg"
+    "cover": "assets/covers/arsene-lupin.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Arsène Lupin, gentleman-cambrioleur",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Arsène Lupin, gentleman-cambrioleur",
+        "gutenberg": 32854,
+        "file": "lectures/arsene-lupin.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Arsène Lupin, gentleman-cambrioleur",
+        "gutenberg": 32854,
+        "file": "lectures/arsene-lupin.txt",
+        "status": "local"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Arsène Lupin, gentleman-cambrioleur",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "voyage-centre-terre",
@@ -206,7 +480,36 @@ window.LA_MARGE_BOOKS = [
     "fullText": "lectures/voyage-centre-terre.txt",
     "gutenberg": 4791,
     "number": "11",
-    "cover": "assets/covers/voyage-centre-terre.svg"
+    "cover": "assets/covers/voyage-centre-terre.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Voyage au centre de la Terre",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Voyage au centre de la Terre",
+        "gutenberg": 4791,
+        "file": "lectures/voyage-centre-terre.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Voyage au centre de la Terre",
+        "gutenberg": 4791,
+        "file": "lectures/voyage-centre-terre.txt",
+        "status": "local"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Voyage au centre de la Terre",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "trois-mousquetaires",
@@ -225,7 +528,34 @@ window.LA_MARGE_BOOKS = [
     "theme": "L'amitié et l'honneur",
     "gutenberg": 13951,
     "number": "12",
-    "cover": "assets/covers/trois-mousquetaires.svg"
+    "cover": "assets/covers/trois-mousquetaires.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Les Trois Mousquetaires",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Les Trois Mousquetaires",
+        "gutenberg": 13951,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Trois Mousquetaires",
+        "gutenberg": 13951,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Trois Mousquetaires",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "madame-bovary",
@@ -244,7 +574,34 @@ window.LA_MARGE_BOOKS = [
     "theme": "Le désir et l'illusion",
     "gutenberg": 2413,
     "number": "13",
-    "cover": "assets/covers/madame-bovary.svg"
+    "cover": "assets/covers/madame-bovary.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Madame Bovary",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Madame Bovary",
+        "gutenberg": 14155,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Madame Bovary",
+        "gutenberg": 14155,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Madame Bovary",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "germinal",
@@ -263,7 +620,32 @@ window.LA_MARGE_BOOKS = [
     "theme": "La lutte sociale et l'espoir",
     "gutenberg": 5711,
     "number": "14",
-    "cover": "assets/covers/germinal.svg"
+    "cover": "assets/covers/germinal.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Germinal",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Germinal",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Germinal",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Germinal",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "notre-dame",
@@ -282,7 +664,32 @@ window.LA_MARGE_BOOKS = [
     "theme": "La différence et le destin",
     "gutenberg": 2610,
     "number": "15",
-    "cover": "assets/covers/notre-dame.svg"
+    "cover": "assets/covers/notre-dame.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Notre-Dame de Paris",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Notre-Dame de Paris",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Notre-Dame de Paris",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Notre-Dame de Paris",
+        "status": "search"
+      }
+    }
   },
   {
     "id": "monte-cristo",
@@ -301,6 +708,1504 @@ window.LA_MARGE_BOOKS = [
     "theme": "La vengeance et le pardon",
     "gutenberg": 17989,
     "number": "16",
-    "cover": "assets/covers/monte-cristo.svg"
+    "cover": "assets/covers/monte-cristo.svg",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Comte de Monte-Cristo",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Comte de Monte-Cristo",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Comte de Monte-Cristo",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Comte de Monte-Cristo",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "pere-goriot",
+    "title": "Le Père Goriot",
+    "author": "Honoré de Balzac",
+    "year": 1835,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Père Goriot",
+    "badge": "À DÉCOUVRIR",
+    "number": "17",
+    "tagline": "Une pension parisienne, des ambitions dévorantes et l'amour d'un père.",
+    "short": "Une pension parisienne, des ambitions dévorantes et l'amour d'un père.",
+    "description": "À Paris, la pension Vauquer réunit des destins qui s'entrecroisent. Entre amour filial et ascension sociale, Balzac dévoile les ressorts parfois cruels de la société.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/pere-goriot.svg",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Père Goriot",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Père Goriot",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Père Goriot",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "eugenie-grandet",
+    "title": "Eugénie Grandet",
+    "author": "Honoré de Balzac",
+    "year": 1833,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Eugénie Grandet",
+    "badge": "À DÉCOUVRIR",
+    "number": "18",
+    "tagline": "La fortune peut-elle acheter ce qui compte ?",
+    "short": "La fortune peut-elle acheter ce qui compte ?",
+    "description": "Dans une maison de Saumur, Eugénie découvre le sentiment amoureux tandis que l'avarice de son père domine chaque pièce et chaque décision.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/eugenie-grandet.svg",
+    "gutenberg": 11049,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Eugénie Grandet",
+        "gutenberg": 11049,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Eugénie Grandet",
+        "gutenberg": 11049,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Eugénie Grandet",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "peau-de-chagrin",
+    "title": "La Peau de chagrin",
+    "author": "Honoré de Balzac",
+    "year": 1831,
+    "genre": "Fantastique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "La Peau de chagrin",
+    "badge": "À DÉCOUVRIR",
+    "number": "19",
+    "tagline": "Chaque désir a un prix. Et ce prix est votre vie.",
+    "short": "Chaque désir a un prix. Et ce prix est votre vie.",
+    "description": "Un jeune homme acquiert une mystérieuse peau qui exauce ses vœux, mais rétrécit à chaque souhait. Une fable sur le désir et le temps.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Fantastique",
+    "cover": "assets/covers/peau-de-chagrin.svg",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "La Peau de chagrin",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Peau de chagrin",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Peau de chagrin",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "rouge-noir",
+    "title": "Le Rouge et le Noir",
+    "author": "Stendhal",
+    "year": 1830,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Rouge et le Noir",
+    "badge": "À DÉCOUVRIR",
+    "number": "20",
+    "tagline": "Un cœur orgueilleux dans un monde de calculs.",
+    "short": "Un cœur orgueilleux dans un monde de calculs.",
+    "description": "Julien Sorel rêve d'échapper à sa condition. Ambition, amour et contradictions le conduisent au cœur de la société française.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/rouge-noir.svg",
+    "gutenberg": 798,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Rouge et le Noir",
+        "gutenberg": 798,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Rouge et le Noir",
+        "gutenberg": 798,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Rouge et le Noir",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "chartreuse-parme",
+    "title": "La Chartreuse de Parme",
+    "author": "Stendhal",
+    "year": 1839,
+    "genre": "Historique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "La Chartreuse de Parme",
+    "badge": "À DÉCOUVRIR",
+    "number": "21",
+    "tagline": "Les passions sont parfois plus dangereuses que les batailles.",
+    "short": "Les passions sont parfois plus dangereuses que les batailles.",
+    "description": "Fabrice del Dongo traverse l'Italie napoléonienne, les intrigues et les sentiments. Stendhal mêle aventure et psychologie.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Historique",
+    "cover": "assets/covers/chartreuse-parme.svg",
+    "gutenberg": 796,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "La Chartreuse de Parme",
+        "gutenberg": 796,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Chartreuse de Parme",
+        "gutenberg": 796,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Chartreuse de Parme",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "bel-ami",
+    "title": "Bel-Ami",
+    "author": "Guy de Maupassant",
+    "year": 1885,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Bel-Ami",
+    "badge": "À DÉCOUVRIR",
+    "number": "22",
+    "tagline": "Le charme ouvre des portes. Que laisse-t-il derrière lui ?",
+    "short": "Le charme ouvre des portes. Que laisse-t-il derrière lui ?",
+    "description": "Georges Duroy gravit les échelons du Paris mondain et journalistique, porté par l'ambition, les rencontres et les compromis.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/bel-ami.svg",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Bel-Ami",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Bel-Ami",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Bel-Ami",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "une-vie",
+    "title": "Une vie",
+    "author": "Guy de Maupassant",
+    "year": 1883,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Une vie",
+    "badge": "À DÉCOUVRIR",
+    "number": "23",
+    "tagline": "Une existence entière, et toutes ses espérances.",
+    "short": "Une existence entière, et toutes ses espérances.",
+    "description": "Jeanne découvre que la vie ne ressemble pas toujours aux rêves de sa jeunesse. Un portrait bouleversant du temps qui passe.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/une-vie.svg",
+    "gutenberg": 17457,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Une vie",
+        "gutenberg": 17457,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Une vie",
+        "gutenberg": 17457,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Une vie",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "fleurs-mal",
+    "title": "Les Fleurs du mal",
+    "author": "Charles Baudelaire",
+    "year": 1857,
+    "genre": "Poésie",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Les Fleurs du mal",
+    "badge": "À DÉCOUVRIR",
+    "number": "24",
+    "tagline": "Trouver le beau dans la faille et la contradiction.",
+    "short": "Trouver le beau dans la faille et la contradiction.",
+    "description": "Dans ce recueil fondateur, Baudelaire explore l'ennui, l'idéal, la ville, le désir et la modernité avec une intensité incomparable.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Poésie",
+    "cover": "assets/covers/fleurs-mal.svg",
+    "gutenberg": 6099,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Les Fleurs du mal",
+        "gutenberg": 6099,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Fleurs du mal",
+        "gutenberg": 6099,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Fleurs du mal",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "poil-carotte",
+    "title": "Poil de Carotte",
+    "author": "Jules Renard",
+    "year": 1894,
+    "genre": "Conte",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Poil de Carotte",
+    "badge": "À DÉCOUVRIR",
+    "number": "25",
+    "tagline": "L'enfance a parfois le goût piquant de l'ironie.",
+    "short": "L'enfance a parfois le goût piquant de l'ironie.",
+    "description": "François Lepic, surnommé Poil de Carotte, affronte les injustices de son quotidien familial avec ruse et sensibilité.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Conte",
+    "cover": "assets/covers/poil-carotte.svg",
+    "gutenberg": 4559,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Poil de Carotte",
+        "gutenberg": 4559,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Poil de Carotte",
+        "gutenberg": 4559,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Poil de Carotte",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "fantome-opera",
+    "title": "Le Fantôme de l'Opéra",
+    "author": "Gaston Leroux",
+    "year": 1910,
+    "genre": "Mystère",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Fantôme de l'Opéra",
+    "badge": "À DÉCOUVRIR",
+    "number": "26",
+    "tagline": "Sous les dorures de l'Opéra, une voix attend.",
+    "short": "Sous les dorures de l'Opéra, une voix attend.",
+    "description": "Au palais Garnier, une présence mystérieuse trouble les coulisses, entre passion, musique et énigme.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Mystère",
+    "cover": "assets/covers/fantome-opera.svg",
+    "gutenberg": 62215,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Fantôme de l'Opéra",
+        "gutenberg": 62215,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Fantôme de l'Opéra",
+        "gutenberg": 62215,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Fantôme de l'Opéra",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "chambre-jaune",
+    "title": "Le Mystère de la chambre jaune",
+    "author": "Gaston Leroux",
+    "year": 1907,
+    "genre": "Policier",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "Le Mystère de la chambre jaune",
+    "badge": "À DÉCOUVRIR",
+    "number": "27",
+    "tagline": "Une porte fermée, un crime, aucune issue.",
+    "short": "Une porte fermée, un crime, aucune issue.",
+    "description": "Joseph Rouletabille enquête sur une agression inexplicable dans une pièce close. Un classique du roman à énigme.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Policier",
+    "cover": "assets/covers/chambre-jaune.svg",
+    "gutenberg": 13765,
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "Le Mystère de la chambre jaune",
+        "gutenberg": 13765,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Mystère de la chambre jaune",
+        "gutenberg": 13765,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Mystère de la chambre jaune",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "princesse-cleves",
+    "title": "La Princesse de Clèves",
+    "author": "Madame de La Fayette",
+    "year": 1678,
+    "genre": "Classique",
+    "origin": "France",
+    "language": "français",
+    "originalLanguage": "fr",
+    "originalTitle": "La Princesse de Clèves",
+    "badge": "À DÉCOUVRIR",
+    "number": "28",
+    "tagline": "Le devoir et le désir ne parlent pas la même langue.",
+    "short": "Le devoir et le désir ne parlent pas la même langue.",
+    "description": "À la cour d'Henri II, une jeune femme se confronte à un amour inattendu et aux exigences de la vertu.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/princesse-cleves.svg",
+    "editions": {
+      "original": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version originale",
+        "title": "La Princesse de Clèves",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Princesse de Clèves",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Princesse de Clèves",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "jane-eyre",
+    "title": "Jane Eyre",
+    "author": "Charlotte Brontë",
+    "year": 1847,
+    "genre": "Romance",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Jane Eyre",
+    "badge": "À DÉCOUVRIR",
+    "number": "29",
+    "tagline": "Une voix indépendante qui refuse de se taire.",
+    "short": "Une voix indépendante qui refuse de se taire.",
+    "description": "De son enfance difficile à sa rencontre avec Rochester, Jane Eyre lutte pour son autonomie, sa dignité et ses sentiments.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Romance",
+    "cover": "assets/covers/jane-eyre.svg",
+    "gutenberg": 1260,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Jane Eyre",
+        "gutenberg": 1260,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Jane Eyre",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Jane Eyre",
+        "gutenberg": 1260,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "hauts-hurlevent",
+    "title": "Les Hauts de Hurlevent",
+    "author": "Emily Brontë",
+    "year": 1847,
+    "genre": "Romance",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Wuthering Heights",
+    "badge": "À DÉCOUVRIR",
+    "number": "30",
+    "tagline": "Une passion sauvage sur la lande.",
+    "short": "Une passion sauvage sur la lande.",
+    "description": "Entre Catherine et Heathcliff, l'amour s'écrit aussi dans la fureur, la perte et la mémoire. Une tragédie hors des conventions.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Romance",
+    "cover": "assets/covers/hauts-hurlevent.svg",
+    "gutenberg": 768,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Wuthering Heights",
+        "gutenberg": 768,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Hauts de Hurlevent",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Hauts de Hurlevent",
+        "gutenberg": 768,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "alice-merveilles",
+    "title": "Alice au pays des merveilles",
+    "author": "Lewis Carroll",
+    "year": 1865,
+    "genre": "Conte",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Alice's Adventures in Wonderland",
+    "badge": "À DÉCOUVRIR",
+    "number": "31",
+    "tagline": "Tomber dans un terrier, découvrir l'impossible.",
+    "short": "Tomber dans un terrier, découvrir l'impossible.",
+    "description": "Alice suit un lapin blanc et découvre un monde où la logique joue à cache-cache avec l'absurde.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Conte",
+    "cover": "assets/covers/alice-merveilles.svg",
+    "gutenberg": 11,
+    "fullText": "lectures/alice-en.txt",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Alice's Adventures in Wonderland",
+        "gutenberg": 11,
+        "file": "lectures/alice-en.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Alice au pays des merveilles",
+        "gutenberg": 55456,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Alice au pays des merveilles",
+        "gutenberg": 11,
+        "file": "lectures/alice-en.txt",
+        "status": "local"
+      }
+    }
+  },
+  {
+    "id": "dorian-gray",
+    "title": "Le Portrait de Dorian Gray",
+    "author": "Oscar Wilde",
+    "year": 1890,
+    "genre": "Fantastique",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Picture of Dorian Gray",
+    "badge": "À DÉCOUVRIR",
+    "number": "32",
+    "tagline": "La jeunesse éternelle a son côté obscur.",
+    "short": "La jeunesse éternelle a son côté obscur.",
+    "description": "Un portrait vieillit à la place de Dorian Gray. Wilde explore les apparences, le plaisir et la responsabilité.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Fantastique",
+    "cover": "assets/covers/dorian-gray.svg",
+    "gutenberg": 174,
+    "fullText": "lectures/dorian-en.txt",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Picture of Dorian Gray",
+        "gutenberg": 174,
+        "file": "lectures/dorian-en.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Portrait de Dorian Gray",
+        "gutenberg": 14192,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Portrait de Dorian Gray",
+        "gutenberg": 174,
+        "file": "lectures/dorian-en.txt",
+        "status": "local"
+      }
+    }
+  },
+  {
+    "id": "dracula",
+    "title": "Dracula",
+    "author": "Bram Stoker",
+    "year": 1897,
+    "genre": "Fantastique",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Dracula",
+    "badge": "À DÉCOUVRIR",
+    "number": "33",
+    "tagline": "Certaines ombres voyagent à la tombée de la nuit.",
+    "short": "Certaines ombres voyagent à la tombée de la nuit.",
+    "description": "Un étrange comte de Transylvanie projette son influence jusqu'en Angleterre. Lettres et journaux composent ce grand récit gothique.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Fantastique",
+    "cover": "assets/covers/dracula.svg",
+    "gutenberg": 345,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Dracula",
+        "gutenberg": 345,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Dracula",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Dracula",
+        "gutenberg": 345,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "jekyll-hyde",
+    "title": "Dr Jekyll et Mr Hyde",
+    "author": "Robert Louis Stevenson",
+    "year": 1886,
+    "genre": "Fantastique",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Strange Case of Dr Jekyll and Mr Hyde",
+    "badge": "À DÉCOUVRIR",
+    "number": "34",
+    "tagline": "Et si nous étions notre propre énigme ?",
+    "short": "Et si nous étions notre propre énigme ?",
+    "description": "Dans Londres, un scientifique respectable dissimule un secret qui révèle la dualité de l'âme humaine.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Fantastique",
+    "cover": "assets/covers/jekyll-hyde.svg",
+    "gutenberg": 42,
+    "fullText": "lectures/jekyll-en.txt",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Strange Case of Dr Jekyll and Mr Hyde",
+        "gutenberg": 42,
+        "file": "lectures/jekyll-en.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Dr Jekyll et Mr Hyde",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Dr Jekyll et Mr Hyde",
+        "gutenberg": 42,
+        "file": "lectures/jekyll-en.txt",
+        "status": "local"
+      }
+    }
+  },
+  {
+    "id": "ile-tresor",
+    "title": "L'Île au trésor",
+    "author": "Robert Louis Stevenson",
+    "year": 1883,
+    "genre": "Aventure",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Treasure Island",
+    "badge": "À DÉCOUVRIR",
+    "number": "35",
+    "tagline": "Une carte, un navire et la promesse de l'inconnu.",
+    "short": "Une carte, un navire et la promesse de l'inconnu.",
+    "description": "Jim Hawkins découvre une carte au trésor et embarque dans une aventure maritime peuplée de pirates et de trahisons.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Aventure",
+    "cover": "assets/covers/ile-tresor.svg",
+    "gutenberg": 120,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Treasure Island",
+        "gutenberg": 120,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "L'Île au trésor",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "L'Île au trésor",
+        "gutenberg": 120,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "machine-temps",
+    "title": "La Machine à explorer le temps",
+    "author": "H. G. Wells",
+    "year": 1895,
+    "genre": "Science-fiction",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Time Machine",
+    "badge": "À DÉCOUVRIR",
+    "number": "36",
+    "tagline": "Un voyage si lointain que demain devient étranger.",
+    "short": "Un voyage si lointain que demain devient étranger.",
+    "description": "Un inventeur explore un futur où l'humanité a changé de manière inquiétante. Wells réinvente le voyage dans le temps.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Science-fiction",
+    "cover": "assets/covers/machine-temps.svg",
+    "gutenberg": 35,
+    "fullText": "lectures/time-machine-en.txt",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Time Machine",
+        "gutenberg": 35,
+        "file": "lectures/time-machine-en.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Machine à explorer le temps",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Machine à explorer le temps",
+        "gutenberg": 35,
+        "file": "lectures/time-machine-en.txt",
+        "status": "local"
+      }
+    }
+  },
+  {
+    "id": "guerre-mondes",
+    "title": "La Guerre des mondes",
+    "author": "H. G. Wells",
+    "year": 1898,
+    "genre": "Science-fiction",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The War of the Worlds",
+    "badge": "À DÉCOUVRIR",
+    "number": "37",
+    "tagline": "La Terre n'est peut-être pas seule à regarder les étoiles.",
+    "short": "La Terre n'est peut-être pas seule à regarder les étoiles.",
+    "description": "Des êtres venus de Mars débarquent sur Terre. Un récit visionnaire qui renverse notre confiance dans la puissance humaine.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Science-fiction",
+    "cover": "assets/covers/guerre-mondes.svg",
+    "gutenberg": 36,
+    "fullText": "lectures/war-worlds-en.txt",
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The War of the Worlds",
+        "gutenberg": 36,
+        "file": "lectures/war-worlds-en.txt",
+        "status": "local"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Guerre des mondes",
+        "gutenberg": 60656,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Guerre des mondes",
+        "gutenberg": 36,
+        "file": "lectures/war-worlds-en.txt",
+        "status": "local"
+      }
+    }
+  },
+  {
+    "id": "sherlock-aventures",
+    "title": "Les Aventures de Sherlock Holmes",
+    "author": "Arthur Conan Doyle",
+    "year": 1892,
+    "genre": "Policier",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Adventures of Sherlock Holmes",
+    "badge": "À DÉCOUVRIR",
+    "number": "38",
+    "tagline": "Un détail suffit quand on sait observer.",
+    "short": "Un détail suffit quand on sait observer.",
+    "description": "Sherlock Holmes et Watson affrontent une série d'énigmes où l'observation et la déduction changent tout.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Policier",
+    "cover": "assets/covers/sherlock-aventures.svg",
+    "gutenberg": 1661,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Adventures of Sherlock Holmes",
+        "gutenberg": 1661,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Aventures de Sherlock Holmes",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Aventures de Sherlock Holmes",
+        "gutenberg": 1661,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "etude-rouge",
+    "title": "Une étude en rouge",
+    "author": "Arthur Conan Doyle",
+    "year": 1887,
+    "genre": "Policier",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "A Study in Scarlet",
+    "badge": "À DÉCOUVRIR",
+    "number": "39",
+    "tagline": "La première rencontre d'un duo mythique.",
+    "short": "La première rencontre d'un duo mythique.",
+    "description": "Watson croise Holmes à Londres et découvre les méthodes d'un enquêteur exceptionnel dans une affaire sombre.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Policier",
+    "cover": "assets/covers/etude-rouge.svg",
+    "gutenberg": 244,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "A Study in Scarlet",
+        "gutenberg": 244,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Une étude en rouge",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Une étude en rouge",
+        "gutenberg": 244,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "jardin-secret",
+    "title": "Le Jardin secret",
+    "author": "Frances Hodgson Burnett",
+    "year": 1911,
+    "genre": "Conte",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Secret Garden",
+    "badge": "À DÉCOUVRIR",
+    "number": "40",
+    "tagline": "Un jardin fermé peut rouvrir des cœurs.",
+    "short": "Un jardin fermé peut rouvrir des cœurs.",
+    "description": "Mary Lennox découvre un domaine anglais et un jardin abandonné. Une histoire de transformation, d'amitié et de nature.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Conte",
+    "cover": "assets/covers/jardin-secret.svg",
+    "gutenberg": 17396,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Secret Garden",
+        "gutenberg": 17396,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Le Jardin secret",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Le Jardin secret",
+        "gutenberg": 17396,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "quatre-filles-march",
+    "title": "Les Quatre Filles du docteur March",
+    "author": "Louisa May Alcott",
+    "year": 1868,
+    "genre": "Classique",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "Little Women",
+    "badge": "À DÉCOUVRIR",
+    "number": "41",
+    "tagline": "Quatre sœurs et mille façons de grandir.",
+    "short": "Quatre sœurs et mille façons de grandir.",
+    "description": "Meg, Jo, Beth et Amy construisent chacune leur propre chemin dans une famille unie par l'affection et les épreuves.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/quatre-filles-march.svg",
+    "gutenberg": 514,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "Little Women",
+        "gutenberg": 514,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Les Quatre Filles du docteur March",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Les Quatre Filles du docteur March",
+        "gutenberg": 514,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "appel-foret",
+    "title": "L'Appel de la forêt",
+    "author": "Jack London",
+    "year": 1903,
+    "genre": "Aventure",
+    "origin": "Royaume-Uni / États-Unis",
+    "language": "anglais",
+    "originalLanguage": "en",
+    "originalTitle": "The Call of the Wild",
+    "badge": "À DÉCOUVRIR",
+    "number": "42",
+    "tagline": "Le sauvage murmure sous la neige.",
+    "short": "Le sauvage murmure sous la neige.",
+    "description": "Buck est arraché à son confort et confronté à la dureté du Grand Nord. Un récit intense de transformation.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Aventure",
+    "cover": "assets/covers/appel-foret.svg",
+    "gutenberg": 215,
+    "editions": {
+      "original": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version originale",
+        "title": "The Call of the Wild",
+        "gutenberg": 215,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "L'Appel de la forêt",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "L'Appel de la forêt",
+        "gutenberg": 215,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "don-quichotte",
+    "title": "Don Quichotte",
+    "author": "Miguel de Cervantes",
+    "year": 1605,
+    "genre": "Aventure",
+    "origin": "Espagne",
+    "language": "espagnol",
+    "originalLanguage": "es",
+    "originalTitle": "Don Quijote",
+    "badge": "À DÉCOUVRIR",
+    "number": "43",
+    "tagline": "Combattre des moulins pour défendre ses rêves.",
+    "short": "Combattre des moulins pour défendre ses rêves.",
+    "description": "Un hidalgo épris de romans de chevalerie parcourt l'Espagne avec Sancho Panza, transformant le réel par la force de son imagination.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Aventure",
+    "cover": "assets/covers/don-quichotte.svg",
+    "gutenberg": 2000,
+    "editions": {
+      "original": {
+        "lang": "es",
+        "language": "espagnol",
+        "label": "Version originale",
+        "title": "Don Quijote",
+        "gutenberg": 2000,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Don Quichotte",
+        "gutenberg": 42524,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Don Quichotte",
+        "gutenberg": 996,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "metamorphose",
+    "title": "La Métamorphose",
+    "author": "Franz Kafka",
+    "year": 1915,
+    "genre": "Fantastique",
+    "origin": "Empire austro-hongrois",
+    "language": "allemand",
+    "originalLanguage": "de",
+    "originalTitle": "Die Verwandlung",
+    "badge": "À DÉCOUVRIR",
+    "number": "44",
+    "tagline": "Un matin, le monde n'a plus la même forme.",
+    "short": "Un matin, le monde n'a plus la même forme.",
+    "description": "Gregor Samsa se réveille transformé. Kafka raconte la solitude et l'exclusion dans un conte étrange et saisissant.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Fantastique",
+    "cover": "assets/covers/metamorphose.svg",
+    "gutenberg": 22367,
+    "editions": {
+      "original": {
+        "lang": "de",
+        "language": "allemand",
+        "label": "Version originale",
+        "title": "Die Verwandlung",
+        "gutenberg": 22367,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Métamorphose",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Métamorphose",
+        "status": "search"
+      }
+    }
+  },
+  {
+    "id": "crime-chatiment",
+    "title": "Crime et Châtiment",
+    "author": "Fiodor Dostoïevski",
+    "year": 1866,
+    "genre": "Classique",
+    "origin": "Russie",
+    "language": "russe",
+    "originalLanguage": "ru",
+    "originalTitle": "Преступление и наказание",
+    "badge": "À DÉCOUVRIR",
+    "number": "45",
+    "tagline": "La culpabilité sait retrouver son chemin.",
+    "short": "La culpabilité sait retrouver son chemin.",
+    "description": "À Saint-Pétersbourg, Raskolnikov tente de justifier un acte terrible. Un voyage dans la conscience et le remords.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Classique",
+    "cover": "assets/covers/crime-chatiment.svg",
+    "editions": {
+      "original": {
+        "lang": "ru",
+        "language": "russe",
+        "label": "Version originale",
+        "title": "Преступление и наказание",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Crime et Châtiment",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Crime et Châtiment",
+        "gutenberg": 2554,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "anna-karenine",
+    "title": "Anna Karénine",
+    "author": "Léon Tolstoï",
+    "year": 1878,
+    "genre": "Romance",
+    "origin": "Russie",
+    "language": "russe",
+    "originalLanguage": "ru",
+    "originalTitle": "Анна Каренина",
+    "badge": "À DÉCOUVRIR",
+    "number": "46",
+    "tagline": "Une passion, une société, des vies entremêlées.",
+    "short": "Une passion, une société, des vies entremêlées.",
+    "description": "Entre Moscou et Saint-Pétersbourg, Tolstoï raconte les désirs d'Anna, les dilemmes de Levine et la complexité des choix.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Romance",
+    "cover": "assets/covers/anna-karenine.svg",
+    "editions": {
+      "original": {
+        "lang": "ru",
+        "language": "russe",
+        "label": "Version originale",
+        "title": "Анна Каренина",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "Anna Karénine",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "Anna Karénine",
+        "gutenberg": 1399,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "divine-comedie",
+    "title": "La Divine Comédie",
+    "author": "Dante Alighieri",
+    "year": 1321,
+    "genre": "Poésie",
+    "origin": "Italie",
+    "language": "italien",
+    "originalLanguage": "it",
+    "originalTitle": "La Divina Commedia",
+    "badge": "À DÉCOUVRIR",
+    "number": "47",
+    "tagline": "De l'ombre vers les étoiles.",
+    "short": "De l'ombre vers les étoiles.",
+    "description": "Guidé à travers les royaumes de l'au-delà, Dante compose un immense voyage allégorique sur l'amour, l'espoir et la condition humaine.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Poésie",
+    "cover": "assets/covers/divine-comedie.svg",
+    "gutenberg": 1000,
+    "editions": {
+      "original": {
+        "lang": "it",
+        "language": "italien",
+        "label": "Version originale",
+        "title": "La Divina Commedia",
+        "gutenberg": 1000,
+        "status": "external"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "La Divine Comédie",
+        "status": "search"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "La Divine Comédie",
+        "gutenberg": 1004,
+        "status": "external"
+      }
+    }
+  },
+  {
+    "id": "odyssee",
+    "title": "L'Odyssée",
+    "author": "Homère",
+    "year": -700,
+    "genre": "Mythologie",
+    "origin": "Grèce antique",
+    "language": "grec ancien",
+    "originalLanguage": "grc",
+    "originalTitle": "Ὀδύσσεια",
+    "badge": "À DÉCOUVRIR",
+    "number": "48",
+    "tagline": "Rentrer chez soi peut être la plus grande aventure.",
+    "short": "Rentrer chez soi peut être la plus grande aventure.",
+    "description": "Ulysse affronte la mer, les dieux et ses propres épreuves pour retrouver Ithaque. Un poème fondateur du voyage et du retour.",
+    "mood": "Pour découvrir un classique",
+    "length": "Un voyage littéraire",
+    "theme": "Mythologie",
+    "cover": "assets/covers/odyssee.svg",
+    "editions": {
+      "original": {
+        "lang": "grc",
+        "language": "grec ancien",
+        "label": "Version originale",
+        "title": "Ὀδύσσεια",
+        "status": "search"
+      },
+      "fr": {
+        "lang": "fr",
+        "language": "français",
+        "label": "Version française",
+        "title": "L'Odyssée",
+        "gutenberg": 14286,
+        "status": "external"
+      },
+      "en": {
+        "lang": "en",
+        "language": "anglais",
+        "label": "Version anglaise",
+        "title": "L'Odyssée",
+        "gutenberg": 1728,
+        "status": "external"
+      }
+    }
   }
 ];
