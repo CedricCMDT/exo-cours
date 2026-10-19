@@ -1,0 +1,35 @@
+/* Carnet personnel : s'intègre aux pages existantes de LA MARGE */
+.personal-book-journal,.personal-collection-tools{border:1px solid rgba(200,173,115,.32);background:rgba(231,215,177,.07);padding:clamp(20px,3vw,35px);margin-top:30px}
+.personal-book-journal h2,.personal-collection-tools h2{font:500 clamp(24px,3vw,34px)/1.3 "Playfair Display",Georgia,serif;margin:7px 0 12px}
+.personal-book-journal h2 em,.personal-collection-tools h2 em{color:#b99b62}
+.personal-book-journal>p:not(.eyebrow),.personal-collection-tools p:not(.eyebrow){font-size:13px;line-height:1.7;opacity:.85}
+.personal-rating{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:25px 0 23px}
+.personal-rating>span,.personal-note-label{font-size:10px;letter-spacing:.12em;font-weight:800}
+.personal-stars{display:inline-flex;gap:3px}
+.personal-stars button{background:none;border:0;color:#cfaa66;font-size:31px;line-height:1;cursor:pointer;padding:4px}
+.personal-stars button:focus-visible,.personal-book-journal button:focus-visible,.personal-collection-tools button:focus-visible,.personal-import-label:focus-visible{outline:2px solid #e5c585;outline-offset:3px}
+.personal-clear-rating{border:0;background:none;color:inherit;text-decoration:underline;opacity:.75;font-size:11px;cursor:pointer}
+.personal-note-label{display:block;margin-bottom:10px}
+#personal-book-note{display:block;width:100%;min-height:135px;resize:vertical;background:rgba(0,0,0,.13);border:1px solid rgba(200,173,115,.35);color:inherit;font:400 14px/1.65 "DM Sans",sans-serif;padding:15px;border-radius:2px}
+#personal-book-note::placeholder{color:inherit;opacity:.55}
+.personal-note-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;flex-wrap:wrap}
+.personal-note-actions span,.personal-file-status{font-size:12px;min-height:19px}
+.personal-save-note,.personal-backup-actions button,.personal-import-label{border:1px solid #bd9e66;padding:13px 17px;letter-spacing:.08em;font-weight:800;font-size:10px;color:inherit;background:transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.personal-save-note:hover,.personal-backup-actions button:hover,.personal-import-label:hover{background:#bd9e66;color:#171915}
+.personal-collection-tools{margin-top:0;margin-bottom:40px}
+.personal-tools-title{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.personal-backup-actions{display:flex;flex-direction:column;gap:9px;min-width:215px}
+#personal-import{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.personal-import-label:focus-within{outline:2px solid #e5c585}
+.personal-entries{border-top:1px solid rgba(200,173,115,.22);padding-top:20px}
+.personal-entries>h3{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font-size:11px;letter-spacing:.1em}
+.personal-entries h3 span{opacity:.65}
+.personal-entry-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:13px}
+.personal-entry{border:1px solid rgba(200,173,115,.2);padding:14px;min-width:0}
+.personal-entry a{font:500 20px/1.3 "Playfair Display",Georgia,serif}
+.personal-entry a:hover{text-decoration:underline}
+.personal-entry small{display:block;font-size:11px;opacity:.68;margin-top:6px}
+.personal-entry-stars{display:block;margin-top:10px;color:#c9a76b;letter-spacing:.09em;font-size:15px}
+.personal-entry p{font-size:12px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-line}
+.personal-entry-empty{margin:0}
+@media(max-width:730px){.personal-tools-title{flex-direction:column}.personal-backup-actions{width:100%}.personal-collection-tools{padding:20px}}
