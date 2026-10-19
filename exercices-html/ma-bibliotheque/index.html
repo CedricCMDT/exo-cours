@@ -1,137 +1,42 @@
-<!DOCTYPE html><html lang="fr">
+<!DOCTYPE html>
+<html lang="fr">
 <head>
- <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
- <meta name="description" content="Découvrez sept classiques de la littérature, dans un catalogue élégant et responsive.">
- <title>La collection — Ma bibliothèque</title>
- <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="style.css">
- 
- <script defer src="motion.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogue — Ma bibliothèque</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="motion.js"></script>
 </head>
 <body>
-<a class="skip-link" href="#contenu">Aller au contenu</a>
-<header class="site-header"><div class="container header-inner">
-  <a class="site-brand" href="index.html" aria-label="Retour à l'accueil de Ma bibliothèque"><span class="brand-icon" aria-hidden="true">✳</span><span>LES PAGES<span class="brand-accent">.</span></span></a>
-  <nav class="main-nav" aria-label="Navigation principale">
-    <a href="index.html" aria-current="page">La collection</a>
-    <a href="book.html" >Livre à la une</a>
-    <a href="#footer">À propos</a>
-  </nav></div></header>
-<main id="contenu">
- <section class="intro container" aria-labelledby="intro-title">
-  <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> COLLECTION LITTÉRAIRE / 2026</p>
-  <h1 id="intro-title">Chaque livre ouvre <em>un monde.</em></h1>
-  <p class="intro-description">Des classiques, des histoires intemporelles et des auteurs à redécouvrir. Installez-vous : votre prochaine lecture est peut-être ici.</p>
-  <div class="moving-title-track" aria-label="Ma bibliothèque : titre animé de gauche à droite">
-   <span id="moving-library-title" class="moving-title" aria-hidden="true">MA BIBLIOTHÈQUE ✳</span>
-  </div>
- </section>
- <section class="catalogue-section container" aria-labelledby="catalogue-title">
-  <div class="section-header">
-   <div><p class="eyebrow">01 / NOS ÉTAGÈRES</p><h2 id="catalogue-title">Explorer <em>les livres.</em></h2></div>
-   <p class="book-total">07 ŒUVRES · UNE SÉLECTION</p>
-  </div>
-  <form class="search-form" role="search" action="index.html" method="get">
-   <label for="recherche">Un titre ou un auteur en tête ?</label>
-   <div class="search-line">
-    <input type="search" id="recherche" name="recherche" placeholder="Rechercher dans le catalogue…" autocomplete="off">
-    <button type="submit" aria-label="Lancer la recherche" title="Rechercher">
-     <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg>
-     <span class="visually-hidden">Rechercher</span>
-    </button>
-   </div>
-   <small>La recherche est une maquette, conformément aux consignes HTML/CSS.</small>
-  </form>
-  <ul class="book-grid" aria-label="Catalogue des livres">
-   <li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Moby-Dick">
-    <div class="cover-shell"><img src="assets/images/moby-dick.svg" alt="Couverture illustrée de Moby-Dick" width="290" height="420" loading="eager"></div>
-    <div class="card-body">
-      <span class="book-kind">Roman d’aventures</span>
-      <h3 class="book-title">Moby-Dick</h3>
-      <p class="book-caption">Le voyage d'un équipage à la poursuite d'une baleine blanche.</p>
-      <div class="book-bottom"><span class="book-author" title="Herman Melville">Herman Melville</span><time datetime="1851" class="book-year">1851</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Les Misérables">
-    <div class="cover-shell"><img src="assets/images/les-miserables.svg" alt="Couverture illustrée de Les Misérables" width="290" height="420" loading="eager"></div>
-    <div class="card-body">
-      <span class="book-kind">Roman historique</span>
-      <h3 class="book-title">Les Misérables</h3>
-      <p class="book-caption">Une fresque humaine au cœur d'un monde qui change.</p>
-      <div class="book-bottom"><span class="book-author" title="Victor Hugo">Victor Hugo</span><time datetime="1862" class="book-year">1862</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Le Petit Prince">
-    <div class="cover-shell"><img src="assets/images/le-petit-prince.svg" alt="Couverture illustrée de Le Petit Prince" width="290" height="420" loading="eager"></div>
-    <div class="card-body">
-      <span class="book-kind">Conte philosophique</span>
-      <h3 class="book-title">Le Petit Prince</h3>
-      <p class="book-caption">Un regard plein de poésie sur l'amitié et la vie.</p>
-      <div class="book-bottom"><span class="book-author" title="Antoine de Saint-Exupéry">Antoine de Saint-Exupéry</span><time datetime="1943" class="book-year">1943</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Frankenstein">
-    <div class="cover-shell"><img src="assets/images/frankenstein.svg" alt="Couverture illustrée de Frankenstein" width="290" height="420" loading="lazy"></div>
-    <div class="card-body">
-      <span class="book-kind">Fantastique</span>
-      <h3 class="book-title">Frankenstein</h3>
-      <p class="book-caption">Que reste-t-il lorsque le créateur abandonne sa création ?</p>
-      <div class="book-bottom"><span class="book-author" title="Mary Shelley">Mary Shelley</span><time datetime="1818" class="book-year">1818</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Candide">
-    <div class="cover-shell"><img src="assets/images/candide.svg" alt="Couverture illustrée de Candide" width="290" height="420" loading="lazy"></div>
-    <div class="card-body">
-      <span class="book-kind">Conte philosophique</span>
-      <h3 class="book-title">Candide</h3>
-      <p class="book-caption">Une aventure piquante pour remettre les certitudes en question.</p>
-      <div class="book-bottom"><span class="book-author" title="Voltaire">Voltaire</span><time datetime="1759" class="book-year">1759</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Orgueil et Préjugés">
-    <div class="cover-shell"><img src="assets/images/orgueil-et-prejuges.svg" alt="Couverture illustrée de Orgueil et Préjugés" width="290" height="420" loading="lazy"></div>
-    <div class="card-body">
-      <span class="book-kind">Roman de mœurs</span>
-      <h3 class="book-title">Orgueil et Préjugés</h3>
-      <p class="book-caption">Entre les apparences et les sentiments, qui cédera le premier ?</p>
-      <div class="book-bottom"><span class="book-author" title="Jane Austen">Jane Austen</span><time datetime="1813" class="book-year">1813</time></div>
-    </div>
-  </a>
-</li>
-<li class="book-card">
-  <a class="book-link" href="book.html" aria-label="Ouvrir la fiche de Voyage au centre de la Terre">
-    <div class="cover-shell"><img src="assets/images/voyage-centre-terre.svg" alt="Couverture illustrée de Voyage au centre de la Terre" width="290" height="420" loading="lazy"></div>
-    <div class="card-body">
-      <span class="book-kind">Science-fiction</span>
-      <h3 class="book-title">Voyage au centre de la Terre</h3>
-      <p class="book-caption">Une expédition extraordinaire sous la surface du monde.</p>
-      <div class="book-bottom"><span class="book-author" title="Jules Verne">Jules Verne</span><time datetime="1864" class="book-year">1864</time></div>
-    </div>
-  </a>
-</li>
-  </ul>
-  <div class="collection-note">
-   <span aria-hidden="true">✳</span>
-   <p>La plus belle bibliothèque est celle qui vous donne envie d'ouvrir un livre.</p>
-   <a href="book.html">Découvrir notre sélection <span aria-hidden="true">↗</span></a>
-  </div>
- </section>
-</main>
-<footer id="footer" class="site-footer"><div class="container footer-inner">
-  <div><a class="footer-brand" href="index.html">LES PAGES <span aria-hidden="true">✳</span></a><p>La lecture commence ici, sans se presser.</p></div>
-  <p class="footer-caption">Projet HTML &amp; CSS · Bachelor développement applicatif<br>© 2026 — Ma bibliothèque</p>
-</div></footer>
-</body></html>
+  <header>
+    <nav aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html" aria-current="page">Accueil</a></li>
+      </ul>
+    </nav>
+    <hr>
+  </header>
+  <main>
+    <h1>Bienvenue dans ma bibliothèque</h1>
+    <p>Découvrez trois grands classiques de la littérature, pour voyager au fil des pages.</p>
+    <p><strong>La lecture est ouverte à tous.</strong> Prenez le temps d'<em>explorer de nouveaux horizons</em>.</p>
+    <section aria-labelledby="catalogue-title">
+      <h2 id="catalogue-title">Catalogue des livres</h2>
+      <form action="index.html" method="get">
+        <label for="recherche">Rechercher un livre :</label>
+        <input type="search" id="recherche" name="recherche" placeholder="Ex. : Moby-Dick">
+        <button type="submit" aria-label="Rechercher un livre">Rechercher</button>
+      </form>
+      <ul class="livres">
+        <li><a href="book.html">Moby-Dick</a> — Herman Melville</li>
+        <li><a href="book.html">Les Misérables</a> — Victor Hugo</li>
+        <li><a href="book.html">Le Petit Prince</a> — Antoine de Saint-Exupéry</li>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <hr>
+    <p>&copy; 2026 — Ma bibliothèque.</p>
+  </footer>
+</body>
+</html>
