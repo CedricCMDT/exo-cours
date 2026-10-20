@@ -27,3 +27,15 @@ Les appels transitoirement refusés (HTTP 429/5xx) sont retentés jusqu’à 3 f
 ## Vérifications
 
 `npm run lint` puis `npm run build`.
+
+## Tests end-to-end (Playwright)
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
+
+Les requêtes Google Books sont simulées : pas besoin de clé Google valide ni de réseau vers l'API pendant les tests. Les tests couvrent la recherche, les fiches, la navigation, les favoris, les erreurs et une largeur mobile. Pour visualiser les tests : `npm run test:e2e:ui`.
+
+Le workflow GitHub Actions `react-e2e.yml` lance automatiquement ces tests sur les pushs ou pull requests modifiant `library-react`.
