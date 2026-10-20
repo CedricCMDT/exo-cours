@@ -1,66 +1,72 @@
-const bouton = document.querySelector("#click-me");
-const listeLivres = document.querySelector("#liste-livres");
-const loader = document.querySelector("#loader");
-const erreur = document.querySelector("#erreur");
+const bouton = document.getElementById("click-me");
+const listeLivres = document.getElementById("liste-livres");
+const loader = document.getElementById("loader");
+const erreur = document.getElementById("erreur");
 
 const cleApi = "AIzaSyAAU-Fg7X8gopwftnbTfpLvCPxjQIgHzk0";
-const nombreParPage = 10;
+const livresParPage = 10;
 let indexDepart = 0;
+let chargementEnCours = false;
+let finDesLivres = false;
 
 async function chargerLivres() {
+  if (chargementEnCours || finDesLivres) return;
+
+  chargementEnCours = true;
   bouton.disabled = true;
   loader.hidden = false;
   erreur.hidden = true;
+  erreur.textContent = "";
 
   try {
-    // Le paramètre q est obligatoire pour chercher des livres.
     const url = new URL("https://www.googleapis.com/books/v1/volumes");
     url.searchParams.set("q", "javascript");
     url.searchParams.set("key", cleApi);
-    url.searchParams.set("startIndex", indexDepart);
-    url.searchParams.set("maxResults", nombreParPage);
+    url.searchParams.set("startIndex", String(indexDepart));
+    url.searchParams.set("maxResults", String(livresParPage));
 
-    const reponse = await fetch(url);
+    const reponse = await fetch(url.toString());
+    const donnees = await reponse.json();
+
+    console.log("Réponse Google Books :", donnees);
 
     if (!reponse.ok) {
-      throw new Error("Erreur HTTP : " + reponse.status);
+      const message = donnees.error?.message || "Erreur HTTP " + reponse.status;
+      throw new Error(message);
     }
-
-    const donnees = await reponse.json();
-    console.log(donnees);
 
     const livres = donnees.items || [];
 
-    for (const livre of livres) {
-      const element = document.createElement("li");
-      element.textContent = livre.volumeInfo?.title || "Sans titre";
-      listeLivres.appendChild(element);
-    }
+    livres.forEach(function (livre) {
+      const ligne = document.createElement("li");
+      ligne.textContent = livre.volumeInfo?.title || "Livre sans titre";
+      listeLivres.appendChild(ligne);
+    });
 
+    // On avance uniquement après un chargement réussi.
     indexDepart += livres.length;
-    if (livres.length === 0) {
-      bouton.disabled = true;
-      return;
+
+    // Si Google ne renvoie plus de livres, on arrête la pagination.
+    if (livres.length === 0 || indexDepart >= (donnees.totalItems || 0)) {
+      finDesLivres = true;
+      bouton.textContent = "Tous les livres sont chargés";
     }
   } catch (e) {
-    console.error(e);
-    erreur.textContent = "Impossible de charger les livres. Réessaie.";
+    console.error("Échec du chargement :", e);
+    erreur.textContent = "Erreur lors du chargement : " + e.message;
     erreur.hidden = false;
   } finally {
+    chargementEnCours = false;
     loader.hidden = true;
-    if (erreur.hidden) {
-      bouton.disabled = false;
-    } else {
-      bouton.disabled = false; // Permet de réessayer.
-    }
+    bouton.disabled = finDesLivres;
   }
 }
 
-bouton.addEventListener("click", () => {
+bouton.addEventListener("click", function () {
   console.log("Hello world");
   alert("Hello world");
   chargerLivres();
 });
 
-// Chargement dès l'ouverture de la page.
+// Première page chargée automatiquement.
 chargerLivres();
