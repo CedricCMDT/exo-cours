@@ -1,0 +1,97 @@
+:root {
+  --background-color: #F9F7F1;
+  --text-color: #2C2C2A;
+  --primary-color: #2C2C2A;
+  --secondary-color: #ED3E1D;
+  --text-color-light: #686861;
+  --accent-text-color: #C83215;
+  --border-color: #E6E2D6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Faire hériter la typographie aux champs et boutons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Boutons */
+button {
+  cursor: pointer;
+}
+
+/* Tableaux */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Playfair Display", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: var(--text-color);
+
+  background-color: var(--background-color);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+strong {
+  color: var(--accent-text-color);
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
