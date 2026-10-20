@@ -1,21 +1,20 @@
 .header {
   padding: 32px;
-
   position: sticky;
   top: 0;
   z-index: 1;
   background-color: var(--background-color);
-
   border-bottom: 1px solid #E5E5E5;
 
   ul {
     display: flex;
+    flex-wrap: wrap;
     gap: 16px;
 
     li {
       list-style: none;
 
-      a {
+      a, span {
         font-family: "Cormorant Garamond", serif;
         font-weight: 600;
       }

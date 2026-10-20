@@ -1,0 +1,27 @@
+.item { min-width: 0; }
+.bookCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 200ms ease;
+}
+.bookCard:hover, .bookCard:focus-visible { text-decoration: none; }
+.bookCard:hover .bookTitle, .bookCard:focus-visible .bookTitle { text-decoration: underline; }
+.bookCard:focus-visible { outline: 2px solid var(--secondary-color); outline-offset: 4px; }
+.bookCover { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.bookContent { display: flex; flex-direction: column; flex: 1; gap: 4px; margin-top: 10px; }
+.bookTitle {
+  font-size: 20px; line-height: 1.3; overflow-wrap: anywhere;
+  font-family: "Cormorant Garamond", serif;
+}
+.bookMeta {
+  display: flex; align-items: baseline; gap: 16px; font-size: 12px;
+  color: var(--text-color-light); padding-top: 8px; border-top: 1px solid var(--border-color);
+}
+.bookAuthor { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-transform: capitalize; }
+.bookMeta time { flex-shrink: 0; }
+@media (hover: hover) { .bookCard:hover { transform: scale(1.03); } }
+@media (prefers-reduced-motion: reduce) {
+  .bookCard { transition: none; }
+  .bookCard:hover { transform: none; }
+}

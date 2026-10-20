@@ -1,58 +1,29 @@
-# Bibliothèque — React + Vite
+# Ma bibliothèque — exercices React
 
-Reprise statique de `library-css`, dans un nouveau projet créé avec le modèle
-React de Vite. Les deux pages conservent leurs textes, images, styles et liens.
-Aucun appel à une API ni aucune variable d'environnement ne sont nécessaires.
+Projet Vite + React : recherche Google Books, fiches dynamiques, navigation React Router et favoris.
 
-## Lancement
+## Démarrage
 
-Avec Node.js 22.12+ ou 24+ et npm :
+1. `npm install`
+2. Créer `.env.local` à la racine du projet en copiant `.env.example`.
+3. Renseigner `VITE_GOOGLE_BOOKS_API_KEY=...` avec la clé fournie en cours.
+4. `npm run dev`
 
-```sh
-cd library-react
-npm install
-npm run dev
-```
+La clé côté `VITE_` est envoyée au navigateur : restreindre son usage et ne pas committer `.env.local`.
 
-L'accueil est accessible sur `/` et la fiche Moby-Dick sur `/book.html`.
-La recherche et la boîte de dialogue conservent le comportement HTML d'origine.
+## Exercices
 
-```sh
-npm run lint
-npm run build
-npm run preview
-```
+- **1** : `BookCard` réutilisable, props et liste avec `key`.
+- **2** : recherche contrôlée `search` et recherche validée `query`.
+- **3** : `useRef` pour redonner le focus après « Effacer ».
+- **4** : API `searchBooks`, `useEffect`, chargement, erreurs, nettoyage.
+- **5** : `BrowserRouter`, routes `/` et `/books/:id`.
+- **6** : API `getBook` et fiche dynamique depuis l’URL.
+- **7** : `FavoritesContext`, ajout/retrait et compteur dans l’en-tête.
+- **Bonus** : favoris dans `localStorage` (données invalides tolérées), hook `useBook(id)`.
 
-## Architecture
+Les appels transitoirement refusés (HTTP 429/5xx) sont retentés jusqu’à 3 fois.
 
-```text
-index.html                   Entrée HTML de l'accueil
-book.html                    Entrée HTML de la fiche
-src/
-  main.jsx                   Montage React de l'accueil
-  book.jsx                   Montage React de la fiche
-  App.jsx                    Structure commune des pages
-  assets/
-    moby-dick.png
-  components/
-    Header/
-      Header.jsx
-      Header.module.css
-    Footer/
-      Footer.jsx
-      Footer.module.css
-  pages/
-    Home/
-      Home.jsx
-      Home.module.css
-    Book/
-      Book.jsx
-      Book.module.css
-  styles/
-    global.css               Variables, reset et styles de base communs
-```
+## Vérifications
 
-Les styles des pages et des composants sont isolés dans des modules CSS.
-Les classes des icônes Google Fonts restent globales.
-Vite construit les deux pages HTML pour conserver les liens existants et
-l'accès direct à la fiche, sans ajouter de bibliothèque de routage.
+`npm run lint` puis `npm run build`.

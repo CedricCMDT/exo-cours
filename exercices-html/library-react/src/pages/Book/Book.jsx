@@ -1,15 +1,33 @@
-import bookCover from '../../assets/moby-dick.png'
+import { useContext } from 'react'
+import { Link, useParams } from 'react-router'
+import { FavoritesContext } from '../../contexts/FavoritesContext.js'
+import useBook from '../../hooks/useBook.js'
 import styles from './Book.module.css'
 
 export default function Book() {
+  const { id } = useParams()
+  const { book, loading, error } = useBook(id)
+  const { favorites, toggleFavorite } = useContext(FavoritesContext)
+  const isFavorite = book ? favorites.includes(book.id) : false
+
+  if (loading) return <main className={styles.page}><p className={styles.message}>Chargement du livre...</p></main>
+  if (error || !book) return (
+    <main className={styles.page}>
+      <div className={styles.message}>
+        <p role="alert">{error || 'Livre introuvable.'}</p>
+        <Link to="/">Retour à la bibliothèque</Link>
+      </div>
+    </main>
+  )
+
   return (
     <main className={styles.page}>
       <article className={styles.bookDetail}>
         <div className={styles.bookSidebar}>
           <img
             className={styles.detailCover}
-            src={bookCover}
-            alt="Couverture du roman Moby-Dick"
+            src={book.cover}
+            alt={'Couverture de ' + book.title}
             width="667"
             height="1000"
           />
@@ -17,18 +35,16 @@ export default function Book() {
             <button
               className={[styles.bookAction, styles.primary].join(' ')}
               type="button"
-              command="show-modal"
-              commandFor="command-dialog"
+              onClick={() => toggleFavorite(book.id)}
+              aria-pressed={isFavorite}
             >
               <span className="material-symbols-outlined" aria-hidden="true">
-                add_circle
+                {isFavorite ? 'remove_circle' : 'add_circle'}
               </span>
-              Commander le livre
+              {isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
             </button>
             <a className={styles.bookAction} href="#resume">
-              <span className="material-symbols-outlined" aria-hidden="true">
-                menu_book
-              </span>
+              <span className="material-symbols-outlined" aria-hidden="true">menu_book</span>
               Lire le résumé
             </a>
           </div>
@@ -37,78 +53,34 @@ export default function Book() {
         <div className={styles.bookInformation}>
           <nav className={styles.breadcrumb} aria-label="Fil d’Ariane">
             <ol>
-              <li><a href="index.html">Bibliothèque</a></li>
-              <li aria-current="page">Moby-Dick</li>
+              <li><Link to="/">Bibliothèque</Link></li>
+              <li aria-current="page">{book.title}</li>
             </ol>
           </nav>
-
-          <h1>Moby-<span>Dick</span></h1>
-          <p className={styles.detailAuthor}>Herman Melville</p>
+          <h1>{book.title}</h1>
+          <p className={styles.detailAuthor}>{book.authors.join(', ')}</p>
 
           <dl className={styles.detailMetadata}>
             <div>
-              <dt>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                calendar_today
-              </span><span className={styles.visuallyHidden}>Première publication</span>
-              </dt>
-              <dd><time dateTime="1851">1851</time></dd>
+              <dt><span className="material-symbols-outlined" aria-hidden="true">calendar_today</span><span className={styles.visuallyHidden}>Publication</span></dt>
+              <dd><time dateTime={/^\d{4}/.test(book.publishedDate) ? book.publishedDate : undefined}>{book.publishedDate}</time></dd>
             </div>
             <div>
-              <dt>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                translate
-              </span><span className={styles.visuallyHidden}>Langue originale</span>
-              </dt>
-              <dd>Anglais</dd>
+              <dt><span className="material-symbols-outlined" aria-hidden="true">translate</span><span className={styles.visuallyHidden}>Langue</span></dt>
+              <dd>{book.language}</dd>
             </div>
             <div>
-              <dt>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                auto_stories
-              </span><span className={styles.visuallyHidden}>Genre</span>
-              </dt>
-              <dd>Aventure</dd>
+              <dt><span className="material-symbols-outlined" aria-hidden="true">auto_stories</span><span className={styles.visuallyHidden}>Genre</span></dt>
+              <dd>{book.categories.join(', ') || 'Non précisé'}</dd>
             </div>
           </dl>
 
           <section className={styles.bookSummary} id="resume">
-            <h2 className={styles.visuallyHidden}>Présentation du roman</h2>
-            <p>
-              Ismaël embarque à bord du Pequod, un navire baleinier commandé par
-              le capitaine Achab. Au fil de la traversée, il découvre la vie en
-              mer, le travail des marins et les liens qui unissent les membres
-              de cet équipage venu de tous horizons.
-            </p>
-            <p>
-              Mais Achab ne poursuit qu’un seul but : retrouver Moby Dick, le
-              cachalot blanc qui lui a arraché une jambe. Pour le capitaine,
-              cette chasse dépasse bientôt les limites d’une simple expédition.
-              Son obsession entraîne le navire et ses hommes dans une aventure
-              périlleuse.
-            </p>
-            <p>
-              Entre récit d’aventure et réflexion sur la condition humaine, le
-              roman explore la vengeance, la démesure et la relation entre
-              l’être humain et la nature. L’océan devient le théâtre d’un
-              affrontement où se mêlent fascination, peur et désir de tout
-              maîtriser.
-            </p>
+            <h2 className={styles.visuallyHidden}>Résumé</h2>
+            <p>{book.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()}</p>
           </section>
         </div>
       </article>
-
-      <dialog
-        className={styles.orderDialog}
-        id="command-dialog"
-        aria-labelledby="dialog-title"
-      >
-        <h2 id="dialog-title">Commande enregistrée</h2>
-        <p>Merci pour votre intérêt pour Moby-Dick.</p>
-        <form method="dialog">
-          <button className={[styles.bookAction, styles.primary].join(' ')} type="submit">Fermer</button>
-        </form>
-      </dialog>
     </main>
   )
 }
