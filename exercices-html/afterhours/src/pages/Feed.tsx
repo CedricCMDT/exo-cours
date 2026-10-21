@@ -74,14 +74,14 @@ export function Feed() {
           <label>Popularité<select value={query.popularity} onChange={e => setCriteria({ popularity: e.target.value })}><option value="all">Toutes</option><option value="popular">100 likes et +</option><option value="quiet">Moins de 100 likes</option></select></label>
         </form>
         <div className="results"><h2>Fil public <span className="results-line" /></h2><span>{filtered.length} publication(s) · page {page}/{pages}</span></div>
-        {loading && <p role="status" className="notice">Synchronisation avec les serveurs…</p>}
+        {loading && <p role="status" className="notice">Chargement du forum…</p>}
         {!loading && error && <div className="notice error" role="alert">{error} <button type="button" onClick={reload}>Réessayer</button><span> Les archives du réseau restent disponibles.</span></div>}
         {!loading && (visible.length ? visible.map(post => <PostCard key={post.id} post={post} member={members.find(u => u.id === post.userId)} />) : <p className="notice">Aucun résultat. Même ici, ça arrive.</p>)}
         {!loading && <nav aria-label="Pagination" className="pagination"><button disabled={page === 1} onClick={() => setPage(page - 1)}>← Précédent</button><span>Page {page} sur {pages}</span><button disabled={page === pages} onClick={() => setPage(page + 1)}>Suivant →</button></nav>}
       </section>
       <aside className="sidebar">
         <div className="widget community-widget"><h2>EXPLORER LES COMMUNAUTÉS</h2><div className="community-list">{categoryStats.map(item => <button type="button" key={item.slug} onClick={() => { setCriteria({ tag: item.slug }); window.scrollTo({ top: 470, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }} className={query.tag === item.slug ? 'chosen' : ''}><span>/{item.slug}/</span><b>{item.count}</b></button>)}</div></div>
-        <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Serveurs en ligne</p><p>Depuis 2008 · communauté active</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
+        <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Forum local en ligne</p><p>Depuis 2008 · communauté active</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
         <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Discussions populaires</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
       </aside>
     </div>
