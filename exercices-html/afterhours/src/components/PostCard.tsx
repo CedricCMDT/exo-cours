@@ -24,7 +24,7 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
     <div className="post-actions">
       <span aria-label={post.reactions?.likes + ' mentions j’aime'}>♥ {post.reactions?.likes ?? 0}</span>
       <span>◌ {post.views ?? 0} vues</span>
-      {count > 0 && <span>↳ {count} réponses</span>}
+      {(count > 0 || post.source === 'community') && <span>↳ {count + (post.source === 'community' ? 3 : 0)} réponses</span>}
       <button type="button" onClick={() => toggleSaved(post.id)} aria-pressed={saved}>
         {saved ? '★ Retirer' : '☆ Sauvegarder'}
       </button>

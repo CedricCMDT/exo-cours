@@ -48,7 +48,7 @@ export function Detail() {
         <div><dt>Auteur ID</dt><dd>{post.userId}</dd></div>
       </dl>
       <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>{savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}</button>
-      <Discussion postId={post.id} />
+      <Discussion postId={post.id} post={post} />
     </article>}
   </main>
 }

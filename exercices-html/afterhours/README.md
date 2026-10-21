@@ -52,3 +52,13 @@ Sur une fiche, il est possible de répondre au fil ou de répondre directement �
 Une réponse automatique locale est planifiée **10 à 30 secondes** après chaque commentaire. Le compte est explicitement marqué « Compte automatisé ». Le générateur est un moteur de règles contextuelles basé sur des mots-clés, **pas un modèle d’IA**. Les tâches planifiées sont persistées ; lorsque l’utilisateur rouvre la page après l’heure prévue, la réponse apparaît.
 
 Aucune clé externe n’est nécessaire. Pour une véritable génération par IA, prévoir un backend qui appelle un modèle, protège sa clé API et enregistre les messages et tâches différées côté serveur.
+
+## Catalogue éditorial et animation
+- **1 260 publications en français**, issues de 252 situations et cinq angles éditoriaux par situation, réparties en **18 communautés**. Les titres, corps, pseudonymes, dates et métriques sont générés de façon déterministe dans `src/data/community.ts`. Cette collection est visible même sans connexion API.
+- **3 commentaires d'archives** par publication éditoriale, dont une réponse imbriquée ; les réponses de l'utilisateur restent enregistrées localement.
+- Les publications réelles de l'API DummyJSON sont récupérées puis ajoutées au catalogue et peuvent être recherchées simultanément.
+- **GSAP 3.15** : timeline d'entrée du bandeau, fenêtre terminal, cascade des cartes lors du chargement et des changements de filtre. Animations CSS supplémentaires pour les orbes, curseurs et points lumineux. Les animations sont désactivées lorsque le système demande moins de mouvement.
+- **16 personnalités automatisées** pour les réponses temporisées, choisies en fonction de la communauté. Le moteur reste basé sur des règles et non sur un appel à un service d'intelligence artificielle.
+- L'esthétique mêle un navigateur des années 2000 à une interface moderne, adaptée au mobile.
+
+**Limite du jeu de données :** les 1 260 publications sont des variantes écrites autour de 252 situations ; elles ne sont pas 1 260 histoires indépendantes. Les dates d'archives sont construites entre 2025 et 2026 pour créer un fil historiquement stable. Comme auparavant, aucun commentaire n'est partagé entre plusieurs navigateurs.
