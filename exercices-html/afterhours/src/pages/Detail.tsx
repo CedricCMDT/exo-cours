@@ -30,6 +30,7 @@ export function Detail() {
   }, [local, id, retry])
   const post = local || remote
   const member = members.find(u => u.id === post?.userId)
+  const date = post?.createdAt ? new Date(post.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) : 'Archive'
   return <main className="narrow-page">
     <div className="breadcrumb"><Link to="/">← Retour au fil</Link> / fil #{id}</div>
     {loading && !local && <p role="status" className="notice">Chargement de la discussion…</p>}
@@ -37,7 +38,7 @@ export function Detail() {
     {!loading && post && <article className="detail-card">
       <small>AFTERHOURS / THREAD #{post.id}</small>
       <h1>{post.title}</h1>
-      <p className="byline">Publié par @{member?.username || 'anonymous_' + post.userId}</p>
+      <p className="byline">Publié par @{member?.username || 'anonymous_' + post.userId} · {date}</p>
       <div className="detail-body">{post.body}</div>
       <dl className="stats">
         <div><dt>Likes</dt><dd>{post.reactions?.likes ?? 0}</dd></div>
