@@ -13,6 +13,7 @@ export type PendingReply = {
   parentId: string
   originalBody: string
   dueAt: number
+  author?: string
 }
 const KEY = 'afterhours-replies-v1'
 const PENDING_KEY = 'afterhours-reply-queue-v1'
@@ -44,30 +45,103 @@ export function saveReplies(replies: Reply[]) {
 export function savePending(pending: PendingReply[]) {
   try { localStorage.setItem(PENDING_KEY, JSON.stringify(pending)) } catch { /* stockage indisponible */ }
 }
-export function generateAutoReply(message: string): string {
-  const text = message.toLocaleLowerCase('fr')
-  if (/fake|faux|mensong|source|preuve|complot|info/.test(text)) {
-    return 'T’as une source solide pour ça, ou on doit encore croire un screenshot compressé à mort ? Parce que là, ça sent le grand n’importe quoi.'
+export const botAccounts = [
+  { name: 'NuitBlanche.exe', categories: ['societe', 'relations', 'nostalgie'], attitude: 'sceptique' },
+  { name: 'KernelPanic', categories: ['tech', 'science', 'internet'], attitude: 'analytique' },
+  { name: 'RageQuit_404', categories: ['gaming', 'sport'], attitude: 'provocateur' },
+  { name: 'TontonSurLeNet', categories: ['politique', 'economie', 'travail'], attitude: 'cynique' },
+  { name: 'PastaPolice', categories: ['cuisine'], attitude: 'taquin' },
+  { name: 'VHS_dream', categories: ['cinema', 'musique', 'nostalgie'], attitude: 'nostalgique' },
+  { name: 'AstraNoctis', categories: ['paranormal', 'science'], attitude: 'curieux' },
+  { name: 'LectureFroide', categories: ['culture', 'etudes'], attitude: 'argumentatif' },
+  { name: 'MemeArchiviste', categories: ['random', 'internet'], attitude: 'absurde' },
+  { name: 'CafeSansFiltre', categories: ['travail', 'societe', 'politique'], attitude: 'ironique' },
+  { name: 'VeloursBrutal', categories: ['relations', 'culture', 'musique'], attitude: 'direct' },
+  { name: 'PixelPoubelle', categories: ['gaming', 'tech', 'random'], attitude: 'caustique' },
+  { name: 'SceptiqueDuCoin', categories: ['economie', 'politique', 'paranormal'], attitude: 'sceptique' },
+  { name: 'Cassette2007', categories: ['nostalgie', 'internet', 'cinema'], attitude: 'nostalgique' },
+  { name: 'SansSommeil', categories: ['etudes', 'travail', 'random'], attitude: 'ironique' },
+  { name: 'PasTonPote', categories: ['societe', 'sport', 'relations'], attitude: 'provocateur' },
+] as const
+
+function checksum(text: string) {
+  let value = 2166136261
+  for (let i = 0; i < text.length; i++) value = Math.imul(value ^ text.charCodeAt(i), 16777619)
+  return value >>> 0
+}
+export function chooseBotAuthor(message: string, category: string, postId: number): string {
+  const related = botAccounts.filter(account => (account.categories as readonly string[]).includes(category))
+  const pool = related.length > 0 ? related : botAccounts
+  return pool[checksum(message + category + postId) % pool.length].name
+}
+
+export function generateAutoReply(message: string, category = 'random', author = 'NuitBlanche.exe'): string {
+  const value = message.toLocaleLowerCase('fr')
+  const mood = botAccounts.find(account => account.name === author)?.attitude ?? 'direct'
+  const phrase = message.trim().slice(0, 85).replace(/[\n\r]/g, ' ')
+  const lead = phrase ? `Tu dis « ${phrase}${message.trim().length > 85 ? '…' : ''} ».` : ''
+  const picks: Record<string, string[]> = {
+    tech: [
+      "C'est quoi ta config, la version exacte et le message d'erreur ? Les grandes théories c'est joli, les logs c'est mieux.",
+      "Si ton raisonnement tient, montre un exemple reproductible. Sinon on va encore se disputer sur trois captures d'écran.",
+      "Entre la documentation et les avis du forum, je vais miser sur la documentation. Mais développe ton point."
+    ],
+    gaming: [
+      "Ça sent la discussion d'après-défaite. Donne le jeu, le rang et la situation exacte, qu'on rigole utilement.",
+      "Les gens vont crier au skill issue dans dix secondes, mais la mécanique en question mérite un vrai débat.",
+      "Si tu défends ce patch, va falloir m'expliquer ce qu'il améliore concrètement."
+    ],
+    politique: [
+      "Tu peux détester une décision, mais c'est laquelle exactement ? Les slogans ne servent à rien sans les faits.",
+      "Tout le monde a déjà choisi son camp. Moi je veux voir le texte et les conséquences, pas la guerre des hashtags.",
+      "Encore une certitude énorme sur un extrait de communiqué. On a la version complète ?"
+    ],
+    societe: [
+      "Le plus fou c'est qu'on pourrait parler du problème sans passer directement aux insultes. Mais bon, regarde où on est.",
+      "Tu racontes une situation précise, alors pourquoi les commentaires en font-ils une guerre de civilisation ?",
+      "Je ne défends personne, mais j'aimerais entendre l'autre version avant de juger."
+    ],
+    relations: [
+      "Je vais être direct : demander l'avis de cent inconnus ne remplace pas une conversation avec la personne concernée.",
+      "On n'a qu'un côté de l'histoire. C'est important, même si ça ruine l'ambiance du thread.",
+      "Les captures et les sous-entendus, ça ne règle rien. Tu veux obtenir quoi au juste ?"
+    ],
+    science: [
+      "La question est intéressante, mais j'aimerais une source ou un protocole avant d'en tirer une conclusion.",
+      "Un schéma viral n'est pas une étude. Tu as vu les données originales ?",
+      "Il y a une vraie explication possible, mais pas celle du titre sensationnaliste."
+    ],
+    paranormal: [
+      "J'adore ce genre d'histoire, mais avant de parler de fantôme, on vérifie la lumière et les reflets ?",
+      "Si tu as le contexte, l'heure et un autre angle, poste-les. La photo seule ne prouve pas grand-chose.",
+      "C'est inquiétant à raconter, mais il y a peut-être une explication bien moins surnaturelle."
+    ],
+    cuisine: [
+      "La police des recettes va débarquer. Moi je veux juste savoir si c'était bon.",
+      "T'as les quantités et la cuisson ? C'est plus intéressant que la guerre des puristes.",
+      "On se dispute pour une assiette alors que la moitié du forum ne sait pas cuire du riz."
+    ],
+    nostalgie: [
+      "Ce truc m'a renvoyé direct en 2008. Le design était hideux et pourtant on y passait nos soirées.",
+      "Le plus drôle, c'est que personne ne regrettait les bugs à l'époque. Maintenant on en fait des souvenirs.",
+      "Je garde encore une archive de mon ancien profil. Je refuse de la montrer à qui que ce soit."
+    ],
   }
-  if (/politique|gouvernement|président|élection|vote|ministre/.test(text)) {
-    return 'La politique sur ce site, c’est toujours pareil : tout le monde gueule et personne lit plus loin que le titre. Tu proposes quoi concrètement ?'
-  }
-  if (/jeu|gaming|console|pc|windows|linux|code|typescript|react|bug/.test(text)) {
-    return 'OK, mais c’est quoi ton argument technique ? Parce que balancer un avis sans expliquer le pourquoi, c’est un peu léger.'
-  }
-  if (/amour|couple|relation|ex|rencontre|sentiment/.test(text)) {
-    return 'C’est fou le nombre de gens qui donnent des leçons sur les relations ici. T’as essayé d’en parler directement à la personne concernée ?'
-  }
-  if (/insult|con|abruti|merde|gueule|débile/.test(text)) {
-    return 'Tu peux m’insulter encore trois paragraphes, ça ne rendra pas ton argument plus crédible. Explique plutôt ce que tu veux dire.'
-  }
-  const ideas = [
-    'Attends, développe un peu. Pourquoi tu penses ça exactement ? Ça m’intéresse plus qu’un slogan jeté dans le vide.',
-    'Mouais. Il manque quand même pas mal de contexte à ton message. T’as un exemple concret ?',
-    'Je suis pas convaincu. Tu présentes ça comme une évidence, mais le raisonnement derrière est où ?',
-    'Alors là, je veux bien entendre ton point de vue, mais il va falloir argumenter un minimum.',
+  const generic = [
+    "Je ne suis pas d'accord, mais au moins il y a un vrai sujet derrière. Quelqu'un a un exemple concret ?",
+    "Tu vas te faire démolir dans les réponses, mais la question mérite mieux que trois insultes.",
+    "C'est un peu facile de balancer ça comme une évidence. Tu peux expliquer ton raisonnement ?",
+    "L'argument mérite d'être développé. Pour l'instant on a surtout de l'indignation au kilomètre.",
+    "Ce fil va mal finir. Pourtant il y avait moyen d'avoir une discussion intéressante.",
+    "J'ai lu les quinze premières réponses et personne ne répond à la question de départ. Classique.",
   ]
-  let hash = 0
-  for (const char of text) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-  return ideas[hash % ideas.length]
+  const pool = picks[category] ?? generic
+  const chosen = pool[checksum(message + author + mood) % pool.length]
+  if (/source|preuve|fake|faux|mensong|complot/.test(value)) {
+    return `${lead} Une source vérifiable serait déjà un bon début. Et non, « fais tes propres recherches » n'en est pas une.`
+  }
+  if (/con|abruti|merde|débile|ferme ta gueule|connard/.test(value)) {
+    return `${lead} Tu peux être en colère, mais les insultes ne transforment pas ça en argument. ${chosen}`
+  }
+  return `${lead} ${chosen}`
 }

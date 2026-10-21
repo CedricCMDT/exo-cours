@@ -4,6 +4,8 @@ import { createPost, fetchMembers, fetchPosts } from '../api'
 import type { Creation, Member, Post, Query } from '../types'
 import { generateAutoReply, loadPending, loadReplies, savePending, saveReplies } from '../replies'
 import type { PendingReply, Reply } from '../replies'
+import { chooseBotAuthor } from '../replies'
+import { communityMembers, communityPosts } from '../data/community'
 
 type ContextValue = {
   posts: Post[]
@@ -35,8 +37,8 @@ function readTheme(): 'light' | 'dark' {
   catch { return 'light' }
 }
 export function NetworkProvider({ children }: { children: ReactNode }) {
-  const [posts, setPosts] = useState<Post[]>([])
-  const [members, setMembers] = useState<Member[]>([])
+  const [posts, setPosts] = useState<Post[]>(() => communityPosts)
+  const [members, setMembers] = useState<Member[]>(() => communityMembers)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [revision, setRevision] = useState(0)
@@ -52,8 +54,12 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
       try {
         const [nextPosts, nextMembers] = await Promise.all([fetchPosts(), fetchMembers()])
         if (!cancelled) {
-          setPosts(old => [...old.filter(p => p.local), ...nextPosts])
-          setMembers(nextMembers)
+          setPosts(old => [
+            ...old.filter(p => p.local),
+            ...communityPosts,
+            ...nextPosts.map(p => ({ ...p, source: 'api' as const })),
+          ].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')))
+          setMembers([...communityMembers, ...nextMembers])
           setError('')
         }
       } catch (e) {
@@ -82,14 +88,14 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
       return window.setTimeout(() => {
         setReplies(current => current.some(r => r.id === job.id) ? current : [...current, {
           id: job.id, postId: job.postId, parentId: job.parentId,
-          body: generateAutoReply(job.originalBody), author: 'oldschool_bot',
+          body: generateAutoReply(job.originalBody, posts.find(p => p.id === job.postId)?.tags[0], job.author), author: job.author ?? 'oldschool_bot',
           automated: true, createdAt: Date.now(),
         }])
         setPendingReplies(current => current.filter(item => item.id !== job.id))
       }, remaining)
     })
     return () => timers.forEach(window.clearTimeout)
-  }, [pendingReplies])
+  }, [pendingReplies, posts])
 
   function addReply(postId: number, parentId: string | null, body: string) {
     const clean = body.trim()
@@ -100,8 +106,10 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     }])
     // Réponse automatique entre 10 et 30 secondes, sans service externe.
     const dueAt = Date.now() + 10000 + Math.floor(Math.random() * 20001)
+    const category = posts.find(post => post.id === postId)?.tags[0] || 'random'
+    const author = chooseBotAuthor(clean, category, postId)
     setPendingReplies(current => [...current, {
-      id: crypto.randomUUID(), postId, parentId: id, originalBody: clean, dueAt,
+      id: crypto.randomUUID(), postId, parentId: id, originalBody: clean, dueAt, author,
     }])
   }
 
@@ -113,8 +121,9 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   }
   async function publish(draft: Creation) {
     const post = await createPost(draft)
-    setPosts(old => [post, ...old.filter(p => p.id !== post.id)])
-    return post
+    const dated = { ...post, createdAt: new Date().toISOString() }
+    setPosts(old => [dated, ...old.filter(p => p.id !== dated.id)])
+    return dated
   }
   return (
     <NetworkContext.Provider value={{
