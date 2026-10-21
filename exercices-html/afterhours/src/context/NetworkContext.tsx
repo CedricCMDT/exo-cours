@@ -1,13 +1,22 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { createPost, fetchMembers, fetchPosts } from '../api'
+import { sessionRequest } from '../api'
 import type { Creation, Member, Post, Query } from '../types'
-import { generateAutoReply, loadPending, loadReplies, savePending, saveReplies } from '../replies'
-import type { PendingReply, Reply } from '../replies'
-import { chooseBotAuthor } from '../replies'
+
+import type { Reply } from '../replies'
+type PendingReply = { id:string; postId:number; parentId:string; originalBody:string; dueAt:number; author?:string }
 import { communityMembers, communityPosts } from '../data/community'
 
 type ContextValue = {
+  user: Member | null
+  register: (username:string,password:string) => Promise<void>
+  login: (username:string,password:string) => Promise<void>
+  logout: () => Promise<void>
+  updateBio: (bio:string) => Promise<void>
+  editPost: (id:number,title:string,body:string) => Promise<void>
+  deletePost: (id:number) => Promise<void>
+  editReply: (id:string,body:string) => Promise<void>
+  deleteReply: (id:string) => Promise<void>
   posts: Post[]
   members: Member[]
   loading: boolean
@@ -20,7 +29,7 @@ type ContextValue = {
   publish: (draft: Creation) => Promise<Post>
   reload: () => void
   replies: Reply[]
-  addReply: (postId: number, parentId: string | null, body: string) => void
+  addReply: (postId: number, parentId: string | null, body: string) => Promise<void>
   pendingReplies: PendingReply[]
   theme: 'light' | 'dark'
   toggleTheme: () => void
@@ -37,6 +46,7 @@ function readTheme(): 'light' | 'dark' {
   catch { return 'light' }
 }
 export function NetworkProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<Member | null>(null)
   const [posts, setPosts] = useState<Post[]>(() => communityPosts)
   const [members, setMembers] = useState<Member[]>(() => communityMembers)
   const [loading, setLoading] = useState(true)
@@ -44,32 +54,30 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const [revision, setRevision] = useState(0)
   const [query, setQuery] = useState<Query>({ text: '', tag: '', popularity: 'all', page: 1 })
   const [savedIds, setSavedIds] = useState<number[]>(readArray)
-  const [replies, setReplies] = useState<Reply[]>(loadReplies)
-  const [pendingReplies, setPendingReplies] = useState<PendingReply[]>(loadPending)
+  const [replies, setReplies] = useState<Reply[]>([])
+  const [pendingReplies, setPendingReplies] = useState<PendingReply[]>([])
   const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
 
   useEffect(() => {
-    let cancelled = false
-    async function load() {
-      try {
-        const [nextPosts, nextMembers] = await Promise.all([fetchPosts(), fetchMembers()])
-        if (!cancelled) {
-          setPosts(old => [
-            ...old.filter(p => p.local),
-            ...communityPosts,
-            ...nextPosts.map(p => ({ ...p, source: 'api' as const })),
-          ].sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')))
-          setMembers([...communityMembers, ...nextMembers])
-          setError('')
-        }
-      } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : 'Erreur réseau.')
-      } finally { if (!cancelled) setLoading(false) }
-    }
-    void load()
-    return () => { cancelled = true }
-  }, [revision])
-
+    let cancelled=false
+    sessionRequest<{user:Member|null;members:Member[];posts:Post[];comments:Reply[]}>('/state')
+      .then(data=>{if(cancelled)return;setUser(data.user);setMembers([...communityMembers,...data.members]);setPosts([...data.posts,...communityPosts].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')));setReplies(data.comments);setError('')})
+      .catch(e=>{if(!cancelled)setError(e instanceof Error?e.message:'Serveur indisponible.')})
+      .finally(()=>{if(!cancelled)setLoading(false)})
+    return ()=>{cancelled=true}
+  },[revision])
+  async function refreshSession(){
+    const data=await sessionRequest<{user:Member|null;members:Member[];posts:Post[];comments:Reply[]}>('/state')
+    setUser(data.user);setMembers([...communityMembers,...data.members]);setPosts([...data.posts,...communityPosts].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')));setReplies(data.comments)
+  }
+  async function register(username:string,password:string){await sessionRequest('/register','POST',{username,password});await refreshSession()}
+  async function login(username:string,password:string){await sessionRequest('/login','POST',{username,password});await refreshSession()}
+  async function logout(){await sessionRequest('/logout','POST');await refreshSession()}
+  async function updateBio(bio:string){await sessionRequest('/profile','PATCH',{bio});await refreshSession()}
+  async function editPost(id:number,title:string,body:string){await sessionRequest('/posts/'+id,'PATCH',{title,body});await refreshSession()}
+  async function deletePost(id:number){await sessionRequest('/posts/'+id,'DELETE');await refreshSession()}
+  async function editReply(id:string,body:string){await sessionRequest('/comments/'+id,'PATCH',{body});await refreshSession()}
+  async function deleteReply(id:string){await sessionRequest('/comments/'+id,'DELETE');await refreshSession()}
   useEffect(() => {
     try { localStorage.setItem('afterhours-saved', JSON.stringify(savedIds)) } catch { /* stockage indisponible */ }
   }, [savedIds])
@@ -78,39 +86,9 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem('afterhours-theme', theme) } catch { /* stockage indisponible */ }
   }, [theme])
 
-  useEffect(() => { saveReplies(replies) }, [replies])
-  useEffect(() => { savePending(pendingReplies) }, [pendingReplies])
-
-  // Les réponses déjà planifiées sont conservées lors de la navigation ou du rechargement.
-  useEffect(() => {
-    const timers = pendingReplies.map(job => {
-      const remaining = Math.max(0, job.dueAt - Date.now())
-      return window.setTimeout(() => {
-        setReplies(current => current.some(r => r.id === job.id) ? current : [...current, {
-          id: job.id, postId: job.postId, parentId: job.parentId,
-          body: generateAutoReply(job.originalBody, posts.find(p => p.id === job.postId)?.tags[0], job.author), author: job.author ?? 'oldschool_bot',
-          automated: true, createdAt: Date.now(),
-        }])
-        setPendingReplies(current => current.filter(item => item.id !== job.id))
-      }, remaining)
-    })
-    return () => timers.forEach(window.clearTimeout)
-  }, [pendingReplies, posts])
-
-  function addReply(postId: number, parentId: string | null, body: string) {
-    const clean = body.trim()
-    if (!clean || clean.length > 2000) return
-    const id = crypto.randomUUID()
-    setReplies(current => [...current, {
-      id, postId, parentId, body: clean, author: 'you', automated: false, createdAt: Date.now(),
-    }])
-    // Réponse automatique entre 10 et 30 secondes, sans service externe.
-    const dueAt = Date.now() + 10000 + Math.floor(Math.random() * 20001)
-    const category = posts.find(post => post.id === postId)?.tags[0] || 'random'
-    const author = chooseBotAuthor(clean, category, postId)
-    setPendingReplies(current => [...current, {
-      id: crypto.randomUUID(), postId, parentId: id, originalBody: clean, dueAt, author,
-    }])
+  async function addReply(postId:number,parentId:string|null,body:string) {
+    await sessionRequest('/comments','POST',{postId,parentId,body})
+    await refreshSession()
   }
 
   function setCriteria(changes: Partial<Omit<Query, 'page'>>) {
@@ -120,13 +98,13 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     setSavedIds(current => current.includes(id) ? current.filter(v => v !== id) : [...current, id])
   }
   async function publish(draft: Creation) {
-    const post = await createPost(draft)
-    const dated = { ...post, createdAt: new Date().toISOString() }
-    setPosts(old => [dated, ...old.filter(p => p.id !== dated.id)])
-    return dated
+    const result=await sessionRequest<{post:Post}>('/posts','POST',{title:draft.title,body:draft.body,tag:draft.tags[0]})
+    await refreshSession()
+    return result.post
   }
   return (
     <NetworkContext.Provider value={{
+      user, register, login, logout, updateBio, editPost, deletePost, editReply, deleteReply,
       posts, members, loading, error, query, setCriteria,
       setPage: page => setQuery(q => ({ ...q, page })),
       savedIds, toggleSaved, publish, replies, addReply, pendingReplies,
