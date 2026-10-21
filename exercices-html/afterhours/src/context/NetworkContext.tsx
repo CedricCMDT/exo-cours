@@ -55,7 +55,7 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const [query, setQuery] = useState<Query>({ text: '', tag: '', popularity: 'all', page: 1 })
   const [savedIds, setSavedIds] = useState<number[]>(readArray)
   const [replies, setReplies] = useState<Reply[]>([])
-  const [pendingReplies, setPendingReplies] = useState<PendingReply[]>([])
+  const pendingReplies: PendingReply[] = []
   const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
 
   useEffect(() => {
