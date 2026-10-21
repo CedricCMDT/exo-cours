@@ -25,3 +25,10 @@ export async function createPost(data: Creation): Promise<Post> {
   })
   return { ...created, reactions: created.reactions ?? { likes: 0, dislikes: 0 }, views: created.views ?? 0, tags: created.tags ?? data.tags, local: true }
 }
+
+export async function sessionRequest<T>(path: string, method = 'GET', data?: unknown): Promise<T> {
+ const response = await fetch('/session-api'+path, { method, headers: {'Content-Type':'application/json'}, body: data === undefined ? undefined : JSON.stringify(data), credentials:'same-origin' })
+ const result = await response.json()
+ if (!response.ok) throw new Error(result.error || 'Erreur de session.')
+ return result as T
+}
