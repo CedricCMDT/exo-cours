@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import { fetchPost } from '../api'
 import { useNetwork } from '../context/NetworkContext'
 import type { Post } from '../types'
@@ -7,7 +7,12 @@ import { Discussion } from '../components/Discussion'
 
 export function Detail() {
   const { id } = useParams()
-  const { posts, members, savedIds, toggleSaved } = useNetwork()
+  const { posts, members, savedIds, toggleSaved, user, editPost, deletePost } = useNetwork()
+  const navigate=useNavigate()
+  const [editing,setEditing]=useState(false)
+  const [title,setTitle]=useState('')
+  const [body,setBody]=useState('')
+  const [actionError,setActionError]=useState('')
   const local = posts.find(p => String(p.id) === id)
   const [remote, setRemote] = useState<Post | null>(null)
   const [loading, setLoading] = useState(!local)
@@ -40,6 +45,7 @@ export function Detail() {
       <h1>{post.title}</h1>
       <p className="byline">Publié par @{member?.username || 'anonymous_' + post.userId} · {date}</p>
       <div className="detail-body">{post.body}</div>
+      {user?.id===post.userId && post.local && <div><button onClick={()=>{setTitle(post.title);setBody(post.body);setEditing(!editing)}}>{editing?"Annuler":"Modifier mon post"}</button><button onClick={async()=>{if(window.confirm("Supprimer définitivement ce post ?")){await deletePost(post.id);navigate("/")}}}>Supprimer mon post</button>{editing&&<form onSubmit={async e=>{e.preventDefault();try{await editPost(post.id,title,body);setEditing(false)}catch(e){setActionError(String(e))}}}><input value={title} onChange={e=>setTitle(e.target.value)} minLength={5} maxLength={100} required/><textarea value={body} onChange={e=>setBody(e.target.value)} minLength={15} required/><button type="submit">Enregistrer</button></form>}{actionError&&<p role="alert">{actionError}</p>}</div>}
       <dl className="stats">
         <div><dt>Likes</dt><dd>{post.reactions?.likes ?? 0}</dd></div>
         <div><dt>Dislikes</dt><dd>{post.reactions?.dislikes ?? 0}</dd></div>
