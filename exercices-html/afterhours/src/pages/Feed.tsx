@@ -55,8 +55,8 @@ export function Feed() {
       <span className="hero-orb orb-b" aria-hidden="true" />
       <div className="hero-copy">
         <div className="eyebrow"><span className="pulse-light" /> LE WEB APRÈS MINUIT <span className="hero-year">EST. 2008</span></div>
-        <h1>Pas de script.<br /><em>Juste des avis.</em></h1>
-        <p>Une fenêtre ouverte sur le bruit d'Internet. Des communautés, des opinions qui s'affrontent, et des fils dont personne ne connaît la fin.</p>
+        <h1>Il est tard.<br /><em>Le forum est encore là.</em></h1>
+        <p>Des débats, des histoires, des prises de tête. Pose ton message ou viens lire ce qui se raconte.</p>
         <div className="hero-numbers"><div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>publications</small></div><div><strong>{communities.length}</strong><small>communautés</small></div><div><strong>{communityCount.toLocaleString('fr-FR')}</strong><small>discussions FR</small></div></div>
       </div>
       <div className="hero-terminal" aria-hidden="true">
