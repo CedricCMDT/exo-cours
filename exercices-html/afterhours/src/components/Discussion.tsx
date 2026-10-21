@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { useNetwork } from '../context/NetworkContext'
 import type { Reply } from '../replies'
 import type { Post } from '../types'
@@ -125,19 +126,19 @@ function ReplyForm({ postId, parentId, afterSend }: {
   parentId: string | null
   afterSend?: () => void
 }) {
-  const { addReply } = useNetwork()
+  const { addReply, user } = useNetwork()
+  const [error,setError] = useState('')
   const [text, setText] = useState('')
   return <form className="reply-form" onSubmit={event => {
     event.preventDefault()
     if (!text.trim()) return
-    addReply(postId, parentId, text)
-    setText('')
-    afterSend?.()
+    void addReply(postId, parentId, text).then(()=>{setText('');setError('');afterSend?.()}).catch(e=>setError(String(e)))
   }}>
+    {!user && <p>Pour participer : <Link to="/account">connecte-toi ou crée un compte</Link>.</p>}
     <label htmlFor={'reply-' + (parentId || 'root')}>Votre réponse</label>
     <textarea id={'reply-' + (parentId || 'root')} rows={3} minLength={1} maxLength={2000} required
       placeholder="Écrire une réponse…" value={text} onChange={e => setText(e.target.value)} />
-    <button type="submit" className="primary" disabled={!text.trim()}>Répondre</button>
+    {error&&<p role="alert">{error}</p>}<button type="submit" className="primary" disabled={!text.trim()||!user}>Répondre</button>
   </form>
 }
 function Comment({ comment, all, postId, depth = 0 }: {
@@ -147,7 +148,9 @@ function Comment({ comment, all, postId, depth = 0 }: {
   depth?: number
 }) {
   const [responding, setResponding] = useState(false)
-  const { pendingReplies } = useNetwork()
+  const { pendingReplies,user,editReply,deleteReply } = useNetwork()
+  const [editing,setEditing]=useState(false)
+  const [newBody,setNewBody]=useState(comment.body)
   const children = all.filter(item => item.parentId === comment.id)
   return <div className="reply-thread" style={{ marginLeft: Math.min(depth, 3) * 15 }}>
     <article className="reply-card">
@@ -156,6 +159,7 @@ function Comment({ comment, all, postId, depth = 0 }: {
         <time dateTime={new Date(comment.createdAt).toISOString()}>{new Date(comment.createdAt).toLocaleString('fr-FR')}</time>
       </header>
       <p>{comment.body}</p>
+      {user?.username===comment.author && !comment.id.startsWith('archive-') && <div><button onClick={()=>{setNewBody(comment.body);setEditing(!editing)}}>Modifier</button><button onClick={()=>{if(window.confirm('Supprimer ce commentaire ?'))void deleteReply(comment.id)}}>Supprimer</button>{editing&&<form onSubmit={e=>{e.preventDefault();void editReply(comment.id,newBody).then(()=>setEditing(false))}}><textarea value={newBody} maxLength={2000} onChange={e=>setNewBody(e.target.value)}/><button>Enregistrer</button></form>}</div>}
       <button type="button" onClick={() => setResponding(v => !v)}>{responding ? 'Annuler' : '↳ Répondre'}</button>
       {responding && <ReplyForm postId={postId} parentId={comment.id} afterSend={() => setResponding(false)} />}
       {pendingReplies.filter(item => item.parentId === comment.id).map(item =>
