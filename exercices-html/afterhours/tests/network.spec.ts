@@ -10,7 +10,6 @@ const users = [
   { id: 2, username: 'anon2', firstName: 'Bob', lastName: 'Y', image: '/avatar.svg' },
 ]
 test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear())
   await page.route('https://dummyjson.com/**', route => {
     const url = new URL(route.request().url())
     if (url.pathname === '/posts' && route.request().method() === 'GET') {
