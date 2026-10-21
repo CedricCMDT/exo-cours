@@ -6,3 +6,5 @@ import { NetworkProvider } from './context/NetworkContext'
 import './styles.css'
 
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><NetworkProvider><App /></NetworkProvider></BrowserRouter></StrictMode>)
+
+import './neo.css'
