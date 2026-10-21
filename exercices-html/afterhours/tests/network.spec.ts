@@ -81,3 +81,18 @@ test('gère le thème sombre et un écran mobile', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await expect(page.getByRole('link', { name: 'Créer un fil +' })).toBeVisible()
 })
+
+test('conserve les réponses imbriquées après actualisation', async ({ page }) => {
+  await page.goto('/posts/1')
+  const discussion = page.locator('.discussion')
+  await discussion.getByLabel('Votre réponse').first().fill('Première réponse persistante')
+  await discussion.getByRole('button', { name: 'Répondre', exact: true }).first().click()
+  await expect(discussion.getByText('Première réponse persistante')).toBeVisible()
+  await discussion.getByRole('button', { name: '↳ Répondre' }).first().click()
+  await discussion.getByLabel('Votre réponse').last().fill('Réponse à la réponse')
+  await discussion.getByRole('button', { name: 'Répondre', exact: true }).last().click()
+  await expect(discussion.getByText('Réponse à la réponse')).toBeVisible()
+  await page.reload()
+  await expect(discussion.getByText('Première réponse persistante')).toBeVisible()
+  await expect(discussion.getByText('Réponse à la réponse')).toBeVisible()
+})
