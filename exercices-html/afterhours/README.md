@@ -45,3 +45,10 @@ La pagination côté client est choisie pour combiner recherche partielle et fil
 
 ## Usage de l'IA
 ChatGPT a été utilisé pour discuter de la direction artistique, expliquer la structure React/TypeScript et assister à la rédaction et à la révision du code. Les choix techniques et leur fonctionnement doivent être compris et défendus à l'oral.
+
+## Discussions et réponses
+Sur une fiche, il est possible de répondre au fil ou de répondre directement à un commentaire (réponses imbriquées). Les messages sont conservés dans le `localStorage` **du navigateur utilisé**, y compris après rechargement. Ce n’est **pas** un système multi-utilisateur partagé : il faut une base de données et une API côté serveur pour permettre des échanges entre appareils et visiteurs.
+
+Une réponse automatique locale est planifiée **10 à 30 secondes** après chaque commentaire. Le compte est explicitement marqué « Compte automatisé ». Le générateur est un moteur de règles contextuelles basé sur des mots-clés, **pas un modèle d’IA**. Les tâches planifiées sont persistées ; lorsque l’utilisateur rouvre la page après l’heure prévue, la réponse apparaît.
+
+Aucune clé externe n’est nécessaire. Pour une véritable génération par IA, prévoir un backend qui appelle un modèle, protège sa clé API et enregistre les messages et tâches différées côté serveur.

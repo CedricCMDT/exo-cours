@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import { fetchPost } from '../api'
 import { useNetwork } from '../context/NetworkContext'
 import type { Post } from '../types'
+import { Discussion } from '../components/Discussion'
 
 export function Detail() {
   const { id } = useParams()
@@ -46,7 +47,7 @@ export function Detail() {
         <div><dt>Auteur ID</dt><dd>{post.userId}</dd></div>
       </dl>
       <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>{savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}</button>
-      <p className="footnote">Les données de l’API DummyJSON sont fictives. Les ajouts ne sont pas conservés sur ses serveurs.</p>
+      <Discussion postId={post.id} />
     </article>}
   </main>
 }

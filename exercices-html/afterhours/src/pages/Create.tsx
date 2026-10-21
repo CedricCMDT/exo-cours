@@ -30,7 +30,7 @@ export function Create() {
   }
   return <main className="narrow-page">
     <div className="section-header"><small>AFTERHOURS / COMPOSE</small><h1>Nouveau fil</h1><p>Publier, c’est facile. Assumer, c’est autre chose.</p></div>
-    {created ? <div className="notice success" role="status"><h2>Publication envoyée</h2><p>« {created.title} » — ID #{created.id}</p><p>{created.body}</p><Link to={'/posts/' + created.id}>Voir la publication →</Link><button onClick={() => { setCreated(null); setTitle(''); setBody('') }}>Créer une autre publication</button><small>DummyJSON simule le POST : l’ajout n’est conservé que dans cette session.</small></div> :
+    {created ? <div className="notice success" role="status"><h2>Publication envoyée</h2><p>« {created.title} » — ID #{created.id}</p><p>{created.body}</p><Link to={'/posts/' + created.id}>Voir la publication →</Link><button onClick={() => { setCreated(null); setTitle(''); setBody('') }}>Créer une autre publication</button><small>Publication conservée dans cette session.</small></div> :
     <form className="composer" onSubmit={submit} noValidate>
       <label>Titre du fil <span>*</span><input required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} placeholder="Le sujet de ton message" /></label>
       <label>Message <span>*</span><textarea required minLength={15} rows={7} value={body} onChange={e => setBody(e.target.value)} placeholder="Qu'as-tu à dire ?" /></label>

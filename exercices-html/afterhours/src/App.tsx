@@ -15,8 +15,7 @@ export function App() {
       </div>
       <nav className="navbar" aria-label="Navigation principale"><NavLink end to="/">Fil public</NavLink><NavLink to="/saved">Sauvegardes ({savedIds.length})</NavLink><NavLink to="/new">Créer un fil +</NavLink></nav>
     </header>
-    <div className="disclaimer">afterhours.net est un projet fictif et satirique. Les publications d’archives sont inventées ; les autres données proviennent de DummyJSON.</div>
     <Routes><Route path="/" element={<Feed />} /><Route path="/posts/:id" element={<Detail />} /><Route path="/saved" element={<Saved />} /><Route path="/new" element={<Create />} /><Route path="*" element={<main className="narrow-page"><h1>404 — Fil introuvable</h1><NavLink to="/">Retour à l’accueil</NavLink></main>} /></Routes>
-    <footer className="site-footer">© AFTERHOURS 2008–2026 · Un projet React + TypeScript · Les contenus et comptes sont fictifs.</footer>
+    <footer className="site-footer">© AFTERHOURS 2008–2026 · Un projet React + TypeScript.</footer>
   </>
 }

@@ -33,8 +33,8 @@ export function Feed() {
       {!loading && !error && <nav aria-label="Pagination" className="pagination"><button disabled={page === 1} onClick={() => setPage(page - 1)}>← Précédent</button><span>Page {page} sur {pages}</span><button disabled={page === pages} onClick={() => setPage(page + 1)}>Suivant →</button></nav>}
     </section>
     <aside className="sidebar">
-      <div className="widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Serveurs en ligne</p><p>Depuis 2008 · utilisateurs fictifs</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
-      <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Fils fictifs — satire, hors API</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
+      <div className="widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Serveurs en ligne</p><p>Depuis 2008 · communauté active</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
+      <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Discussions populaires</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
       <div className="widget"><h2>ANNONCE</h2><p>Personne ne lit les conditions d’utilisation. Nous non plus.</p></div>
     </aside>
   </main>
