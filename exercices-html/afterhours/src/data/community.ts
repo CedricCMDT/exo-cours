@@ -1155,9 +1155,90 @@ function buildPost(category: string, categoryIndex: number, topic: number, angle
     source: 'community',
   }
 }
+// Premier écran : textes éditoriaux plus incarnés, un pour chaque communauté.
+const spotlights: Record<string, { title: string; body: string }> = {
+  societe: {
+    title: 'Vous êtes tous devenus les flics de votre propre palier',
+    body: "Un mec a pris une photo du paillasson de son voisin pour la balancer au groupe de l'immeuble. Dans les réponses, certains demandent carrément une sanction. C'est un paillasson, bordel. Vous avez plus urgent dans votre vie ou on organise un procès avec témoins ?",
+  },
+  politique: {
+    title: 'Le conseil municipal a débattu TROIS HEURES des abribus',
+    body: "La réunion publique était censée parler de transports. Résultat : trois heures pour choisir entre deux nuances de bleu sur un abribus. Les vrais horaires ? Reportés. Et les militants des deux camps sont déjà en train de se traiter de vendus sur les réseaux. Impressionnant.",
+  },
+  tech: {
+    title: 'Prod cassée à 17 h 58 : qui a poussé ça ?',
+    body: "Le déploiement a fait tomber les connexions, le pipeline était vert et le commentaire de commit disait « petit fix ». Maintenant tout le monde cherche un coupable au lieu d'ouvrir les logs. Le code était peut-être nul, mais la chasse aux sorcières l'est encore plus.",
+  },
+  gaming: {
+    title: 'Le type qui crie « skill issue » a fini dernier de sa team',
+    body: "Quatre manches à insulter tout le monde au micro, zéro call utile, et monsieur termine avec deux éliminations. Il a quand même trouvé le moyen d'accuser le matchmaking. J'adore les jeux compétitifs, mais franchement cette faune mérite une série documentaire.",
+  },
+  musique: {
+    title: 'Arrêtez de calculer des streams, écoutez les albums',
+    body: "Sous la sortie d'un disque, les commentaires ne parlent que de records, de classements et de chiffres. Personne n'est capable de citer trois morceaux sans ouvrir une application. Vous êtes des fans ou le service comptabilité d'une maison de disques ?",
+  },
+  cinema: {
+    title: 'Merci pour le spoiler dans le titre, bande de génies',
+    body: "La série est sortie hier et une chaîne a déjà mis le nom du personnage mort EN MAJUSCULES dans sa miniature. Même pas un avertissement. Après ça vient pleurer sur l'algorithme qui pénalise les créateurs. Non, vous avez juste ruiné la surprise pour des clics.",
+  },
+  sport: {
+    title: 'Les experts de canapé ont encore gagné la Ligue des commentaires',
+    body: "Un match serré, deux erreurs d'arbitrage, et les mêmes comptes qui n'ont jamais mis les pieds sur un terrain expliquent comment tout refaire. Le pire ? Ils se contredisent d'un message à l'autre mais gardent leur ton de sélectionneur national.",
+  },
+  travail: {
+    title: 'La réunion de 8 h pour décider… une autre réunion',
+    body: "On s'est pointés à huit heures, caméra allumée, café brûlant. Trente-cinq minutes de « synergie » et de « mise en perspective » pour décider qu'on se reverra jeudi. J'ai perdu la moitié de ma matinée et gagné un nouveau rendez-vous. Magnifique civilisation.",
+  },
+  etudes: {
+    title: 'Le groupe qui découvre GitHub la veille du rendu',
+    body: "Quatre personnes sur le projet, une seule qui a fait un commit. Maintenant ça panique parce que « push » et « pull » seraient des mots obscurs. Le prof va demander une modif à l'oral et je donne cinq minutes avant la catastrophe industrielle.",
+  },
+  relations: {
+    title: 'Les détectives du « vu à 22:14 » sont de sortie',
+    body: "Quelqu'un a mis une capture d'un message lu sans réponse et les commentaires ont déjà inventé une rupture, une trahison et deux vies secrètes. Vous pouvez aussi envisager que la personne était sous la douche, hein. Concept révolutionnaire.",
+  },
+  random: {
+    title: '[IMPORTANT] Mon imprimante me déteste personnellement',
+    body: "Elle imprime la fiche de paie du voisin, les trois cents pages de la tante et un smiley débile trouvé sur Internet. Moi je demande UNE page en noir et blanc et j'ai « erreur inconnue ». Si quelqu'un connaît un exorciste pour périphériques USB, je prends.",
+  },
+  internet: {
+    title: 'Les bots discutent entre eux et personne ne remarque rien',
+    body: "Sous une photo de sandwich, trois comptes ont répondu « analyse passionnante, merci pour votre travail ». Le quatrième les a félicités pour leur objectivité. Je crois que la moitié du Web est devenue un dîner entre robots qui se passent le sel.",
+  },
+  paranormal: {
+    title: 'J’ai entendu des pas dans le couloir condamné',
+    body: "L'étage au-dessus est fermé depuis les travaux. Hier vers minuit, trois séries de pas, très distinctes. Je ne dis pas que c'est un fantôme, je dis que ça m'a foutu la trouille. Si quelqu'un a une explication moins dramatique qu'un film d'horreur, je prends.",
+  },
+  cuisine: {
+    title: 'Les puristes des pâtes vont me tomber dessus',
+    body: "J'ai mis de la crème dans une sauce. Oui. De la crème. Et j'ai osé manger l'assiette en entier. Les commentaires Instagram me réclament déjà un procès à Rome. Détendez-vous deux secondes, ça reste un dîner, pas un traité de paix.",
+  },
+  culture: {
+    title: 'Le mec qui traite tout le monde d’inculte n’a pas lu le livre',
+    body: "Il a passé quarante minutes à expliquer pourquoi ce roman était « indispensable ». Quand on lui demande ce qu'il pense du chapitre final, silence radio. Deux minutes plus tard il partage une citation qui n'existe même pas dans le texte. On est bien.",
+  },
+  economie: {
+    title: 'Le « studio cosy » est littéralement un couloir',
+    body: "Annonce immobilière du jour : neuf mètres carrés, lit collé au lavabo, « charme atypique », prix digne d'un palais. Dans les commentaires, un type défend le tarif au nom du marché. Le marché peut donc avoir honte à notre place ?",
+  },
+  science: {
+    title: 'Une vidéo de trente secondes ne remplace pas une étude',
+    body: "Un extrait sans méthode ni données circule avec le titre « LES SCIENTIFIQUES PANIQUENT ». Les scientifiques en question demandent juste qu'on arrête de découper leurs phrases. Mais bon, vérifier prend plus de temps que partager, apparemment.",
+  },
+  nostalgie: {
+    title: 'J’ai rouvert mon Skyblog. J’aurais dû m’abstenir.',
+    body: "Fond violet à étoiles, curseur pailleté, musique qui démarre toute seule et pseudo xX_Tenebres_Du_Coeur_Xx. J'avais écrit « personne me comprend » sous une photo de Naruto. Je veux disparaître, mais au fond ça me manque un peu.",
+  },
+}
+
 export const communityPosts: Post[] = communities.flatMap((community, i) =>
   topics[community.slug].flatMap((_, topic) =>
-    angles.map((_, angle) => buildPost(community.slug, i, topic, angle))),
+    angles.map((_, angle) => {
+      const base = buildPost(community.slug, i, topic, angle)
+      if (topic !== 0 || angle !== 0) return base
+      const spotlight = spotlights[community.slug]
+      return { ...base, ...spotlight, createdAt: new Date(epoch - i * 19 * 60000).toISOString() }
+    })),
 ).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
 
 export const communityCount = communityPosts.length
