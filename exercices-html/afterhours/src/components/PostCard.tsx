@@ -7,7 +7,7 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
   const saved = savedIds.includes(post.id)
   return <article className="post-card">
     <div className="post-head">
-      <span className="post-avatar" aria-hidden="true">{(member?.username || 'A')[0].toUpperCase()}</span>
+      <img className="post-avatar" src={member?.image || '/avatar.svg'} alt={'Avatar de ' + (member?.username || 'Anonymous')} loading="lazy" />
       <div><strong>@{member?.username || 'anonymous_' + post.userId}</strong><small> · #{post.id} · /{post.tags[0] || 'random'}/</small></div>
       <span className="post-date">COMMUNITY</span>
     </div>
