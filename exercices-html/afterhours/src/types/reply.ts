@@ -8,6 +8,7 @@ export type Reply = {
   postId: number
   parentId: string | null
   author: string
+  userId?: number // Présent sur les réponses créées localement, absent sur DummyJSON.
   body: string
   createdAt?: number
   automated: boolean
