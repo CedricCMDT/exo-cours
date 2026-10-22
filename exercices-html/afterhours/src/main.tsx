@@ -6,7 +6,6 @@ import { NetworkProvider } from './context/NetworkContext'
 
 // Styles rangés par rôle : les fichiers tardifs complètent les précédents.
 // Les anciens thèmes rétro ne sont plus importés.
-import './styles/base.css'
 import './styles/foundation.css'
 import './styles/dashboard.css'
 import './styles/feed.css'
