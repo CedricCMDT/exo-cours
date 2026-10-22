@@ -48,41 +48,65 @@ Aucune clé API ni base de données à installer.
 
 Le thème et certains réglages d'interface peuvent rester dans `localStorage` : ce ne sont pas des données du forum.
 
-## Organisation du code
+## Architecture factorisée
+
+La nouvelle organisation distingue **UI partagée**, **fonctionnalités métier**, **accès aux APIs** et **pages**. Les pages n'ont plus besoin de connaître les détails des appels HTTP ou des états internes.
 
 ```text
 afterhours/
-├── README.md
-├── docs/
-│   ├── PRESENTATION.md          # Démonstration et explications pour l'oral
-│   ├── ARCHITECTURE.md          # Circulation des données et dossiers
-│   └── REVUE_CODE.md            # Choix techniques, contrôles et limites
-├── server/
-│   └── sessionApi.ts            # API temporaire intégrée à Vite
+├── .vscode/                     # Prettier automatique à l'enregistrement
+├── .editorconfig                # Convention d'indentation commune
+├── server/sessionApi.ts         # API Node temporaire
 ├── src/
-│   ├── App.tsx                  # Navigation et routes
-│   ├── main.tsx                 # Point d'entrée React + CSS
 │   ├── components/
-│   │   ├── api/ApiPlayground.tsx
-│   │   ├── discussion/Discussion.tsx
-│   │   ├── experience/Experience.tsx
-│   │   ├── feed/
-│   │   │   ├── ControlRoom.tsx
-│   │   │   └── PostCard.tsx
-│   │   └── ui/PageHeader.tsx    # En-tête réutilisable avec classes CSS
-│   ├── context/NetworkContext.tsx
-│   ├── data/                    # Archives fictives et réponses
-│   ├── pages/                   # Accueil, sujet, favoris, création, compte
-│   ├── services/api.ts          # Requêtes HTTP
-│   ├── styles/                  # CSS : structure, pages, thème, responsive, effets
-│   ├── types/                   # Types Post, Member et Reply
-│   └── utils/avatar.ts
-├── vite.config.ts
-├── tsconfig.json
+│   │   ├── ui/                  # Button, ButtonLink, Fields, Panel, PageHeader
+│   │   ├── feed/                # PostCard, ControlRoom
+│   │   ├── api/                 # ApiPlayground
+│   │   ├── discussion/          # Réponses et formulaire réutilisable
+│   │   └── experience/          # Publicités fictives et pop-up
+│   ├── features/
+│   │   ├── api/                 # useRemoteDataset
+│   │   ├── session/             # useLocalSession
+│   │   └── feed/                # selectors, FeedHero, FeedControls, SourceSwitcher
+│   ├── services/                # HTTP : api, demoApi
+│   ├── context/                 # Assemblage des données
+│   ├── pages/                   # Routes de l'application
+│   ├── styles/                  # CSS par rôle + tokens du thème clair/sombre
+│   ├── data/                    # Archives fictives
+│   ├── types/                   # Interfaces TypeScript
+│   └── utils/                   # Fonctions génériques
+├── tests/network.spec.ts        # Tests de l'API, des formulaires et du contraste
+├── docs/                        # Architecture détaillée et guide d'oral
 └── package.json
 ```
 
-Les pages utilisent les mêmes composants réutilisables. Par exemple, `PageHeader` affiche les en-têtes du profil, des favoris et du formulaire de création. Les classes `.page-heading__*` permettent de modifier leur style au même endroit, en conservant des `h1` corrects pour l'accessibilité.
+**Exemple de réutilisation :** un seul `Button` avec les variantes `primary`, `secondary`, `ghost` et `danger`. Un seul `InputField` relie automatiquement le label au champ. Un seul fichier `styles/ui.css` gère leurs couleurs et le contraste clair/sombre. La logique `filterPosts()` / `orderPosts()` reste indépendante de React.
+
+→ [Architecture détaillée](docs/ARCHITECTURE.md)
+
+## Mise en forme automatique (VS Code et Prettier)
+
+Prettier est **déjà présent dans les dépendances** et ses réglages sont fournis dans `.prettierrc.json`. Pour activer le formatage automatique :
+
+1. Ouvre directement le dossier **`exercices-html/afterhours`** avec **Fichier → Ouvrir un dossier** dans VS Code (les paramètres `.vscode/` doivent être à la racine du dossier ouvert).
+2. Accepte l'installation de l'extension recommandée **Prettier – Code formatter**.
+3. Enregistre un fichier CSS, TS ou TSX : il est mis en forme automatiquement.
+
+Commandes possibles depuis le terminal :
+
+```powershell
+npm run format:css    # Reformatage de tous les CSS
+npm run format        # Reformatage CSS, React, TypeScript, JSON et Markdown
+npm run format:check  # Contrôle sans modifier les fichiers
+npm run lint          # Analyse du code
+npm run build         # Compilation TypeScript + Vite
+```
+
+Les CSS du dépôt ont également été réindentés pour ne plus tenir sur une seule ligne. **Attention :** `npm run format` modifie les fichiers ; vérifie les changements avant un commit.
+
+## Thème clair
+
+Le thème clair repose sur des **variables CSS sémantiques** (`--ui-text`, `--ui-surface`, `--ui-input-bg`, etc.) et des styles de contraste pour les cartes, textes, panneaux et formulaires. Il ne se contente plus d'inverser la couleur d'arrière-plan. Les tests Playwright vérifient notamment que le titre et le texte d'une carte dépassent le rapport de contraste 4,5:1.
 
 ## Comprendre l'API en 30 secondes
 
@@ -93,7 +117,7 @@ const json = await response.json()
 console.log(json.posts)
 ```
 
-Dans le véritable projet, `src/services/api.ts` regroupe trois appels dans `Promise.all`. `NetworkContext` gère le chargement, les erreurs et les données partagées par les composants.
+Dans le véritable projet, `src/services/api.ts` regroupe trois appels dans `Promise.all`. Le hook `useRemoteDataset` gère le chargement et les erreurs HTTP ; le hook `useLocalSession` gère les écritures temporaires ; `NetworkContext` les assemble pour les composants.
 
 Pour observer les échanges : **F12 → Réseau (Network) → Fetch/XHR → Actualiser API**.
 
