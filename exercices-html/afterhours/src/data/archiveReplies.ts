@@ -512,7 +512,7 @@ function one<T>(list: readonly T[], random: () => number): T {
 /** Répartition irrégulière : un fil désert n'a pas 60 messages, un gros débat oui. */
 export function archiveReplyCount(post: Post): number {
   if (post.source !== 'community') return 0
-  const roll = seeded(post.id * 41 + 771)( ) * 100
+  const roll = seeded(post.id * 41 + 771)() * 100
   let count: number
   const random = seeded(post.id * 317 + 19)
   if (roll < 8) count = Math.floor(random() * 3) // 0 à 2
@@ -535,7 +535,7 @@ function archiveId(postId: number, index: number): string {
 }
 
 /** Fabrique le texte selon le ton, sans appeler d'IA ou d'API. */
-function writeReply(category: string, index: number, post: Post, random: () => number, nested: boolean): string {
+function writeReply(category: string, _index: number, post: Post, random: () => number, nested: boolean): string {
   const byTopic = byCategory[category] || generalLines
   const roll = random()
   let base: string
