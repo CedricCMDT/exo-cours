@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { sessionRequest } from '../api'
 import type { Creation, Member, Post, Query } from '../types'
@@ -6,6 +6,15 @@ import type { Creation, Member, Post, Query } from '../types'
 import type { Reply } from '../replies'
 type PendingReply = { id:string; postId:number; parentId:string; originalBody:string; dueAt:number; author?:string }
 import { communityMembers, communityPosts } from '../data/community'
+
+// Réponse du petit serveur local (les archives de démonstration sont chargées à part).
+type SessionState = {
+  bootId: string
+  user: Member | null
+  members: Member[]
+  posts: Post[]
+  comments: Reply[]
+}
 
 type ContextValue = {
   user: Member | null
@@ -58,17 +67,37 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const pendingReplies: PendingReply[] = []
   const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
 
+  // Une seule fonction remet à jour l'interface après une inscription, un post, etc.
+  // Le serveur fournit un identifiant de démarrage : s'il change, on vide les favoris.
+  const syncState = useCallback((data: SessionState) => {
+    try {
+      const previous = localStorage.getItem('afterhours-boot-id')
+      if (previous !== data.bootId) {
+        localStorage.removeItem('afterhours-saved')
+        localStorage.removeItem('afterhours-replies-v1')
+        localStorage.removeItem('afterhours-reply-queue-v1')
+        localStorage.setItem('afterhours-boot-id', data.bootId)
+        setSavedIds([])
+      }
+    } catch { /* La navigation privée peut refuser le stockage. */ }
+    setUser(data.user)
+    setMembers([...communityMembers, ...data.members])
+    setPosts([...data.posts, ...communityPosts].sort((a, b) =>
+      (b.createdAt || '').localeCompare(a.createdAt || '')))
+    setReplies(data.comments)
+  }, [])
+
   useEffect(() => {
     let cancelled=false
-    sessionRequest<{user:Member|null;members:Member[];posts:Post[];comments:Reply[]}>('/state')
-      .then(data=>{if(cancelled)return;setUser(data.user);setMembers([...communityMembers,...data.members]);setPosts([...data.posts,...communityPosts].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')));setReplies(data.comments);setError('')})
+    sessionRequest<SessionState>('/state')
+      .then(data=>{if(cancelled)return;syncState(data);setError('')})
       .catch(e=>{if(!cancelled)setError(e instanceof Error?e.message:'Serveur indisponible.')})
       .finally(()=>{if(!cancelled)setLoading(false)})
     return ()=>{cancelled=true}
-  },[revision])
+  },[revision,syncState])
   async function refreshSession(){
     const data=await sessionRequest<{user:Member|null;members:Member[];posts:Post[];comments:Reply[]}>('/state')
-    setUser(data.user);setMembers([...communityMembers,...data.members]);setPosts([...data.posts,...communityPosts].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||'')));setReplies(data.comments)
+    syncState(data)
   }
   async function register(username:string,password:string){await sessionRequest('/register','POST',{username,password});await refreshSession()}
   async function login(username:string,password:string){await sessionRequest('/login','POST',{username,password});await refreshSession()}
