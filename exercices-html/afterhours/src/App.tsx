@@ -1,6 +1,6 @@
 import { NavLink, Route, Routes } from 'react-router'
 import { useNetwork } from './context/NetworkContext'
-import { IntrusionLayer } from './components/Experience'
+import { IntrusionLayer } from './components/experience/Experience'
 import { Feed } from './pages/Feed'
 import { Saved } from './pages/Saved'
 import { Detail } from './pages/Detail'
