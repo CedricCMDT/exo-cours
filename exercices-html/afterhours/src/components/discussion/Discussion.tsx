@@ -37,7 +37,7 @@ function Comment({ comment, all, postId, depth = 0 }: {
   depth?: number
 }) {
   const [responding, setResponding] = useState(false)
-  const { pendingReplies,user,editReply,deleteReply } = useNetwork()
+  const { user, editReply, deleteReply } = useNetwork()
   const [editing,setEditing]=useState(false)
   const [newBody,setNewBody]=useState(comment.body)
   const children = all.filter(item => item.parentId === comment.id)
@@ -55,8 +55,7 @@ function Comment({ comment, all, postId, depth = 0 }: {
       {user?.username===comment.author && !comment.id.startsWith('archive-') && !comment.id.startsWith('api-') && <div><button onClick={()=>{setNewBody(comment.body);setEditing(!editing)}}>Modifier</button><button onClick={()=>{if(window.confirm('Supprimer ce commentaire ?'))void deleteReply(comment.id)}}>Supprimer</button>{editing&&<form onSubmit={e=>{e.preventDefault();void editReply(comment.id,newBody).then(()=>setEditing(false))}}><textarea value={newBody} maxLength={2000} onChange={e=>setNewBody(e.target.value)}/><button>Enregistrer</button></form>}</div>}
       <button type="button" onClick={() => setResponding(v => !v)}>{responding ? 'Annuler' : '↳ Répondre'}</button>
       {responding && <ReplyForm postId={postId} parentId={comment.id} afterSend={() => setResponding(false)} />}
-      {pendingReplies.filter(item => item.parentId === comment.id).map(item =>
-        <small key={item.id} className="typing">{item.author ?? 'Un membre'} prépare une réponse…</small>)}
+
     </article>
     {children.map(child => <Comment key={child.id} comment={child} all={all} postId={postId} depth={depth + 1} />)}
   </div>
