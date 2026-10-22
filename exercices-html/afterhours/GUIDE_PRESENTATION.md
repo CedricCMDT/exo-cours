@@ -18,14 +18,14 @@ L'accueil ne se contente pas de lister des messages.
 - **Archives fictives** : plus de 1 000 messages de démonstration dans 18 communautés,
   avec différentes dates, réactions et auteurs. Ils ne sont pas de vraies données Internet.
 
-## 2. Quels fichiers regarder ?
+- **Discussions fictives variables** : certains posts ont 0 à 2 réponses, d'autres 10, 50 ou plus de 100. Les conversations sont imbriquées et affichées progressivement (12 fils racines par clic). Les comptes sont des personnages de démonstration, pas de vrais utilisateurs.\n\n## 2. Quels fichiers regarder ?
 
 | Fichier | Rôle |
 | --- | --- |
 | `src/pages/Feed.tsx` | Affichage du fil, recherche, pagination et trois modes de classement. |
 | `src/components/ControlRoom.tsx` | Carte des communautés et sélection du sujet en vedette. |
 | `src/control-room.css` | Grille, couleurs, formes décoratives, animations et responsive. |
-| `src/components/PostCard.tsx` | Présentation d'une publication et équilibre likes/dislikes. |
+| `src/components/PostCard.tsx` | Présentation d'une publication, compteur de réponses et équilibre likes/dislikes. |\n| `src/data/archiveReplies.ts` | Générateur reproductible de commentaires fictifs, avec nombres irréguliers et thèmes variés. |\n| `src/components/Discussion.tsx` | Affiche les réponses imbriquées et un bouton pour développer la suite. |
 | `src/data/community.ts` | Contenu de démonstration et distribution des publications. |
 | `src/context/NetworkContext.tsx` | État React partagé par les pages, fonctions de connexion et chargement. |
 | `src/api.ts` | Une fonction `fetch()` commune à toutes les requêtes locales. |
