@@ -8,7 +8,7 @@ export type Post = {
   userId: number
   local?: boolean
   createdAt?: string
-  source?: 'community' | 'api'
+  source?: 'community' | 'api' | 'session'
 }
 export type Member = { id: number; username: string; firstName: string; lastName: string; image?: string; bio?: string; joinedAt?: string }
 export type Query = { text: string; tag: string; popularity: string; page: number }
