@@ -307,3 +307,19 @@
   color: var(--ui-text);
   border-color: var(--ui-border);
 }
+
+/* Contraste des libellés : .composer label / .future-filter label sont
+   des règles historiques plus spécifiques que .ui-field__label. */
+:root[data-theme='light'] .composer .ui-field__label,
+:root[data-theme='light'] .future-filter .ui-field__label,
+:root[data-theme='light'] .reply-form .ui-field__label,
+:root[data-theme='light'] .post-edit-form .ui-field__label,
+:root[data-theme='light'] .page-heading__eyebrow,
+:root[data-theme='light'] .detail-card > small {
+  color: #344a66;
+}
+:root[data-theme='light'] .detail-card .ui-field__label,
+:root[data-theme='light'] .account-profile__identity small,
+:root[data-theme='light'] .account-entries p {
+  color: #42536b;
+}
