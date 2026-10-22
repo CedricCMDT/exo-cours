@@ -5,6 +5,8 @@ import type { Plugin } from 'vite'
 type User = { id:number; username:string; salt:string; hash:string; bio:string; joinedAt:string }
 type SessionPost = { id:number; title:string; body:string; tags:string[]; userId:number; createdAt:string; reactions:{likes:number;dislikes:number}; views:number; local:true }
 type Comment = { id:string; postId:number; parentId:string|null; author:string; userId:number; body:string; createdAt:number; automated:false }
+// ID différent à chaque lancement du serveur : permet au navigateur de vider ses anciens favoris.
+const bootId = randomUUID()
 const users:User[]=[]
 const posts:SessionPost[]=[]
 const comments:Comment[]=[]
@@ -17,7 +19,7 @@ function current(req:IncomingMessage){const token=(req.headers.cookie||'').split
 function secret(pass:string,salt:string){return scryptSync(pass,salt,64).toString('hex')}
 export function sessionApi():Plugin {return {name:'afterhours-memory-api',configureServer(server){server.middlewares.use('/session-api',async(req,res)=>{try{
  const path=(req.url||'/').split('?')[0], method=req.method||'GET', user=current(req)
- if(path==='/state'&&method==='GET')return json(res,200,{user:user?publicUser(user):null,members:users.map(publicUser),posts,comments})
+ if(path==='/state'&&method==='GET')return json(res,200,{bootId,user:user?publicUser(user):null,members:users.map(publicUser),posts,comments})
  if(path==='/register'&&method==='POST'){const b=await body(req), username=String(b.username||'').trim(),password=String(b.password||'')
  if(!/^[\p{L}\p{N}_-]{3,24}$/u.test(username))return json(res,400,{error:'Pseudo : 3 à 24 caractères, sans espace.'})
  if(password.length<8)return json(res,400,{error:'Mot de passe : 8 caractères minimum.'})
