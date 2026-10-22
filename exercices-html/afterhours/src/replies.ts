@@ -4,7 +4,7 @@ export type Reply = {
   parentId: string | null
   author: string
   body: string
-  createdAt: number
+  createdAt?: number // DummyJSON ne fournit pas de date pour ses commentaires.
   automated: boolean
 }
 export type PendingReply = {
