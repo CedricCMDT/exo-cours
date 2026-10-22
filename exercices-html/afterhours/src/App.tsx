@@ -1,5 +1,6 @@
 import { NavLink, Route, Routes } from 'react-router'
 import { useNetwork } from './context/NetworkContext'
+import { Button } from './components/ui/Button'
 import { IntrusionLayer } from './components/experience/Experience'
 import { Feed } from './pages/Feed'
 import { Saved } from './pages/Saved'
@@ -27,10 +28,10 @@ export function App() {
           <span className="future-brand-word">AFTER<span>HOURS</span><small>NOISE NETWORK / 2026</small></span>
         </NavLink>
         <div className="future-header-status"><i/> DÉMO LOCALE <b>↗</b></div>
-        <button className="theme-toggle" type="button" onClick={toggleTheme}
+        <Button className="theme-toggle" variant="ghost" onClick={toggleTheme}
           aria-label={theme === 'dark' ? 'Activer le thème clair' : 'Activer le thème sombre'}>
           ◐ {theme === 'dark' ? 'MODE CLAIR' : 'MODE SOMBRE'}
-        </button>
+        </Button>
       </div>
       <nav className="navbar" aria-label="Navigation principale">
         <NavLink to="/" end>◈ EXPLORER</NavLink>
