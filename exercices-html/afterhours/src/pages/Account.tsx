@@ -30,9 +30,7 @@ export function Account() {
   const myReplies = useMemo(
     () => replies.filter(reply =>
       Boolean(user) &&
-      reply.author === user?.username &&
-      !reply.id.startsWith('api-') &&
-      !reply.id.startsWith('archive-')),
+      reply.userId === user?.id),
     [replies, user],
   )
 
