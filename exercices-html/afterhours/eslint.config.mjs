@@ -11,6 +11,10 @@ export default tseslint.config(
     files: ['**/*.{ts,tsx}'],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     plugins: { 'react-hooks': hooks },
-    rules: { ...hooks.configs.recommended.rules },
+    rules: {
+      ...hooks.configs.recommended.rules,
+      // Paramètres préfixés par _ : volontairement requis par une signature.
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    },
   },
 )
