@@ -38,12 +38,14 @@ Afficher la réponse HTTP et le JSON. Préciser : **DummyJSON ne persiste pas le
 
 - `fetch()` récupère les données HTTP dans `services/api.ts`.
 - `Promise.all()` lance les trois téléchargements en parallèle.
-- `NetworkContext` rend les posts et commentaires accessibles aux pages.
-- `filter()`, `map()` et `sort()` construisent le fil, les communautés et les tris.
-- `useState()` conserve le mode de tri, les saisies et les fenêtres ouvertes.
-- `PostCard`, `Discussion` et `PageHeader` sont réutilisables.
+- `useRemoteDataset` récupère les données DummyJSON (avec gestion des erreurs).
+- `useLocalSession` centralise les comptes et les écritures temporaires.
+- `NetworkContext` assemble ces sources sans dupliquer le code HTTP.
+- `selectors.ts` contient `filterPosts()`, `orderPosts()` et le calcul des catégories.
+- `FeedHero`, `SourceSwitcher` et `FeedControls` rendent l'accueil modulaire.
+- `Button`, `ButtonLink`, `InputField`, `TextareaField`, `SelectField`, `Panel`, `PageHeader` sont des composants UI réutilisables.
 
-**Exemple à citer :** `PageHeader` reçoit `eyebrow`, `title` et `description` : le composant conserve un vrai titre `h1`, mais ses styles utilisent les classes `.page-heading__*`. On peut le réutiliser sur plusieurs pages sans copier le HTML.
+**Exemple à citer :** `Button` reçoit `variant="primary"`, `variant="danger"` ou `variant="ghost"`. Les pages passent seulement un texte et une action, tandis que le fichier `styles/ui.css` gère automatiquement les couleurs et le contraste. `PageHeader` fournit lui aussi un en-tête accessible, réutilisé sur plusieurs pages.
 
 ### 5. Montrer le serveur temporaire (1 minute)
 
@@ -75,11 +77,28 @@ Il y a donc **deux APIs** : DummyJSON pour récupérer le contenu principal et l
 
 **Que fait GSAP ?** Il anime l'apparition des titres et des cartes. Les formes néon et mouvements permanents simples sont animés en CSS.
 
+## Montrer la qualité du code
+
+Pour montrer la factorisation au professeur, ouvre directement :
+
+1. `src/components/ui/Button.tsx` : bouton réutilisable et quatre variantes.
+2. `src/components/ui/Fields.tsx` : formulaires accessibles, sans dupliquer les labels.
+3. `src/features/feed/selectors.ts` : logique de filtres/tri indépendante des composants.
+4. `src/features/api/useRemoteDataset.ts` : récupération API externe.
+5. `src/features/session/useLocalSession.ts` : API locale et mutations temporaires.
+6. `src/styles/ui.css` : variables sémantiques, thème sombre/clair et contrastes.
+
+**Formateur :** le projet utilise Prettier ; `.vscode/settings.json` active le formatage automatique à chaque enregistrement dans VS Code. Ouvre **le dossier `afterhours`** en tant que workspace, accepte l'extension recommandée puis exécute `npm run format` pour harmoniser les fichiers existants.
+
+**Tests :** `npm run build` vérifie TypeScript et Vite, `npm run lint` vérifie les erreurs de code, et `npm run test:e2e` teste la navigation et les contrastes du mode clair (Chromium requis).
+
 ## Avant l'oral
 
 ```powershell
 git pull origin main
 npm install
+npm run format
+npm run lint
 npm run build
 npm run dev
 ```
