@@ -12,6 +12,7 @@ import { communities } from '../data/community'
  * 3. useState : retenir le numéro du sujet affiché.
  *
  * Les données viennent du forum déjà chargé, sans API supplémentaire.
+ * Les archives sont fictives : il ne faut pas présenter leurs chiffres comme du direct.
  */
 
 type RoomProps = {
@@ -51,7 +52,7 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
       .slice(0, 12)
   }, [posts])
 
-  // Les débats les plus partagés : une seule formule, aucune statistique fictive.
+  // Un classement dérivé des likes/dislikes du jeu de données (archives fictives incluses).
   const debated = useMemo(() => {
     return [...posts]
       .filter(post => disagreement(post) > 0)
