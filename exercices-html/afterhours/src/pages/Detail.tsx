@@ -1,60 +1,96 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { fetchPost } from '../api'
-import { useNetwork } from '../context/NetworkContext'
-import type { Post } from '../types'
 import { Discussion } from '../components/Discussion'
+import { useNetwork } from '../context/NetworkContext'
 
+/**
+ * Page d'un sujet : aucune requête externe.
+ * Les publications proviennent soit des archives fictives du projet,
+ * soit de la mémoire du petit serveur local.
+ */
 export function Detail() {
   const { id } = useParams()
-  const { posts, members, savedIds, toggleSaved, user, editPost, deletePost } = useNetwork()
-  const navigate=useNavigate()
-  const [editing,setEditing]=useState(false)
-  const [title,setTitle]=useState('')
-  const [body,setBody]=useState('')
-  const [actionError,setActionError]=useState('')
-  const local = posts.find(p => String(p.id) === id)
-  const [remote, setRemote] = useState<Post | null>(null)
-  const [loading, setLoading] = useState(!local)
+  const navigate = useNavigate()
+  const { posts, members, loading, user, savedIds, toggleSaved, editPost, deletePost } = useNetwork()
+  const post = posts.find(item => String(item.id) === id)
+
+  // Ces champs n'apparaissent que si l'utilisateur est l'auteur du sujet.
+  const [editing, setEditing] = useState(false)
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
   const [error, setError] = useState('')
-  const [retry, setRetry] = useState(0)
-  useEffect(() => {
-    if (local || !id) return
-    let active = true
-    async function load() {
-      setLoading(true); setError('')
-      try {
-        const data = await fetchPost(Number(id))
-        if (active) setRemote(data)
-      } catch (e) {
-        if (active) setError(e instanceof Error ? e.message : 'Publication introuvable.')
-      } finally { if (active) setLoading(false) }
+
+  if (loading) return <main className="narrow-page"><p className="notice">Chargement du fil…</p></main>
+  if (!post) return <main className="narrow-page"><div className="notice">
+    <h1>Ce fil n'existe plus.</h1><Link to="/">Retour aux discussions →</Link>
+  </div></main>
+
+  const member = members.find(item => item.id === post.userId)
+  const isOwner = Boolean(user && user.id === post.userId && post.local)
+  const date = post.createdAt
+    ? new Date(post.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })
+    : 'Archive'
+
+  async function saveChanges(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!post) return
+    try {
+      await editPost(post.id, title, body)
+      setEditing(false)
+      setError('')
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Modification impossible.')
     }
-    void load()
-    return () => { active = false }
-  }, [local, id, retry])
-  const post = local || remote
-  const member = members.find(u => u.id === post?.userId)
-  const date = post?.createdAt ? new Date(post.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' }) : 'Archive'
+  }
+
+  async function remove() {
+    if (!post || !window.confirm('Supprimer définitivement cette publication ?')) return
+    try {
+      await deletePost(post.id)
+      navigate('/')
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Suppression impossible.')
+    }
+  }
+
   return <main className="narrow-page">
-    <div className="breadcrumb"><Link to="/">← Retour au fil</Link> / fil #{id}</div>
-    {loading && !local && <p role="status" className="notice">Chargement de la discussion…</p>}
-    {error && !post && <div className="notice error" role="alert">{error} <button onClick={() => setRetry(n => n + 1)}>Réessayer</button></div>}
-    {!loading && post && <article className="detail-card">
-      <small>AFTERHOURS / THREAD #{post.id}</small>
+    <div className="breadcrumb"><Link to="/">← Retour au fil</Link> / sujet #{post.id}</div>
+    <article className="detail-card">
+      <small>AFTERHOURS / {post.source === 'community' ? 'ARCHIVE' : 'SESSION'} #{post.id}</small>
       <h1>{post.title}</h1>
       <p className="byline">Publié par @{member?.username || 'anonymous_' + post.userId} · {date}</p>
       <div className="detail-body">{post.body}</div>
-      {user?.id===post.userId && post.local && <div><button onClick={()=>{setTitle(post.title);setBody(post.body);setEditing(!editing)}}>{editing?"Annuler":"Modifier mon post"}</button><button onClick={async()=>{if(window.confirm("Supprimer définitivement ce post ?")){await deletePost(post.id);navigate("/")}}}>Supprimer mon post</button>{editing&&<form onSubmit={async e=>{e.preventDefault();try{await editPost(post.id,title,body);setEditing(false)}catch(e){setActionError(String(e))}}}><input value={title} onChange={e=>setTitle(e.target.value)} minLength={5} maxLength={100} required/><textarea value={body} onChange={e=>setBody(e.target.value)} minLength={15} required/><button type="submit">Enregistrer</button></form>}{actionError&&<p role="alert">{actionError}</p>}</div>}
+
+      {/* Les autorisations sont aussi vérifiées côté serveur, pas seulement ici. */}
+      {isOwner && <div className="detail-owner-tools">
+        <button type="button" onClick={() => {
+          setTitle(post.title)
+          setBody(post.body)
+          setEditing(!editing)
+          setError('')
+        }}>{editing ? 'Annuler' : 'Modifier mon post'}</button>
+        <button type="button" onClick={() => void remove()}>Supprimer mon post</button>
+
+        {editing && <form className="post-edit-form" onSubmit={saveChanges}>
+          <label>Titre<input required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} /></label>
+          <label>Texte<textarea required minLength={15} maxLength={10000} rows={6} value={body} onChange={e => setBody(e.target.value)} /></label>
+          <button type="submit" className="primary">Enregistrer</button>
+        </form>}
+      </div>}
+      {error && <p role="alert" className="notice error">{error}</p>}
+
       <dl className="stats">
-        <div><dt>Likes</dt><dd>{post.reactions?.likes ?? 0}</dd></div>
-        <div><dt>Dislikes</dt><dd>{post.reactions?.dislikes ?? 0}</dd></div>
-        <div><dt>Lectures</dt><dd>{post.views ?? 0}</dd></div>
-        <div><dt>Communautés</dt><dd>{post.tags.join(', ') || 'Aucune'}</dd></div>
-        <div><dt>Auteur ID</dt><dd>{post.userId}</dd></div>
+        <div><dt>Likes</dt><dd>{post.reactions.likes}</dd></div>
+        <div><dt>Dislikes</dt><dd>{post.reactions.dislikes}</dd></div>
+        <div><dt>Lectures</dt><dd>{post.views}</dd></div>
+        <div><dt>Communauté</dt><dd>/{post.tags[0] || 'random'}/</dd></div>
       </dl>
-      <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>{savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}</button>
+
+      <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>
+        {savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}
+      </button>
       <Discussion postId={post.id} post={post} />
-    </article>}
+    </article>
   </main>
 }
