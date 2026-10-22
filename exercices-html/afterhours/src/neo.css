@@ -184,3 +184,26 @@ body {
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* Afterhours : une vraie identité de magazine participatif */
+.hero-banner{border-radius:8px 38px 8px 38px;background-image:radial-gradient(circle at 78% 26%,#b247a955,transparent 42%),linear-gradient(115deg,#0b122d,#28204d 75%,#382047);box-shadow:12px 12px 0 #ff8bbe,0 28px 60px #12163830}
+.hero-copy h1{font-size:clamp(43px,5.7vw,76px);line-height:.99;max-width:750px}
+.hero-copy h1 em{color:#ff9a62;text-shadow:none}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin:23px 0 5px}
+.hero-cta a,.hero-cta button{display:inline-flex;align-items:center;justify-content:center;border-radius:10px;padding:13px 18px;font-weight:900;font-size:13px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+.hero-cta a{background:#ff9a62;color:#1b1532;box-shadow:4px 4px 0 #fff3}
+.hero-cta button{background:#ffffff18;border:1px solid #ffffff65;color:white}
+.hero-cta a:hover,.hero-cta button:hover{transform:translateY(-3px) rotate(-1deg)}
+.terminal-headline{font-family:'Trebuchet MS',sans-serif;font-size:clamp(17px,2.2vw,27px);font-weight:900;line-height:1.15;color:white!important;letter-spacing:-.5px}
+.terminal-link{color:#ffab78;text-decoration:underline;text-underline-offset:4px;font-weight:800}
+.hot-strip{max-width:1220px;margin:29px auto 0;display:flex;gap:18px;align-items:stretch;padding:0 3px}
+.hot-strip>span{background:#ff9a62;color:#211532;padding:14px 16px;transform:rotate(-2deg);font-size:12px;font-weight:950;letter-spacing:1px;white-space:nowrap;display:grid;place-items:center}
+.hot-strip>div{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:3px 0 9px;flex:1}
+.hot-strip a{background:#fff;border:1px solid #d4d8eb;border-radius:7px;min-width:190px;max-width:260px;flex:1;padding:12px 15px;color:#28224d;font-weight:800;font-size:12px;scroll-snap-align:start;text-decoration:none;transition:background .2s,transform .2s}
+.hot-strip a:hover{background:#fff0e4;transform:translateY(-3px)}
+.post-card:nth-of-type(4n+1){border-top:3px solid #ff9a62}
+.post-card:nth-of-type(4n+2){border-top:3px solid #5ac5db}
+.post-card:nth-of-type(4n+3){border-top:3px solid #ac7df2}
+.post-card:nth-of-type(4n){border-top:3px solid #f579b9}
+@media(max-width:800px){.hot-strip{margin:24px 15px 0;flex-direction:column;gap:8px}.hot-strip>span{align-self:flex-start}.hero-banner{margin:16px 12px 0;padding:30px 25px;border-radius:8px 25px 8px 25px;box-shadow:6px 7px 0 #ff8bbe}.hero-copy h1{letter-spacing:-2px}}
+@media(prefers-reduced-motion:reduce){.hero-cta a,.hero-cta button,.hot-strip a{transition:none}}
