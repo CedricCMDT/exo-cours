@@ -6,16 +6,13 @@ import { ControlRoom } from '../components/feed/ControlRoom'
 import { FictionAd, NewsWire } from '../components/experience/Experience'
 import { ApiPlayground } from '../components/api/ApiPlayground'
 import { useNetwork } from '../context/NetworkContext'
-import { communities } from '../data/community'
+import { Button, ButtonLink } from '../components/ui/Button'
+import { InputField, SelectField } from '../components/ui/Fields'
+import { controversy, feedCategories, filterPosts, orderPosts, pageCount, selectSource as selectPostsBySource } from '../features/feed/selectors'
+import type { FeedOrder, FeedSource } from '../features/feed/selectors'
 
-// L'accueil semble complexe, mais il se construit autour d'un seul tableau : posts.
+// Présentation du flux : les règles de filtrage et de tri vivent dans features/feed/selectors.ts.
 const PAGE_SIZE = 10
-type Order = 'recent' | 'clash' | 'ignored' | 'popular'
-
-function controversy(likes: number, dislikes: number) {
-  // Un débat reçoit des réactions des deux côtés, pas seulement beaucoup de likes.
-  return Math.min(likes, dislikes)
-}
 
 export function Feed() {
   const {
@@ -24,21 +21,16 @@ export function Feed() {
   } = useNetwork()
   // Mode de départ = les données VRAIMENT récupérées depuis DummyJSON.
   // Les archives françaises sont accessibles mais ne remplacent plus l'API.
-  const [source, setSource] = useState<'api' | 'archive' | 'all'>('api')
+  const [source, setSource] = useState<FeedSource>('api')
   const activeSource = apiStatus === 'error' && source === 'api' ? 'archive' : source
-  const posts = useMemo(() => allPosts.filter(post =>
-    post.local ||
-    (activeSource === 'all') ||
-    (activeSource === 'api' && post.source === 'api') ||
-    (activeSource === 'archive' && post.source === 'community'),
-  ), [allPosts, activeSource])
+  const posts = useMemo(() => selectPostsBySource(allPosts, activeSource), [allPosts, activeSource])
 
-  function selectSource(next: 'api' | 'archive' | 'all') {
+  function changeSource(next: FeedSource) {
     setSource(next)
     setCriteria({ tag: '', text: '', popularity: 'all' })
   }
   const root = useRef<HTMLElement>(null)
-  const [order, setOrder] = useState<Order>('recent')
+  const [order, setOrder] = useState<FeedOrder>('recent')
   const [focus, setFocus] = useState(0)
 
   // Les chiffres sont calculés sur les archives fictives + les vrais posts de la session.
@@ -46,42 +38,16 @@ export function Feed() {
     () => posts.reduce((total, p) => total + p.reactions.likes + p.reactions.dislikes, 0),
     [posts],
   )
-  // Tags réels de l'API en mode API, catégories françaises en mode archives.
-  const boards = useMemo(() => [...new Set(posts.flatMap(post => post.tags))]
-    .map(slug => ({
-      slug,
-      label: communities.find(board => board.slug === slug)?.label || slug,
-      count: posts.filter(post => post.tags.includes(slug)).length,
-    }))
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 24), [posts])
-  const headlines = useMemo(() => [...posts].sort((a, b) =>
-    controversy(b.reactions.likes, b.reactions.dislikes) -
-    controversy(a.reactions.likes, a.reactions.dislikes)).slice(0, 8), [posts])
+  const boards = useMemo(() => feedCategories(posts), [posts])
+  const headlines = useMemo(
+    () => [...posts].sort((a, b) => controversy(b) - controversy(a)).slice(0, 8),
+    [posts],
+  )
   const selected = headlines[focus % Math.max(1, headlines.length)]
 
-  const filtered = useMemo(() => posts.filter(post => {
-    const phrase = (post.title + ' ' + post.body).toLocaleLowerCase('fr')
-    const matchText = phrase.includes(query.text.toLocaleLowerCase('fr').trim())
-    const matchTag = !query.tag || post.tags.includes(query.tag)
-    const matchPopularity = query.popularity === 'all' ||
-      (query.popularity === 'popular' ? post.reactions.likes >= 100 : post.reactions.likes < 100)
-    return matchText && matchTag && matchPopularity
-  }), [posts, query])
-
-  // Array.sort modifie son tableau ; on le copie pour ne jamais modifier le contexte React.
-  const sorted = useMemo(() => {
-    const next = [...filtered]
-    if (order === 'clash') return next.sort((a, b) =>
-      controversy(b.reactions.likes, b.reactions.dislikes) -
-      controversy(a.reactions.likes, a.reactions.dislikes))
-    if (order === 'ignored') return next.sort((a, b) => a.views - b.views)
-    if (order === 'popular') return next.sort((a, b) =>
-      (b.reactions.likes + b.reactions.dislikes) - (a.reactions.likes + a.reactions.dislikes))
-    return next.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
-  }, [filtered, order])
-
-  const pages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
+  const filtered = useMemo(() => filterPosts(posts, query), [posts, query])
+  const sorted = useMemo(() => orderPosts(filtered, order), [filtered, order])
+  const pages = pageCount(sorted.length, PAGE_SIZE)
   const page = Math.min(query.page, pages)
   const visible = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
@@ -124,7 +90,7 @@ export function Feed() {
           <span>{apiStatus === 'loading' ? 'Connexion HTTP en cours…' :
             apiStatus === 'ready' ? 'Données reçues par 3 requêtes GET' : 'API distante indisponible'}</span>
         </div>
-        <button type="button" onClick={reloadApi} disabled={apiStatus === 'loading'}>↻ ACTUALISER API</button>
+        <Button onClick={reloadApi} disabled={apiStatus === 'loading'} variant="primary" size="sm">↻ ACTUALISER API</Button>
       </div>
       <div className="api-endpoints">
         <code>GET /posts?limit=0</code>
@@ -138,9 +104,9 @@ export function Feed() {
           <span>{apiCounts.comments} commentaires API</span>
         </div>
         <div className="api-source-buttons" role="group" aria-label="Choisir la source des publications">
-          <button type="button" aria-pressed={source === 'api'} onClick={() => selectSource('api')}>API EN PRIORITÉ</button>
-          <button type="button" aria-pressed={source === 'archive'} onClick={() => selectSource('archive')}>ARCHIVES FR</button>
-          <button type="button" aria-pressed={source === 'all'} onClick={() => selectSource('all')}>TOUT AFFICHER</button>
+          <Button variant="ghost" size="sm" aria-pressed={source === 'api'} onClick={() => changeSource('api')}>API EN PRIORITÉ</Button>
+          <Button variant="ghost" size="sm" aria-pressed={source === 'archive'} onClick={() => changeSource('archive')}>ARCHIVES FR</Button>
+          <Button variant="ghost" size="sm" aria-pressed={source === 'all'} onClick={() => changeSource('all')}>TOUT AFFICHER</Button>
         </div>
       </div>
       {apiStatus === 'error' && <p className="api-source-error">Impossible de joindre DummyJSON : {apiError}. Affichage de secours des archives fictives. Réessaie « Actualiser API ».</p>}
@@ -154,8 +120,8 @@ export function Feed() {
         <h1>INTERNET<br/><span>SANS</span> <em>FREIN.</em></h1>
         <p className="future-intro">Des avis tranchés, des discussions qui dérapent et beaucoup trop d'onglets ouverts. C'est un forum, pas une conférence de presse.</p>
         <div className="future-hero-actions">
-          <Link to="/new" className="future-hero-publish">+ LANCER UN SUJET <b>↗</b></Link>
-          <button type="button" onClick={() => setFocus(v => v + 1)}>↻ CHANGER DE DÉBAT</button>
+          <ButtonLink to="/new" className="future-hero-publish" variant="primary">+ LANCER UN SUJET <b>↗</b></ButtonLink>
+          <Button variant="ghost" onClick={() => setFocus(v => v + 1)}>↻ CHANGER DE DÉBAT</Button>
         </div>
         <div className="future-stats">
           <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS AFFICHÉS</small></div>
@@ -209,9 +175,9 @@ export function Feed() {
         <div className="future-feed-title"><h2>LE <em>FIL.</em></h2><span>{sorted.length.toLocaleString('fr-FR')} THREADS FILTRÉS</span></div>
 
         <form className="filter-panel future-filter" onSubmit={event => event.preventDefault()}>
-          <label>RECHERCHER<input type="search" value={query.text} onChange={event => setCriteria({ text: event.target.value })} placeholder="Une polémique, un pseudo, un sujet…" /></label>
-          <label>CATÉGORIE<select value={query.tag} onChange={event => setCriteria({ tag: event.target.value })}><option value="">Toutes</option>{boards.map(board => <option value={board.slug} key={board.slug}>/{board.slug}/</option>)}</select></label>
-          <label>POPULARITÉ<select value={query.popularity} onChange={event => setCriteria({ popularity: event.target.value })}><option value="all">Toutes</option><option value="popular">100+ likes</option><option value="quiet">Moins de 100</option></select></label>
+          <InputField label="RECHERCHER" type="search" value={query.text} onChange={event => setCriteria({ text: event.target.value })} placeholder="Une polémique, un pseudo, un sujet…" />
+          <SelectField label="CATÉGORIE" value={query.tag} onChange={event => setCriteria({ tag: event.target.value })}><option value="">Toutes</option>{boards.map(board => <option value={board.slug} key={board.slug}>/{board.slug}/</option>)}</SelectField>
+          <SelectField label="POPULARITÉ" value={query.popularity} onChange={event => setCriteria({ popularity: event.target.value })}><option value="all">Toutes</option><option value="popular">100+ likes</option><option value="quiet">Moins de 100</option></SelectField>
         </form>
 
         <div className="future-sort-tabs" role="group" aria-label="Trier les discussions">
@@ -221,17 +187,17 @@ export function Feed() {
             ['popular', 'SURCHAUFFE'],
             ['ignored', 'LES OUBLIÉS'],
           ] as const).map(([id, label]) =>
-            <button key={id} type="button" aria-pressed={order === id} onClick={() => { setOrder(id); setPage(1) }}>{label}</button>)}
+            <Button key={id} variant="ghost" size="sm" aria-pressed={order === id} onClick={() => { setOrder(id); setPage(1) }}>{label}</Button>)}
         </div>
 
         {(loading || (apiStatus === 'loading' && source === 'api')) &&
           <p className="notice" role="status">Chargement des données API et du serveur local…</p>}
-        {error && <p className="notice error" role="alert">{error} <button type="button" onClick={reload}>Réessayer</button></p>}
+        {error && <p className="notice error" role="alert">{error} <Button variant="secondary" onClick={reload}>Réessayer</Button></p>}
         {!loading && !(apiStatus === 'loading' && source === 'api') && (visible.length
           ? visible.map(post => <PostCard key={post.id} post={post} member={members.find(member => member.id === post.userId)} />)
           : <div className="future-empty"><h3>RIEN DANS LE RADAR.</h3><p>Essaie une autre recherche ou retire un filtre.</p></div>)}
 
-        <div className="pagination future-pages"><button type="button" disabled={page === 1} onClick={() => { setPage(page - 1); document.getElementById('feed-results')?.scrollIntoView() }}>← PRÉCÉDENT</button><span>{page.toString().padStart(2, '0')} / {pages.toString().padStart(2, '0')}</span><button type="button" disabled={page === pages} onClick={() => { setPage(page + 1); document.getElementById('feed-results')?.scrollIntoView() }}>SUIVANT →</button></div>
+        <div className="pagination future-pages"><Button variant="secondary" disabled={page === 1} onClick={() => { setPage(page - 1); document.getElementById('feed-results')?.scrollIntoView() }}>← PRÉCÉDENT</Button><span>{page.toString().padStart(2, '0')} / {pages.toString().padStart(2, '0')}</span><Button variant="secondary" disabled={page === pages} onClick={() => { setPage(page + 1); document.getElementById('feed-results')?.scrollIntoView() }}>SUIVANT →</Button></div>
       </section>
 
       <aside className="future-right-rail" aria-label="Tendances et publicités fictives">
