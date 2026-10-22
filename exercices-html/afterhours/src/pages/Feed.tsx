@@ -1,129 +1,199 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { gsap } from 'gsap'
-import { useNetwork } from '../context/NetworkContext'
 import { PostCard } from '../components/PostCard'
 import { ControlRoom } from '../components/ControlRoom'
-import { archives } from '../content'
+import { FictionAd, NewsWire } from '../components/Experience'
+import { useNetwork } from '../context/NetworkContext'
 import { communities } from '../data/community'
 
-// 9 messages par page : navigation lisible sur ordinateur et sur mobile.
-const SIZE = 9
+// L'accueil semble complexe, mais il se construit autour d'un seul tableau : posts.
+const PAGE_SIZE = 10
+type Order = 'recent' | 'clash' | 'ignored' | 'popular'
 
-type ViewMode = 'recent' | 'debate' | 'forgotten'
+function controversy(likes: number, dislikes: number) {
+  // Un débat reçoit des réactions des deux côtés, pas seulement beaucoup de likes.
+  return Math.min(likes, dislikes)
+}
+
 export function Feed() {
-  const { posts, members, loading, error, reload, query, setCriteria, setPage } = useNetwork()
-  const container = useRef<HTMLElement>(null)
-  const [spotlightIndex, setSpotlightIndex] = useState(0)
-  // Une seule variable pilote les trois façons d'explorer le même tableau de posts.
-  const [viewMode, setViewMode] = useState<ViewMode>('recent')
-  const debated = useMemo(() => [...posts].sort((a,b) => ((b.reactions?.likes||0)+(b.reactions?.dislikes||0)*3) - ((a.reactions?.likes||0)+(a.reactions?.dislikes||0)*3)).slice(0,8), [posts])
-  const spotlight = debated[spotlightIndex % Math.max(1, debated.length)]
-  const tags = useMemo(() => [...new Set(posts.flatMap(p => p.tags))].sort(), [posts])
-  const filtered = useMemo(() => posts.filter(post => {
-    const text = (post.title + ' ' + post.body).toLocaleLowerCase('fr')
-    const matchText = text.includes(query.text.trim().toLocaleLowerCase('fr'))
-    const matchTag = !query.tag || post.tags.includes(query.tag)
-    const likes = post.reactions?.likes ?? 0
-    const matchPopularity = query.popularity === 'all' || (query.popularity === 'popular' ? likes >= 100 : likes < 100)
-    return matchText && matchTag && matchPopularity
-  }), [posts, query.text, query.tag, query.popularity])
-  // Aucun appel réseau pour les tris : filter() puis sort() sur les posts existants.
-  const ordered = useMemo(() => {
-    const result = [...filtered] // Copie : ne pas modifier le tableau d'origine.
-    if (viewMode === 'debate') {
-      // Plus les deux camps ont reçu de réactions, plus le sujet remonte.
-      return result.sort((a, b) => Math.min(b.reactions.likes, b.reactions.dislikes) - Math.min(a.reactions.likes, a.reactions.dislikes))
-    }
-    if (viewMode === 'forgotten') {
-      // Faire remonter les sujets peu consultés, même ceux qui viennent d'être créés.
-      return result.sort((a, b) => (a.views - b.views) || (b.createdAt || '').localeCompare(a.createdAt || ''))
-    }
-    return result.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
-  }, [filtered, viewMode])
-  const pages = Math.max(1, Math.ceil(ordered.length / SIZE))
-  const page = Math.min(query.page, pages)
-  const visible = ordered.slice((page - 1) * SIZE, page * SIZE)
-  const categoryStats = useMemo(() => communities.map(c => ({
-    ...c, count: posts.filter(post => post.tags.includes(c.slug)).length,
-  })).sort((a, b) => b.count - a.count), [posts])
+  const { posts, members, replies, loading, error, reload, query, setCriteria, setPage } = useNetwork()
+  const root = useRef<HTMLElement>(null)
+  const [order, setOrder] = useState<Order>('recent')
+  const [focus, setFocus] = useState(0)
 
-  // Centraliser la navigation : carte et barre latérale ont le même comportement.
-  function exploreCommunity(tag: string) {
+  // Les statistiques affichées viennent du forum, elles ne sont pas fabriquées.
+  const reactions = useMemo(
+    () => posts.reduce((total, p) => total + p.reactions.likes + p.reactions.dislikes, 0),
+    [posts],
+  )
+  const boards = useMemo(() => communities.map(board => ({
+    ...board,
+    count: posts.filter(post => post.tags.includes(board.slug)).length,
+  })).sort((a, b) => b.count - a.count), [posts])
+  const headlines = useMemo(() => [...posts].sort((a, b) =>
+    controversy(b.reactions.likes, b.reactions.dislikes) -
+    controversy(a.reactions.likes, a.reactions.dislikes)).slice(0, 8), [posts])
+  const selected = headlines[focus % Math.max(1, headlines.length)]
+
+  const filtered = useMemo(() => posts.filter(post => {
+    const phrase = (post.title + ' ' + post.body).toLocaleLowerCase('fr')
+    const matchText = phrase.includes(query.text.toLocaleLowerCase('fr').trim())
+    const matchTag = !query.tag || post.tags.includes(query.tag)
+    const matchPopularity = query.popularity === 'all' ||
+      (query.popularity === 'popular' ? post.reactions.likes >= 100 : post.reactions.likes < 100)
+    return matchText && matchTag && matchPopularity
+  }), [posts, query])
+
+  // Array.sort modifie son tableau ; on le copie pour ne jamais modifier le contexte React.
+  const sorted = useMemo(() => {
+    const next = [...filtered]
+    if (order === 'clash') return next.sort((a, b) =>
+      controversy(b.reactions.likes, b.reactions.dislikes) -
+      controversy(a.reactions.likes, a.reactions.dislikes))
+    if (order === 'ignored') return next.sort((a, b) => a.views - b.views)
+    if (order === 'popular') return next.sort((a, b) =>
+      (b.reactions.likes + b.reactions.dislikes) - (a.reactions.likes + a.reactions.dislikes))
+    return next.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
+  }, [filtered, order])
+
+  const pages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE))
+  const page = Math.min(query.page, pages)
+  const visible = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
+  function exploreBoard(tag: string) {
     setCriteria({ tag })
     document.getElementById('feed-results')?.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'start',
     })
   }
 
+  // GSAP n'anime que des propriétés faciles à expliquer : opacité, position, échelle.
   useEffect(() => {
-    if (!container.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const context = gsap.context(() => {
-      gsap.fromTo('.hero-copy > *', { autoAlpha: 0, y: 20 }, {
-        autoAlpha: 1, y: 0, duration: 0.85, ease: 'power3.out', stagger: 0.09, clearProps: 'all',
-      })
-      gsap.fromTo('.hero-terminal', { autoAlpha: 0, x: 24, rotate: 2 }, {
-        autoAlpha: 1, x: 0, rotate: 0, duration: 0.95, delay: 0.25, ease: 'power3.out', clearProps: 'all',
-      })
-    }, container)
-    return () => context.revert()
+    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const scene = gsap.context(() => {
+      gsap.fromTo('.future-hero-content > *', { opacity: 0, y: 28 },
+        { opacity: 1, y: 0, duration: .9, stagger: .10, ease: 'power3.out', clearProps: 'all' })
+      gsap.fromTo('.future-hero-feature', { opacity: 0, x: 60, rotate: 4 },
+        { opacity: 1, x: 0, rotate: 0, duration: 1.15, ease: 'power3.out', clearProps: 'all' })
+    }, root)
+    return () => scene.revert()
   }, [])
 
   useEffect(() => {
-    if (!container.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const context = gsap.context(() => {
-      gsap.fromTo('.feed-card', { autoAlpha: 0, y: 28, scale: 0.987 }, {
-        autoAlpha: 1, y: 0, scale: 1, duration: 0.62, stagger: 0.075,
-        ease: 'power3.out', clearProps: 'all',
-      })
-    }, container)
-    return () => context.revert()
-  }, [page, query.text, query.tag, query.popularity, loading, posts, viewMode])
+    if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const scene = gsap.context(() => {
+      gsap.fromTo('.post-card', { opacity: 0, y: 26, scale: .985 },
+        { opacity: 1, y: 0, scale: 1, duration: .54, stagger: .055, ease: 'power2.out', clearProps: 'all' })
+    }, root)
+    return () => scene.revert()
+  }, [page, order, query, loading])
 
-  return <main className="feed-shell" ref={container}>
-    <section className="hero-banner" aria-label="Bienvenue sur Afterhours">
-      <span className="hero-orb orb-a" aria-hidden="true" />
-      <span className="hero-orb orb-b" aria-hidden="true" />
-      <div className="hero-copy">
-        <div className="eyebrow"><span className="pulse-light" /> LE WEB APRÈS MINUIT <span className="hero-year">EST. 2008</span></div>
-        <h1>T'avais dit<br /><em>« cinq minutes ».</em></h1>
-        <p>Un sujet, puis un autre. Tu lis les réponses, tu ouvres un onglet. Et te voilà encore ici.</p>
-        <div className="hero-cta"><Link to="/new">Lancer un sujet ↗</Link><button type="button" onClick={() => setSpotlightIndex(v => v + 1)}>Sujet suivant ↻</button></div>
-        <div className="hero-numbers"><div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>publications</small></div><div><strong>{communities.length}</strong><small>communautés</small></div><div><strong>{posts.filter(p => p.source === 'community').length.toLocaleString('fr-FR')}</strong><small>discussions FR</small></div></div>
-      </div>
-      <div className="hero-terminal">
-        <div className="terminal-top"><span className="terminal-dots">● ● ●</span><span>afterhours / terminal</span><span>□ ×</span></div>
-        <div className="terminal-screen"><small>LE SUJET QUI DIVISE</small>{spotlight ? <><p className="terminal-accent">/{spotlight.tags[0]}/ · {spotlight.reactions.likes} réactions positives</p><p className="terminal-headline">{spotlight.title}</p><Link className="terminal-link" to={'/posts/'+spotlight.id}>Lire le débat ↗</Link></> : <p>Des discussions arrivent…</p>}</div>
-        <div className="terminal-sticker">ENCORE UN DÉBAT ↗</div>
-      </div>
-    </section>
-    <ControlRoom posts={posts} onCommunity={exploreCommunity} />
-    <div className="hot-strip"><span>ÇA FAIT PARLER</span><div>{debated.slice(0,4).map(p=><Link key={p.id} to={'/posts/'+p.id}>{p.title} ↗</Link>)}</div></div>
-    <div className="layout">
-      <section className="main-column">
-        <div className="section-header feed-section-title"><div><small>COMMUNITY / TIMELINE</small><h2>Les discussions <span className="spark">✳</span></h2><p>De tout, surtout de n'importe quoi. Entre dans le fil.</p></div><span className="live-label"><span className="pulse-light" /> EN LOCAL</span></div>
-        <form className="filter-panel" onSubmit={e => e.preventDefault()}>
-          <label>Rechercher une publication<input type="search" placeholder="Un mot, une polémique…" value={query.text} onChange={e => setCriteria({ text: e.target.value })} /></label>
-          <label>Communauté<select value={query.tag} onChange={e => setCriteria({ tag: e.target.value })}><option value="">Toutes les communautés</option>{tags.map(tag => <option key={tag} value={tag}>/{tag}/</option>)}</select></label>
-          <label>Popularité<select value={query.popularity} onChange={e => setCriteria({ popularity: e.target.value })}><option value="all">Toutes</option><option value="popular">100 likes et +</option><option value="quiet">Moins de 100 likes</option></select></label>
-        </form>
-        <div className="feed-deck" role="group" aria-label="Choisir l'ordre du fil">
-          <button type="button" aria-pressed={viewMode === 'recent'} onClick={() => { setViewMode('recent'); setPage(1) }}>↘ Les récents<small>Par date</small></button>
-          <button type="button" aria-pressed={viewMode === 'debate'} onClick={() => { setViewMode('debate'); setPage(1) }}>↯ Ça divise<small>Réactions opposées</small></button>
-          <button type="button" aria-pressed={viewMode === 'forgotten'} onClick={() => { setViewMode('forgotten'); setPage(1) }}>◌ Les oubliés<small>Peu de lectures</small></button>
+  return <main className="feed-shell future-home" ref={root}>
+    <NewsWire posts={posts} />
+
+    <section className="future-hero" aria-label="Accueil Afterhours">
+      <div className="future-hero-decoration" aria-hidden="true"><span>AH</span><i/><i/><i/></div>
+      <div className="future-hero-content">
+        <p className="future-kicker"><span className="future-live-dot"/> / LE BRUIT NE S'ARRÊTE JAMAIS / FORUM LOCAL</p>
+        <h1>INTERNET<br/><span>SANS</span> <em>FREIN.</em></h1>
+        <p className="future-intro">Des avis tranchés, des discussions qui dérapent et beaucoup trop d'onglets ouverts. C'est un forum, pas une conférence de presse.</p>
+        <div className="future-hero-actions">
+          <Link to="/new" className="future-hero-publish">+ LANCER UN SUJET <b>↗</b></Link>
+          <button type="button" onClick={() => setFocus(v => v + 1)}>↻ CHANGER DE DÉBAT</button>
         </div>
-        <p className="feed-deck-description">{viewMode === 'recent' ? 'Les derniers messages et les archives, du plus récent au plus ancien.' : viewMode === 'debate' ? 'Les sujets qui ont reçu des réactions de plusieurs côtés.' : 'Des publications passées sous le radar, classées par nombre de lectures.'}</p>
-        <div className="results" id="feed-results"><h2>Fil public <span className="results-line" /></h2><span>{ordered.length} publication(s) · page {page}/{pages}</span></div>
-        {loading && <p role="status" className="notice">Chargement du forum…</p>}
-        {!loading && error && <div className="notice error" role="alert">{error} <button type="button" onClick={reload}>Réessayer</button><span> Les archives du réseau restent disponibles.</span></div>}
-        {!loading && (visible.length ? visible.map(post => <PostCard key={post.id} post={post} member={members.find(u => u.id === post.userId)} />) : <p className="notice">Aucun résultat. Même ici, ça arrive.</p>)}
-        {!loading && <nav aria-label="Pagination" className="pagination"><button disabled={page === 1} onClick={() => setPage(page - 1)}>← Précédent</button><span>Page {page} sur {pages}</span><button disabled={page === pages} onClick={() => setPage(page + 1)}>Suivant →</button></nav>}
+        <div className="future-stats">
+          <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS</small></div>
+          <div><strong>{communities.length}</strong><small>SECTIONS</small></div>
+          <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS FICTIVES + SESSION</small></div>
+        </div>
+      </div>
+      <div className="future-hero-feature">
+        <div className="future-feature-bar"><span>◆ CONTENTION / {String(focus % Math.max(1, headlines.length) + 1).padStart(2,'0')}</span><span>✳ SÉLECTION</span></div>
+        {selected ? <>
+          <span className="future-feature-tag">/{selected.tags[0]}/</span>
+          <h2>{selected.title}</h2>
+          <p>{selected.body}</p>
+          <div className="future-feature-meter"><span style={{width: `${Math.round(selected.reactions.likes / Math.max(1,selected.reactions.likes + selected.reactions.dislikes)*100)}%`}}/></div>
+          <div className="future-feature-foot"><span>♥ {selected.reactions.likes} / ↓ {selected.reactions.dislikes}</span><Link to={'/posts/' + selected.id}>ENTRER DANS LE FIL ↗</Link></div>
+        </> : <p>Chargement des fils disponibles…</p>}
+      </div>
+      <span className="future-hero-vertical" aria-hidden="true">CONTENTS MAY CAUSE DISAGREEMENT // AH-26</span>
+    </section>
+
+    <div className="future-data-strip" aria-label="Informations sur la démonstration">
+      <span>◇ INTERFACE EXPÉRIMENTALE</span><span>◆ ARCHIVES FICTIVES</span>
+      <span>◇ MEMOIRE SERVEUR TEMPORAIRE</span><span>◆ PAS DE PUBLICITÉ RÉELLE</span>
+    </div>
+
+    {/* Le ControlRoom n'a pas sa propre source de données : il reçoit le même posts. */}
+    <ControlRoom posts={posts} onCommunity={exploreBoard} />
+
+    <div className="future-workspace">
+      <aside className="future-left-rail" aria-label="Explorer le réseau">
+        <div className="future-rail-caption"><span>01 / NAVIGATION</span><span>◈</span></div>
+        <div className="future-rail-heading">LES ZONES</div>
+        <div className="future-board-list">
+          <button type="button" className={!query.tag ? 'active' : ''} onClick={() => exploreBoard('')}>
+            <span>◉ Tout le réseau</span><b>{posts.length}</b>
+          </button>
+          {boards.map(board => <button
+            type="button" className={query.tag === board.slug ? 'active' : ''}
+            key={board.slug} onClick={() => exploreBoard(board.slug)}>
+            <span>/{board.slug}/</span><b>{board.count}</b>
+          </button>)}
+        </div>
+        <FictionAd number={0}/>
+        <div className="future-side-note"><strong>◉ PAS DE FILTRE MORAL.</strong><p>Des opinions qui s'affrontent. Les archives de ce projet sont inventées.</p></div>
+      </aside>
+
+      <section className="future-feed-main" id="feed-results">
+        <div className="future-feed-top">
+          <p>02 / FLUX PRINCIPAL</p><span className="future-ping">◉ SESSION ACTIVE SUR CETTE MACHINE</span>
+        </div>
+        <div className="future-feed-title"><h2>LE <em>FIL.</em></h2><span>{sorted.length.toLocaleString('fr-FR')} THREADS FILTRÉS</span></div>
+
+        <form className="filter-panel future-filter" onSubmit={event => event.preventDefault()}>
+          <label>RECHERCHER<input type="search" value={query.text} onChange={event => setCriteria({ text: event.target.value })} placeholder="Une polémique, un pseudo, un sujet…" /></label>
+          <label>CATÉGORIE<select value={query.tag} onChange={event => setCriteria({ tag: event.target.value })}><option value="">Toutes</option>{boards.map(board => <option value={board.slug} key={board.slug}>/{board.slug}/</option>)}</select></label>
+          <label>POPULARITÉ<select value={query.popularity} onChange={event => setCriteria({ popularity: event.target.value })}><option value="all">Toutes</option><option value="popular">100+ likes</option><option value="quiet">Moins de 100</option></select></label>
+        </form>
+
+        <div className="future-sort-tabs" role="group" aria-label="Trier les discussions">
+          {([
+            ['recent', 'LES DERNIERS'],
+            ['clash', 'ÇA DIVISE'],
+            ['popular', 'SURCHAUFFE'],
+            ['ignored', 'LES OUBLIÉS'],
+          ] as const).map(([id, label]) =>
+            <button key={id} type="button" aria-pressed={order === id} onClick={() => { setOrder(id); setPage(1) }}>{label}</button>)}
+        </div>
+
+        {loading && <p className="notice">Chargement du réseau local…</p>}
+        {error && <p className="notice error" role="alert">{error} <button type="button" onClick={reload}>Réessayer</button></p>}
+        {!loading && (visible.length
+          ? visible.map(post => <PostCard key={post.id} post={post} member={members.find(member => member.id === post.userId)} />)
+          : <div className="future-empty"><h3>RIEN DANS LE RADAR.</h3><p>Essaie une autre recherche ou retire un filtre.</p></div>)}
+
+        <div className="pagination future-pages"><button type="button" disabled={page === 1} onClick={() => { setPage(page - 1); document.getElementById('feed-results')?.scrollIntoView() }}>← PRÉCÉDENT</button><span>{page.toString().padStart(2, '0')} / {pages.toString().padStart(2, '0')}</span><button type="button" disabled={page === pages} onClick={() => { setPage(page + 1); document.getElementById('feed-results')?.scrollIntoView() }}>SUIVANT →</button></div>
       </section>
-      <aside className="sidebar">
-        <div className="widget community-widget"><h2>EXPLORER LES COMMUNAUTÉS</h2><div className="community-list">{categoryStats.map(item => <button type="button" key={item.slug} onClick={() => exploreCommunity(item.slug)} className={query.tag === item.slug ? 'chosen' : ''}><span>/{item.slug}/</span><b>{item.count}</b></button>)}</div></div>
-        <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Forum local en ligne</p><p>Archives fictives du Web · session locale</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
-        <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Discussions populaires</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
+
+      <aside className="future-right-rail" aria-label="Tendances et publicités fictives">
+        <div className="future-rail-caption"><span>03 / SURCHARGE</span><span>▣</span></div>
+        <div className="future-trend-card">
+          <p>▲ RADAR DE CONTROVERSE</p>
+          <h3>LES SUJETS QUI <em>CHAUFFENT.</em></h3>
+          {headlines.slice(0, 5).map((post, index) => <Link key={post.id} to={'/posts/' + post.id}>
+            <span>{String(index + 1).padStart(2,'0')}</span><strong>{post.title}</strong><small>↗</small>
+          </Link>)}
+        </div>
+        <FictionAd number={1}/>
+        <div className="future-pulse-card">
+          <span>◆ ANALYSE LOCALE</span><strong>{replies.length}</strong><p>COMMENTAIRES CRÉÉS PENDANT CETTE SESSION</p>
+          <div className="future-pulse-bars" aria-hidden="true">{[25,68,43,88,54,100,39,75,45,82,56,70].map((height,i)=><i key={i} style={{height:height+'%'}}/>)}</div>
+        </div>
+        <FictionAd number={2}/>
+        <p className="future-rail-disclaimer">Toutes les publicités et les archives de démonstration sont fictives. Aucun annonceur externe.</p>
       </aside>
     </div>
   </main>
