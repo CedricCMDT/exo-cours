@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { PostCard } from '../components/PostCard'
+import { PostCard } from '../components/feed/PostCard'
 import { useNetwork } from '../context/NetworkContext'
 
 export function Saved() {
