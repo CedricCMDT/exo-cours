@@ -1246,6 +1246,8 @@ const spotlights: Record<string, { title: string; body: string }> = {
   }
 }
 
+const categoryLimits = [68, 54, 70, 63, 57, 65, 60, 69, 53, 61, 58, 67, 56, 64, 59, 66, 55, 62]
+
 export const communityPosts: Post[] = communities.flatMap((community, i) =>
   topics[community.slug].flatMap((_, topic) =>
     angles.map((_, angle) => {
@@ -1253,7 +1255,7 @@ export const communityPosts: Post[] = communities.flatMap((community, i) =>
       if (topic !== 0 || angle !== 0) return base
       const spotlight = spotlights[community.slug]
       return { ...base, ...spotlight, createdAt: new Date(epoch - i * 19 * 60000).toISOString() }
-    })),
+    })).slice(0, categoryLimits[i]),
 ).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''))
 
 export const communityCount = communityPosts.length
