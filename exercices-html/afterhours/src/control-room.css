@@ -421,3 +421,15 @@
 }
 :root[data-theme=dark] .post-votes { background: #b97065; }
 :root[data-theme=dark] .post-votes > span { background: #56d6c6; }
+
+/* 09 — Formulaire d'édition : reprendre les mêmes contrôles que l'inscription. */
+#feed-results { scroll-margin-top: 125px; }
+.detail-owner-tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
+.detail-owner-tools > button { background: #f3f0ff; color: #564395; }
+.post-edit-form { display: grid; gap: 12px; width: 100%; flex-basis: 100%; }
+.post-edit-form label { display: grid; gap: 6px; font-size: 12px; font-weight: 800; }
+.post-edit-form input, .post-edit-form textarea {
+  padding: 12px; width: 100%; border: 1px solid var(--neo-line);
+  background: var(--neo-panel); color: var(--neo-ink); border-radius: 8px;
+}
+.post-edit-form button { justify-self: start; }
