@@ -18,7 +18,7 @@ export function App() {
     <div className="future-topline">
       <span>▰ AH / 26</span>
       <span>◆ UNE EXPÉRIENCE DE FORUM VOLONTAIREMENT EXCESSIVE</span>
-      <span>SIMULATION LOCALE — PAS DE LIVE EXTERNE</span>
+      <span>API EXTERNE · STOCKAGE LOCAL</span>
     </div>
     <header className="site-header">
       <div className="header-inner">
