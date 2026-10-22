@@ -4,7 +4,7 @@ import type { Post } from '../types'
 import { communities } from '../data/community'
 
 /**
- * SALLE DE CONTRÔLE
+ * RADAR FUTURISTE
  *
  * Cette page paraît complexe, mais elle repose sur trois opérations simples :
  * 1. map()    : transformer les publications en statistiques par communauté.
@@ -71,17 +71,17 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
     <section className="control-room" aria-labelledby="control-room-title">
       <div className="room-intro">
         <div>
-          <small>AFTERHOURS / POSTE D'OBSERVATION — 01</small>
-          <h2 id="control-room-title">Tout le monde a <em>son mot à dire.</em></h2>
+          <small>◆ MODULE / SIGNAL MATRIX / 01</small>
+          <h2 id="control-room-title">LA <em>CHAMBRE D'ÉCHO.</em></h2>
         </div>
-        <p>Explore les communautés, puis ouvre un fil qui ne fait pas l'unanimité.</p>
+        <p>Dix-huit zones, des désaccords et des milliers de réactions fictives. Choisis un angle d'attaque.</p>
       </div>
 
       <div className="room-grid">
         <article className="room-panel room-map">
           <div className="room-panel-heading">
-            <div><span className="room-led" /> <strong>LE PLAN DU RÉSEAU</strong></div>
-            <small>CLIQUE SUR UNE CASE</small>
+            <div><span className="room-led" /> <strong>CARTOGRAPHIE DES DÉSACCORDS</strong></div>
+            <small>SÉLECTIONNE UN CANAL</small>
           </div>
 
           {/* Chaque case est un vrai filtre. Plus la ligne est longue,
@@ -109,7 +109,7 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
 
         <article className="room-panel room-radio">
           <div className="room-panel-heading">
-            <div><span className="room-led room-led-pink" /> <strong>UN FIL À OUVRIR</strong></div>
+            <div><span className="room-led room-led-pink" /> <strong>FRÉQUENCE CONFLICTUELLE</strong></div>
             <small>{debated.length ? String(channel % debated.length + 1).padStart(2, '0') + ' / ' + debated.length : '00 / 00'}</small>
           </div>
 
@@ -134,9 +134,9 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
               </div>
               <div className="room-radio-actions">
                 <button type="button" onClick={() => setChannel(index => (index + 1) % debated.length)}>
-                  Autre fréquence <span aria-hidden="true">↻</span>
+                  DÉRÉGLER LE SIGNAL <span aria-hidden="true">↻</span>
                 </button>
-                <Link to={'/posts/' + featured.id}>Ouvrir le sujet ↗</Link>
+                <Link to={'/posts/' + featured.id}>VOIR L'INCIDENT ↗</Link>
               </div>
             </>
           ) : (
