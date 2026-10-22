@@ -28,9 +28,11 @@ export function Detail() {
 
   const member = members.find(item => item.id === post.userId)
   const isOwner = Boolean(user && user.id === post.userId && post.local)
-  const date = post.createdAt
-    ? new Date(post.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })
-    : 'Archive'
+  const date = post.source === 'api'
+    ? 'Jeu de données DummyJSON · date de publication non fournie'
+    : post.createdAt
+      ? new Date(post.createdAt).toLocaleString('fr-FR', { dateStyle: 'long', timeStyle: 'short' })
+      : 'Date inconnue'
 
   async function saveChanges(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
