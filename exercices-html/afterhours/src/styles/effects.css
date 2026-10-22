@@ -1,0 +1,39 @@
+/* ───── 11. Mouvements d'ambiance supplémentaires (sans flash rapide) ─────
+   L'écran est volontairement « vivant », mais les propriétés animées restent
+   légères : transform, filter et shadow. Le media query réduit ces effets. */
+.future-hero h1 em {
+  animation: futureNeon 5s ease-in-out infinite alternate;
+}
+@keyframes futureNeon {
+  to { text-shadow: 0 0 26px #ff437b90, 7px 5px 0 #ff3b772b; filter: saturate(1.25); }
+}
+.future-hero-feature {
+  animation: futureFloat 8s ease-in-out infinite alternate;
+}
+@keyframes futureFloat {
+  to { transform: translateY(-9px) rotate(1deg); box-shadow: 17px 26px 0 #050b154f, inset 0 0 65px #ff427829; }
+}
+.future-ad:hover .future-ad-orbit {
+  animation-duration: 3.5s;
+}
+.future-trend-card > a {
+  transition: padding-left .2s ease, background .2s ease;
+}
+.future-trend-card > a:hover {
+  padding-left: 7px;
+  background: #ffffff09;
+}
+.future-feature-bar > span:last-child {
+  animation: futureNeonText 3s ease-in-out infinite alternate;
+}
+@keyframes futureNeonText {
+  to { opacity: .45; }
+}
+@media(max-width:830px) {
+  .future-hero-feature { animation: none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .future-hero h1 em, .future-hero-feature,
+  .future-feature-bar > span:last-child { animation: none !important; }
+}
+
