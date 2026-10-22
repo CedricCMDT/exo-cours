@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
 import { PageHeader } from '../components/ui/PageHeader'
+import { Button } from '../components/ui/Button'
+import { InputField, TextareaField } from '../components/ui/Fields'
 import { useNetwork } from '../context/NetworkContext'
 import type { Post } from '../types'
 
@@ -76,7 +78,7 @@ export function Create() {
         <p>« {created.title} » — ID #{created.id}</p>
         <p>{created.body}</p>
         <Link to={'/posts/' + created.id}>Voir la publication ↗</Link>
-        <button type="button" onClick={resetForm}>Créer un autre sujet</button>
+        <Button variant="secondary" onClick={resetForm}>Créer un autre sujet</Button>
         <small>Ce contenu sera effacé au redémarrage du serveur.</small>
       </section>
     ) : !user ? (
@@ -85,25 +87,13 @@ export function Create() {
       </div>
     ) : (
       <form className="composer" onSubmit={submit} noValidate>
-        <label>Titre du fil
-          <input required minLength={5} maxLength={100} value={title}
-            onChange={event => setTitle(event.target.value)}
-            placeholder="De quoi veux-tu parler ?" />
-        </label>
-        <label>Message
-          <textarea required minLength={15} rows={7} value={body}
-            onChange={event => setBody(event.target.value)}
-            placeholder="Écris ton message…" />
-        </label>
-        <label>Communauté
-          <input required maxLength={20} value={tag}
-            onChange={event => setTag(event.target.value)}
-            placeholder="social, tech, gaming…" />
-        </label>
+        <InputField label="Titre du fil" required minLength={5} maxLength={100} value={title} onChange={event => setTitle(event.target.value)} placeholder="De quoi veux-tu parler ?" />
+        <TextareaField label="Message" required minLength={15} rows={7} value={body} onChange={event => setBody(event.target.value)} placeholder="Écris ton message…" />
+        <InputField label="Communauté" required maxLength={20} value={tag} onChange={event => setTag(event.target.value)} placeholder="social, tech, gaming…" />
         {error && <p role="alert" className="notice error">{error}</p>}
-        <button className="primary" type="submit" disabled={submitting}>
+        <Button variant="primary" type="submit" loading={submitting}>
           {submitting ? 'Publication en cours…' : 'Publier le fil'}
-        </button>
+        </Button>
       </form>
     )}
   </main>
