@@ -403,3 +403,21 @@
   .room-disc, .room-radio-body { animation: none !important; }
   .room-board, .room-radio-actions a, .room-radio-actions button, .feed-deck button { transition: none; }
 }
+
+/* 08 — Un petit histogramme dans chaque post : deux couleurs, un pourcentage. */
+.post-votes {
+  margin-top: 17px;
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  background: #f3ad8d;
+  overflow: hidden;
+}
+.post-votes > span {
+  display: block;
+  background: #48bba7;
+  height: 100%;
+  border-radius: 5px 0 0 5px;
+}
+:root[data-theme=dark] .post-votes { background: #b97065; }
+:root[data-theme=dark] .post-votes > span { background: #56d6c6; }
