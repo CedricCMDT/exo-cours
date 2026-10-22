@@ -7,7 +7,8 @@ import { archiveReplies } from '../data/archiveReplies'
 
 // Les réponses fictives sont désormais calculées par archiveReplies() :
 // le total varie de 0 à plus de 150 suivant le sujet, jamais 3 systématiquement.
-// Cette page ne génère les textes que lorsqu'on ouvre une discussion.
+// Les commentaires des posts API viennent, eux, de GET /comments?limit=0.
+// Cette page ne génère les archives que lorsqu'on ouvre une discussion.
 
 function ReplyForm({ postId, parentId, afterSend }: {
   postId: number
@@ -51,7 +52,7 @@ function Comment({ comment, all, postId, depth = 0 }: {
           </time>}
       </header>
       <p>{comment.body}</p>
-      {user?.username===comment.author && !comment.id.startsWith('archive-') && <div><button onClick={()=>{setNewBody(comment.body);setEditing(!editing)}}>Modifier</button><button onClick={()=>{if(window.confirm('Supprimer ce commentaire ?'))void deleteReply(comment.id)}}>Supprimer</button>{editing&&<form onSubmit={e=>{e.preventDefault();void editReply(comment.id,newBody).then(()=>setEditing(false))}}><textarea value={newBody} maxLength={2000} onChange={e=>setNewBody(e.target.value)}/><button>Enregistrer</button></form>}</div>}
+      {user?.username===comment.author && !comment.id.startsWith('archive-') && !comment.id.startsWith('api-') && <div><button onClick={()=>{setNewBody(comment.body);setEditing(!editing)}}>Modifier</button><button onClick={()=>{if(window.confirm('Supprimer ce commentaire ?'))void deleteReply(comment.id)}}>Supprimer</button>{editing&&<form onSubmit={e=>{e.preventDefault();void editReply(comment.id,newBody).then(()=>setEditing(false))}}><textarea value={newBody} maxLength={2000} onChange={e=>setNewBody(e.target.value)}/><button>Enregistrer</button></form>}</div>}
       <button type="button" onClick={() => setResponding(v => !v)}>{responding ? 'Annuler' : '↳ Répondre'}</button>
       {responding && <ReplyForm postId={postId} parentId={comment.id} afterSend={() => setResponding(false)} />}
       {pendingReplies.filter(item => item.parentId === comment.id).map(item =>
