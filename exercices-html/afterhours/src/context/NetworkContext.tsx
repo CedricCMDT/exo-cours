@@ -52,8 +52,9 @@ function readArray(): number[] {
   } catch { return [] }
 }
 function readTheme(): 'light' | 'dark' {
-  try { return localStorage.getItem('afterhours-theme') === 'dark' ? 'dark' : 'light' }
-  catch { return 'light' }
+  // Le mode sombre futuriste est désormais la première expérience du site.
+  try { return localStorage.getItem('afterhours-theme') === 'light' ? 'light' : 'dark' }
+  catch { return 'dark' }
 }
 export function NetworkProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Member | null>(null)
