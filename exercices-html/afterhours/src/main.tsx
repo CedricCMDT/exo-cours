@@ -15,6 +15,8 @@ import './styles/theme.css'
 import './styles/responsive.css'
 import './styles/effects.css'
 import './styles/api.css'
+// Toujours en dernier : composants partagés et adaptations clair/sombre.
+import './styles/ui.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
