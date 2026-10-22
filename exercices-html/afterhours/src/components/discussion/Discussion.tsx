@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
+import { Button } from '../ui/Button'
+import { TextareaField } from '../ui/Fields'
 import { useNetwork } from '../../context/NetworkContext'
 import { archiveReplies } from '../../data/archiveReplies'
 import type { Reply } from '../../types/reply'
@@ -41,15 +43,9 @@ function ReplyForm({ postId, parentId, afterSend }: ReplyFormProps) {
 
   return <form className="reply-form" onSubmit={submit}>
     {!user && <p>Pour participer, <Link to="/account">connecte-toi ou crée un compte</Link>.</p>}
-    <label htmlFor={'reply-' + (parentId || 'root')}>Ta réponse</label>
-    <textarea id={'reply-' + (parentId || 'root')} rows={3} minLength={1}
-      maxLength={2000} required value={text}
-      onChange={event => setText(event.target.value)}
-      placeholder="Écris une réponse…" />
+    <TextareaField id={'reply-' + (parentId || 'root')} label="Ta réponse" rows={3} minLength={1} maxLength={2000} required value={text} onChange={event => setText(event.target.value)} placeholder="Écris une réponse…" />
     {error && <p role="alert" className="notice error">{error}</p>}
-    <button className="primary" type="submit" disabled={!text.trim() || !user || busy}>
-      {busy ? 'Publication…' : 'Répondre'}
-    </button>
+    <Button variant="primary" type="submit" disabled={!text.trim() || !user} loading={busy}>{busy ? 'Publication…' : 'Répondre'}</Button>
   </form>
 }
 
@@ -111,23 +107,23 @@ function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
       <p>{comment.body}</p>
 
       {canEdit && <div className="reply-card__actions">
-        <button type="button" onClick={() => {
+        <Button variant="ghost" size="sm" onClick={() => {
           setDraft(comment.body)
           setEditing(value => !value)
-        }}>{editing ? 'Annuler' : 'Modifier'}</button>
-        <button type="button" onClick={() => void remove()}>Supprimer</button>
+        }}>{editing ? 'Annuler' : 'Modifier'}</Button>
+        <Button variant="danger" size="sm" onClick={() => void remove()}>Supprimer</Button>
         {editing && <form className="reply-card__edit" onSubmit={save}>
           <textarea required value={draft} maxLength={2000} rows={3}
             onChange={event => setDraft(event.target.value)} />
-          <button type="submit">Enregistrer</button>
+          <Button variant="primary" size="sm" type="submit">Enregistrer</Button>
         </form>}
       </div>}
 
       {error && <p className="notice error" role="alert">{error}</p>}
-      <button type="button" aria-expanded={responding}
+      <Button variant="ghost" size="sm" aria-expanded={responding}
         onClick={() => setResponding(value => !value)}>
         {responding ? 'Annuler' : '↳ Répondre'}
-      </button>
+      </Button>
       {responding && <ReplyForm postId={postId} parentId={comment.id}
         afterSend={() => setResponding(false)} />}
     </article>
@@ -168,9 +164,9 @@ export function Discussion({ postId, post }: { postId: number; post?: Post }) {
     {roots.slice(0, visibleRoots).map(reply =>
       <Comment key={reply.id} comment={reply} all={all} postId={postId} />)}
 
-    {visibleRoots < roots.length && <button className="discussion-more"
-      type="button" onClick={() => setVisibleRoots(value => value + 12)}>
+    {visibleRoots < roots.length && <Button variant="secondary" className="discussion-more"
+      onClick={() => setVisibleRoots(value => value + 12)}>
       Afficher les discussions suivantes ({roots.length - visibleRoots} restantes) ↓
-    </button>}
+    </Button>}
   </section>
 }
