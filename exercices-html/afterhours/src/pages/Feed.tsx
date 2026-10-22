@@ -17,7 +17,25 @@ function controversy(likes: number, dislikes: number) {
 }
 
 export function Feed() {
-  const { posts, members, replies, loading, error, reload, query, setCriteria, setPage } = useNetwork()
+  const {
+    posts: allPosts, members, replies, loading, error, reload, query,
+    setCriteria, setPage, apiStatus, apiError, apiCounts, reloadApi,
+  } = useNetwork()
+  // Mode de départ = les données VRAIMENT récupérées depuis DummyJSON.
+  // Les archives françaises sont accessibles mais ne remplacent plus l'API.
+  const [source, setSource] = useState<'api' | 'archive' | 'all'>('api')
+  const activeSource = apiStatus === 'error' && source === 'api' ? 'archive' : source
+  const posts = useMemo(() => allPosts.filter(post =>
+    post.local ||
+    (activeSource === 'all') ||
+    (activeSource === 'api' && post.source === 'api') ||
+    (activeSource === 'archive' && post.source === 'community'),
+  ), [allPosts, activeSource])
+
+  function selectSource(next: 'api' | 'archive' | 'all') {
+    setSource(next)
+    setCriteria({ tag: '', text: '', popularity: 'all' })
+  }
   const root = useRef<HTMLElement>(null)
   const [order, setOrder] = useState<Order>('recent')
   const [focus, setFocus] = useState(0)
@@ -27,10 +45,15 @@ export function Feed() {
     () => posts.reduce((total, p) => total + p.reactions.likes + p.reactions.dislikes, 0),
     [posts],
   )
-  const boards = useMemo(() => communities.map(board => ({
-    ...board,
-    count: posts.filter(post => post.tags.includes(board.slug)).length,
-  })).sort((a, b) => b.count - a.count), [posts])
+  // Tags réels de l'API en mode API, catégories françaises en mode archives.
+  const boards = useMemo(() => [...new Set(posts.flatMap(post => post.tags))]
+    .map(slug => ({
+      slug,
+      label: communities.find(board => board.slug === slug)?.label || slug,
+      count: posts.filter(post => post.tags.includes(slug)).length,
+    }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 24), [posts])
   const headlines = useMemo(() => [...posts].sort((a, b) =>
     controversy(b.reactions.likes, b.reactions.dislikes) -
     controversy(a.reactions.likes, a.reactions.dislikes)).slice(0, 8), [posts])
@@ -92,6 +115,37 @@ export function Feed() {
   return <main className="feed-shell future-home" ref={root}>
     <NewsWire posts={posts} />
 
+    {/* Ce bandeau prouve à l'oral que les contenus principaux viennent de l'API.
+        Bouton « Actualiser » => nouveaux GET visibles dans F12 > Réseau. */}
+    <section className="api-source-panel" aria-label="Source des données du forum">
+      <div className="api-source-heading">
+        <div><strong>◆ API REST / DUMMYJSON</strong>
+          <span>{apiStatus === 'loading' ? 'Connexion HTTP en cours…' :
+            apiStatus === 'ready' ? 'Données reçues par 3 requêtes GET' : 'API distante indisponible'}</span>
+        </div>
+        <button type="button" onClick={reloadApi} disabled={apiStatus === 'loading'}>↻ ACTUALISER API</button>
+      </div>
+      <div className="api-endpoints">
+        <code>GET /posts?limit=0</code>
+        <code>GET /users?limit=0</code>
+        <code>GET /comments?limit=0</code>
+      </div>
+      <div className="api-source-bottom">
+        <div className="api-source-counts">
+          <span>{apiCounts.posts} posts API</span>
+          <span>{apiCounts.members} utilisateurs API</span>
+          <span>{apiCounts.comments} commentaires API</span>
+        </div>
+        <div className="api-source-buttons" role="group" aria-label="Choisir la source des publications">
+          <button type="button" aria-pressed={source === 'api'} onClick={() => selectSource('api')}>API EN PRIORITÉ</button>
+          <button type="button" aria-pressed={source === 'archive'} onClick={() => selectSource('archive')}>ARCHIVES FR</button>
+          <button type="button" aria-pressed={source === 'all'} onClick={() => selectSource('all')}>TOUT AFFICHER</button>
+        </div>
+      </div>
+      {apiStatus === 'error' && <p className="api-source-error">Impossible de joindre DummyJSON : {apiError}. Affichage de secours des archives fictives. Réessaie « Actualiser API ».</p>}
+      {apiStatus === 'ready' && <p className="api-source-note">Les textes DummyJSON sont en anglais et proviennent d'un jeu de données de démonstration. Les archives françaises sont fictives ; tes propres publications restent locales.</p>}
+    </section>
+
     <section className="future-hero" aria-label="Accueil Afterhours">
       <div className="future-hero-decoration" aria-hidden="true"><span>AH</span><i/><i/><i/></div>
       <div className="future-hero-content">
@@ -103,7 +157,7 @@ export function Feed() {
           <button type="button" onClick={() => setFocus(v => v + 1)}>↻ CHANGER DE DÉBAT</button>
         </div>
         <div className="future-stats">
-          <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS</small></div>
+          <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS AFFICHÉS</small></div>
           <div><strong>{communities.length}</strong><small>SECTIONS</small></div>
           <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS FICTIVES + SESSION</small></div>
         </div>
@@ -122,7 +176,7 @@ export function Feed() {
     </section>
 
     <div className="future-data-strip" aria-label="Informations sur la démonstration">
-      <span>◇ INTERFACE EXPÉRIMENTALE</span><span>◆ ARCHIVES FICTIVES</span>
+      <span>◇ {activeSource === 'api' ? 'SOURCE : REST API DUMMYJSON' : activeSource === 'archive' ? 'SOURCE : ARCHIVES FICTIVES' : 'SOURCE : API + ARCHIVES'}</span><span>◆ ARCHIVES FICTIVES DISPONIBLES</span>
       <span>◇ MEMOIRE SERVEUR TEMPORAIRE</span><span>◆ PAS DE PUBLICITÉ RÉELLE</span>
     </div>
 
