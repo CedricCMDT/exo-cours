@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
+import { PageHeader } from '../components/ui/PageHeader'
 import { useNetwork } from '../context/NetworkContext'
 import type { Post } from '../types'
 
@@ -28,7 +29,7 @@ export function Create() {
     finally { setSubmitting(false) }
   }
   return <main className="narrow-page">
-    <div className="section-header"><small>AFTERHOURS / COMPOSE</small><h1>Nouveau fil</h1><p>Publier, c’est facile. Assumer, c’est autre chose.</p></div>
+    <PageHeader eyebrow="AFTERHOURS / COMPOSE" title="Nouveau fil" description="Écris dans ta communauté et retrouve le post pendant cette session." />
     {created ? <div className="notice success" role="status"><h2>Publication envoyée</h2><p>« {created.title} » — ID #{created.id}</p><p>{created.body}</p><Link to={'/posts/' + created.id}>Voir la publication →</Link><button onClick={() => { setCreated(null); setTitle(''); setBody('') }}>Créer une autre publication</button><small>Publication conservée dans cette session.</small></div> :
     !user ? <p className="notice">Connecte-toi pour publier. <Link to="/account">Connexion / inscription →</Link></p> : <form className="composer" onSubmit={submit} noValidate>
       <label>Titre du fil <span>*</span><input required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} placeholder="Le sujet de ton message" /></label>
