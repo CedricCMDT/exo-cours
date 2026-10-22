@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { fetchApiDataset, sessionRequest } from '../services/api'
-import type { ApiDataset } from '../api'
+import type { ApiDataset } from '../services/api'
 import type { Creation, Member, Post, Query } from '../types'
 import type { Reply } from '../types/reply'
 import { communityMembers, communityPosts } from '../data/community'
@@ -18,15 +18,6 @@ type SessionState = {
   members: Member[]
   posts: Post[]
   comments: Reply[]
-}
-
-type PendingReply = {
-  id: string
-  postId: number
-  parentId: string
-  originalBody: string
-  dueAt: number
-  author?: string
 }
 
 type ApiStatus = 'loading' | 'ready' | 'error'
