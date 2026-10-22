@@ -485,3 +485,192 @@ button:hover:not(:disabled){border-color:var(--cyan)}
   .future-hero h1 em, .future-hero-feature,
   .future-feature-bar > span:last-child { animation: none !important; }
 }
+
+/* ==========================================================================
+   API FIRST / DUMMYJSON
+   Le prof peut observer le trafic réseau et distinguer les sources d'un
+   simple coup d'œil. Pas de nouveaux composants CSS complexes.
+   ========================================================================== */
+
+.api-source-panel {
+  max-width: 1760px;
+  margin: 17px auto 12px;
+  background: linear-gradient(115deg, #10263a, #141c32 68%, #221937);
+  border: 1px solid #47d8ff83;
+  border-left: 5px solid #4ceaff;
+  color: #e9f8ff;
+  padding: 18px 22px 14px;
+  box-shadow: 0 12px 28px #0005, inset 0 0 44px #47daff0b;
+}
+.api-source-heading, .api-source-bottom {
+  display: flex;
+  gap: 17px;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.api-source-heading>div {
+  display: grid;
+  gap: 5px;
+}
+.api-source-heading strong {
+  color: #4ceaff;
+  font: 950 15px 'Consolas', monospace;
+  letter-spacing: .07em;
+}
+.api-source-heading span {
+  color: #d5e3f0;
+  font-size: 12px;
+}
+.api-source-heading button {
+  background: #daff4a;
+  color: #10191e;
+  padding: 10px 14px;
+  border-color: #daff4a;
+  font: 900 10px 'Consolas', monospace;
+}
+.api-source-heading button:hover { background: #f2ffab; color: #10191e; }
+.api-endpoints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 13px 0;
+}
+.api-endpoints code {
+  font: 750 10px 'Consolas', monospace;
+  color: #e3f4ff;
+  border: 1px solid #ffffff31;
+  background: #ffffff12;
+  padding: 6px 9px;
+}
+.api-source-bottom { border-top: 1px solid #ffffff23; padding-top: 11px; }
+.api-source-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: #b7d8ed;
+  font: 800 11px 'Consolas', monospace;
+}
+.api-source-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.api-source-buttons button {
+  background: #25324c;
+  color: #c3cadd;
+  border-color: #ffffff29;
+  border-radius: 0;
+  font: 900 10px 'Consolas', monospace;
+  padding: 10px 12px;
+}
+.api-source-buttons button[aria-pressed=true] {
+  background: #4ceaff;
+  color: #07141d;
+  border-color: #4ceaff;
+}
+.api-source-note, .api-source-error {
+  margin: 12px 0 0;
+  color: #aebad0;
+  font: 650 11px/1.5 'Segoe UI', sans-serif;
+}
+.api-source-error {
+  color: #ffc4c8;
+  border-left: 3px solid #ff437b;
+  padding-left: 9px;
+}
+.api-lab {
+  background: #182038;
+  border: 1px solid #4ceaff70;
+  padding: 16px;
+  box-shadow: inset 0 0 40px #4ceaff09;
+}
+.api-lab>small {
+  font: 850 10px 'Consolas', monospace;
+  color: #55eaff;
+}
+.api-lab h3 {
+  font: 950 27px/1 'Segoe UI', sans-serif;
+  letter-spacing: -.065em;
+  margin: 11px 0;
+  color: white;
+}
+.api-lab h3 em {
+  color: #daff4a;
+  font-style: normal;
+}
+.api-lab p {
+  font-size: 11px;
+  color: #bbc7dc;
+  line-height: 1.5;
+}
+.api-lab-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 14px 0;
+}
+.api-lab-methods button {
+  background: #2b3753;
+  color: #e4ecfc;
+  border-color: #ffffff31;
+  border-radius: 0;
+  font: 900 10px 'Consolas', monospace;
+  padding: 11px;
+}
+.api-lab-methods button[aria-pressed=true] {
+  background: #dfff4c;
+  color: #121927;
+}
+.api-lab-result {
+  border: 1px solid #ffffff2d;
+  background: #0d1627;
+  padding: 11px;
+  margin: 11px 0;
+}
+.api-lab-result strong {
+  display: block;
+  font: 900 11px 'Consolas', monospace;
+  color: #dfff4c;
+  margin-bottom: 8px;
+}
+.api-lab-result code {
+  display: block;
+  color: #57eaff;
+  font: 800 10px 'Consolas', monospace;
+  overflow-wrap: anywhere;
+}
+.api-lab-result pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 220px;
+  font: 650 10px/1.45 'Consolas', monospace;
+  color: #dbebff;
+}
+
+:root[data-theme=light] .api-source-panel {
+  background: #f2faff;
+  color: #142439;
+  border-color: #0d96be;
+  box-shadow: 0 8px 20px #172c5033;
+}
+:root[data-theme=light] .api-source-heading strong { color: #087e9f; }
+:root[data-theme=light] .api-source-heading span,
+:root[data-theme=light] .api-source-note,
+:root[data-theme=light] .api-source-counts { color: #36506c; }
+:root[data-theme=light] .api-endpoints code { background: #e0f0f5; color: #243654; }
+:root[data-theme=light] .api-source-error { color: #a80042; }
+:root[data-theme=light] .api-source-buttons button { background: #c6d6e4; color: #24314d; }
+:root[data-theme=light] .api-source-buttons button[aria-pressed=true] { background: #087e9f; color: white; }
+
+@media (max-width: 1810px) {
+  .api-source-panel { margin-left: 22px; margin-right: 22px; }
+}
+@media (max-width: 550px) {
+  .api-source-panel { margin: 10px 11px; padding: 14px; }
+  .api-source-buttons { width: 100%; }
+  .api-source-buttons button { flex: 1; font-size: 9px; padding: 10px 6px; }
+  .api-endpoints code { font-size: 9px; }
+  .api-source-counts { gap: 9px; }
+}
