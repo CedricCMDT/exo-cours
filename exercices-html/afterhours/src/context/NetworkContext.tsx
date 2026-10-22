@@ -129,7 +129,7 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
 
     setUser(data.user)
     setSessionMembers(data.members)
-    setSessionPosts(data.posts)
+    setSessionPosts(data.posts.map(post => ({ ...post, source: 'session' })))
     setSessionReplies(data.comments)
   }, [])
 
