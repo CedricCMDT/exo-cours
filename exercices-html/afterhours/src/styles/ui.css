@@ -1,0 +1,198 @@
+/**
+ * Design system : un seul endroit pour les boutons, champs et panneaux.
+ * Les composants React utilisent les classes ui-* ; les pages n'ont pas à
+ * recopier couleurs, tailles et états interactifs.
+ */
+:root {
+  --ui-surface: #182338;
+  --ui-surface-soft: #111b2d;
+  --ui-text: #f3f7ff;
+  --ui-muted: #acbbd1;
+  --ui-border: #566781;
+  --ui-focus: #4ceaff;
+  --ui-input-bg: #0a1424;
+  --ui-primary-bg: #dbff4a;
+  --ui-primary-text: #182111;
+  --ui-secondary-bg: #283754;
+  --ui-secondary-text: #f4f7ff;
+  --ui-danger-bg: #8c2148;
+  --ui-danger-text: #fff;
+}
+:root[data-theme='light'] {
+  --ui-surface: #ffffff;
+  --ui-surface-soft: #edf3fb;
+  --ui-text: #18243c;
+  --ui-muted: #42526d;
+  --ui-border: #9bacc5;
+  --ui-focus: #1865bb;
+  --ui-input-bg: #ffffff;
+  --ui-primary-bg: #244c88;
+  --ui-primary-text: #ffffff;
+  --ui-secondary-bg: #e0eaf8;
+  --ui-secondary-text: #1f3353;
+  --ui-danger-bg: #af1645;
+  --ui-danger-text: #ffffff;
+}
+.ui-button {
+  appearance: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: background-color 180ms, transform 180ms, border-color 180ms;
+}
+.ui-button:hover:not(:disabled) { transform: translateY(-1px); }
+.ui-button:focus-visible,
+.ui-field__control:focus-visible { outline: 3px solid var(--ui-focus); outline-offset: 2px; }
+.ui-button:disabled { opacity: 0.5; cursor: not-allowed; }
+.ui-button--sm { padding: 0.55rem 0.8rem; font-size: 0.74rem; }
+.ui-button--md { padding: 0.7rem 1rem; font-size: 0.84rem; }
+.ui-button--lg { padding: 0.95rem 1.2rem; font-size: 0.95rem; }
+.ui-button--full { width: 100%; }
+.ui-button--primary { color: var(--ui-primary-text); background: var(--ui-primary-bg); border-color: var(--ui-primary-bg); }
+.ui-button--primary:hover:not(:disabled) { color: var(--ui-primary-text); background: var(--ui-primary-bg); filter: brightness(1.08); }
+.ui-button--secondary { color: var(--ui-secondary-text); background: var(--ui-secondary-bg); border-color: var(--ui-border); }
+.ui-button--secondary:hover:not(:disabled) { color: var(--ui-secondary-text); border-color: var(--ui-focus); }
+.ui-button--ghost { color: var(--ui-text); background: transparent; border-color: var(--ui-border); }
+.ui-button--ghost:hover:not(:disabled) { color: var(--ui-text); background: var(--ui-secondary-bg); }
+.ui-button--danger { color: var(--ui-danger-text); background: var(--ui-danger-bg); border-color: var(--ui-danger-bg); }
+.ui-button--danger:hover:not(:disabled) { color: var(--ui-danger-text); filter: brightness(1.13); }
+.ui-field { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.ui-field__label { color: var(--ui-muted); font-size: 0.76rem; font-weight: 800; }
+.ui-field__control {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  color: var(--ui-text);
+  background: var(--ui-input-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 5px;
+  padding: 0.75rem;
+  font: inherit;
+}
+.ui-field__control::placeholder { color: var(--ui-muted); opacity: 0.9; }
+.ui-field__control[aria-invalid='true'] { border-color: #e14167; }
+.ui-field__hint { color: var(--ui-muted); }
+.ui-field__error { color: #ff7699; }
+:root[data-theme='light'] .ui-field__error { color: #a81742; }
+.ui-panel {
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-border);
+  border-radius: 8px;
+  padding: 1.2rem;
+}
+.ui-panel__eyebrow { color: var(--ui-muted); font-size: 0.7rem; font-weight: 800; }
+.ui-panel__title { margin: 0 0 1rem; color: var(--ui-text); font-size: 1.4rem; }
+@media (prefers-reduced-motion: reduce) { .ui-button { transition: none; } }
+
+/**
+ * Le thème clair n'est pas simplement un fond blanc.
+ * Chaque bloc à fond clair reçoit ses couleurs de contenu et de contrôles.
+ * Les zones néon volontairement sombres (hero, entête, pubs, modale)
+ * conservent leurs couleurs spécifiques.
+ */
+:root[data-theme='light'] .future-data-strip,
+:root[data-theme='light'] .future-feed-top,
+:root[data-theme='light'] .future-ping,
+:root[data-theme='light'] .future-rail-caption,
+:root[data-theme='light'] .future-feed-title > span,
+:root[data-theme='light'] .room-explain,
+:root[data-theme='light'] .room-disclaimer,
+:root[data-theme='light'] .future-rail-disclaimer { color: #42536b; }
+:root[data-theme='light'] .post-card,
+:root[data-theme='light'] .future-trend-card,
+:root[data-theme='light'] .future-pulse-card,
+:root[data-theme='light'] .room-map,
+:root[data-theme='light'] .room-radio,
+:root[data-theme='light'] .composer,
+:root[data-theme='light'] .detail-card,
+:root[data-theme='light'] .section-header,
+:root[data-theme='light'] .reply-card,
+:root[data-theme='light'] .reply-form,
+:root[data-theme='light'] .notice {
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  border-color: #a9bad0;
+}
+:root[data-theme='light'] .post-card :is(h3, h3 a, strong, p),
+:root[data-theme='light'] .future-trend-card :is(h3, a, strong),
+:root[data-theme='light'] .future-pulse-card :is(strong, p),
+:root[data-theme='light'] .room-radio-body :is(h3, p),
+:root[data-theme='light'] .room-map :is(h3, strong),
+:root[data-theme='light'] .section-header :is(h1, h2, p),
+:root[data-theme='light'] .detail-card :is(h1, h2, .detail-body),
+:root[data-theme='light'] .reply-card :is(strong, p),
+:root[data-theme='light'] .composer :is(h2, p) { color: var(--ui-text); }
+:root[data-theme='light'] .post-card :is(.post-head small, .post-date, .post-actions),
+:root[data-theme='light'] .post-identity small,
+:root[data-theme='light'] .reply-card time,
+:root[data-theme='light'] .byline,
+:root[data-theme='light'] .detail-card dt,
+:root[data-theme='light'] .room-opinions-labels,
+:root[data-theme='light'] .future-pulse-card > span,
+:root[data-theme='light'] .future-trend-card > p { color: var(--ui-muted); }
+:root[data-theme='light'] .future-sort-tabs button,
+:root[data-theme='light'] .future-pages button,
+:root[data-theme='light'] .future-board-list button,
+:root[data-theme='light'] .post-actions button,
+:root[data-theme='light'] .reply-card button,
+:root[data-theme='light'] .account-tabs button {
+  color: var(--ui-secondary-text);
+  background: var(--ui-secondary-bg);
+  border-color: var(--ui-border);
+}
+:root[data-theme='light'] .future-sort-tabs [aria-pressed='true'],
+:root[data-theme='light'] .account-tabs [aria-pressed='true'] {
+  color: var(--ui-primary-text);
+  background: var(--ui-primary-bg);
+  border-color: var(--ui-primary-bg);
+}
+:root[data-theme='light'] .future-board-list button.active {
+  background: #dae7fa;
+  color: #20395e;
+  border-left-color: var(--ui-focus);
+}
+:root[data-theme='light'] .post-actions a,
+:root[data-theme='light'] .account-entries a,
+:root[data-theme='light'] .breadcrumb a { color: #16518f; }
+:root[data-theme='light'] .stats div,
+:root[data-theme='light'] .account-entries a,
+:root[data-theme='light'] .future-filter,
+:root[data-theme='light'] .future-sort-tabs button,
+:root[data-theme='light'] .post-edit-form input,
+:root[data-theme='light'] .post-edit-form textarea,
+:root[data-theme='light'] .reply-card textarea,
+:root[data-theme='light'] .composer input,
+:root[data-theme='light'] .composer textarea,
+:root[data-theme='light'] .composer select {
+  background: var(--ui-surface-soft);
+  color: var(--ui-text);
+  border-color: var(--ui-border);
+}
+:root[data-theme='light'] .stats dt { color: var(--ui-muted); }
+:root[data-theme='light'] .stats dd { color: #245083; }
+:root[data-theme='light'] .room-radio-actions button {
+  background: var(--ui-secondary-bg);
+  color: var(--ui-secondary-text);
+}
+:root[data-theme='light'] .room-radio-actions a {
+  background: var(--ui-primary-bg);
+  color: var(--ui-primary-text);
+}
+:root[data-theme='light'] .room-board { color: #fff; }
+:root[data-theme='light'] .room-board-count { color: #e4e9ff; }
+:root[data-theme='light'] .room-board-meter > span { background: #baffec; }
+:root[data-theme='light'] .future-side-note p { color: #37475e; }
+:root[data-theme='light'] .ui-button--primary,
+:root[data-theme='light'] .ui-button--secondary,
+:root[data-theme='light'] .ui-button--ghost,
+:root[data-theme='light'] .ui-button--danger { color: revert-layer; }
