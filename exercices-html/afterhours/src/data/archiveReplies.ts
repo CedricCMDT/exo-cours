@@ -498,7 +498,15 @@ const additions = [
 
 /** Petit générateur pseudo-aléatoire PRÉVISIBLE : même graine → même résultat. */
 function seeded(seed: number) {
+  // Mélange des bits : des IDs voisins n'obtiennent pas une suite de chiffres
+  // croissante de façon visible (défaut classique des générateurs très simples).
   let state = seed >>> 0
+  state ^= state >>> 16
+  state = Math.imul(state, 0x7feb352d)
+  state ^= state >>> 15
+  state = Math.imul(state, 0x846ca68b)
+  state ^= state >>> 16
+  state >>>= 0
   return () => {
     state = (Math.imul(1664525, state) + 1013904223) >>> 0
     return state / 4294967296
