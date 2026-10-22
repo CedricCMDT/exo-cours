@@ -83,7 +83,7 @@ test('la vraie API reste la source prioritaire avec des filtres réutilisables',
   await expect(page.locator('.post-card')).toHaveCount(1)
   await page.getByRole('link', { name: 'Premier débat', exact: true }).click()
   await expect(page).toHaveURL(/\/posts\/1$/)
-  await expect(page.getByRole('heading', { name: 'Premier débat' })).toBeVisible()
+  await expect(page.locator('.detail-card h1')).toHaveText('Premier débat')
   await expect(page.getByText('Un commentaire issu de la fausse API.')).toBeVisible()
 })
 
