@@ -433,3 +433,29 @@
   background: var(--neo-panel); color: var(--neo-ink); border-radius: 8px;
 }
 .post-edit-form button { justify-self: start; }
+
+/* Archives : ne dessiner que 12 discussions de premier niveau à la fois. */
+.discussion-more {
+  display: block;
+  width: min(100%, 430px);
+  margin: 24px auto 5px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #28234f;
+  color: #fff;
+  font-weight: 900;
+  border: 1px solid #7161a8;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.discussion-more:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 #f18eab55;
+}
+:root[data-theme=dark] .discussion-more {
+  background: #ec9a78;
+  border-color: #ec9a78;
+  color: #1d2134;
+}
+@media (prefers-reduced-motion: reduce) {
+  .discussion-more { transition: none; }
+}
