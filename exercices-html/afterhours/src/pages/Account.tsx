@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router'
 import { PageHeader } from '../components/ui/PageHeader'
+import { Button } from '../components/ui/Button'
+import { InputField, TextareaField } from '../components/ui/Fields'
 import { useNetwork } from '../context/NetworkContext'
 
 type AuthMode = 'login' | 'register'
@@ -76,24 +78,17 @@ export function Account() {
     {!user ? (
       <section className="composer" aria-label="Authentification">
         <div className="account-tabs" role="group" aria-label="Choix du formulaire">
-          <button type="button" aria-pressed={mode === 'login'} onClick={() => { setMode('login'); setError('') }}>Connexion</button>
-          <button type="button" aria-pressed={mode === 'register'} onClick={() => { setMode('register'); setError('') }}>Inscription</button>
+          <Button variant="ghost" aria-pressed={mode === 'login'} onClick={() => { setMode('login'); setError('') }}>Connexion</Button>
+          <Button variant="ghost" aria-pressed={mode === 'register'} onClick={() => { setMode('register'); setError('') }}>Inscription</Button>
         </div>
 
         <form onSubmit={authenticate}>
-          <label>Pseudo
-            <input required minLength={3} maxLength={24} autoComplete="username"
-              value={username} onChange={event => setUsername(event.target.value)} />
-          </label>
-          <label>Mot de passe
-            <input required type="password" minLength={8}
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              value={password} onChange={event => setPassword(event.target.value)} />
-          </label>
+          <InputField label="Pseudo" required minLength={3} maxLength={24} autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} />
+          <InputField label="Mot de passe" required type="password" minLength={8} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} value={password} onChange={event => setPassword(event.target.value)} />
           {error && <p role="alert" className="notice error">{error}</p>}
-          <button className="primary" type="submit" disabled={busy}>
+          <Button variant="primary" type="submit" loading={busy}>
             {busy ? 'Envoi…' : mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
-          </button>
+          </Button>
         </form>
       </section>
     ) : (
@@ -104,18 +99,15 @@ export function Account() {
         </div>
 
         <form onSubmit={saveBio}>
-          <label>Ma biographie
-            <textarea maxLength={240} rows={3} value={bio}
-              onChange={event => setBio(event.target.value)} />
-          </label>
-          <button type="submit" className="primary">Enregistrer le profil</button>
+          <TextareaField label="Ma biographie" maxLength={240} rows={3} value={bio} onChange={event => setBio(event.target.value)} />
+          <Button type="submit" variant="primary">Enregistrer le profil</Button>
         </form>
 
         {notice && <p role="status" className="notice success">{notice}</p>}
         {error && <p role="alert" className="notice error">{error}</p>}
-        <button type="button" className="account-profile__logout" onClick={() => void signOut()}>
+        <Button variant="ghost" className="account-profile__logout" onClick={() => void signOut()}>
           Se déconnecter
-        </button>
+        </Button>
 
         <section className="account-entries" aria-label="Mes publications">
           <h2>Mes publications <span>{myPosts.length}</span></h2>
