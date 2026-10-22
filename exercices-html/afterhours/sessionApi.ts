@@ -279,7 +279,27 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
     // Les fils d'archive ont désormais un nombre variable de réponses.
     // On n'accepte un parent fictif que si son index existe vraiment.
     const archivePost = communityPosts.find(post => post.id === postId)
-    const match = parentId?.match(new RegExp('^archive-' + postId + '-(a|b|c|[0-9]+)
+    // Exemple : archive-20000-a, archive-20000-b ou archive-20000-18.
+    const match = parentId?.match(new RegExp('^archive-' + postId + '-(a|b|c|[0-9]+)$'))
+    const archiveIndex = match
+      ? (match[1].length === 1 && 'abc'.includes(match[1])
+          ? 'abc'.indexOf(match[1])
+          : Number(match[1]))
+      : -1
+
+    const validArchiveParent = Boolean(
+      archivePost && match &&
+      Number.isInteger(archiveIndex) &&
+      archiveIndex >= 0 &&
+      archiveIndex < archiveReplyCount(archivePost) &&
+      (archiveIndex < 3
+        ? match[1] === 'abc'[archiveIndex]
+        : match[1] === String(archiveIndex)),
+    )
+
+    const validParent = !parentId ||
+      validArchiveParent ||
+      newComments.some(comment => comment.id === parentId && comment.postId === postId)
 
     if (!validParent) return sendJson(res, 400, { error: 'Réponse introuvable.' })
 
