@@ -90,7 +90,7 @@ export function Detail() {
       <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>
         {savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}
       </button>
-      <Discussion postId={post.id} post={post} />
+      <Discussion key={post.id} postId={post.id} post={post} />
     </article>
   </main>
 }
