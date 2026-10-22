@@ -4,6 +4,7 @@ import { gsap } from 'gsap'
 import { PostCard } from '../components/PostCard'
 import { ControlRoom } from '../components/ControlRoom'
 import { FictionAd, NewsWire } from '../components/Experience'
+import { ApiPlayground } from '../components/ApiPlayground'
 import { useNetwork } from '../context/NetworkContext'
 import { communities } from '../data/community'
 
@@ -241,6 +242,7 @@ export function Feed() {
             <span>{String(index + 1).padStart(2,'0')}</span><strong>{post.title}</strong><small>↗</small>
           </Link>)}
         </div>
+        <ApiPlayground />
         <FictionAd number={1}/>
         <div className="future-pulse-card">
           <span>◆ ANALYSE LOCALE</span><strong>{replies.length}</strong><p>COMMENTAIRES CRÉÉS PENDANT CETTE SESSION</p>
