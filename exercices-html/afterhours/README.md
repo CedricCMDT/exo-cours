@@ -1,64 +1,117 @@
-# AFTERHOURS — Community Network (TP React + TypeScript)
+# AFTERHOURS
 
-Réseau social fictif inspiré du Web 2005–2012 : Skyblog, MSN, Twitter et imageboards. Le style est volontairement accueillant, tandis que les archives satiriques inventées abordent la conflictualité en ligne. **Les posts du catalogue et leurs auteurs viennent de DummyJSON** ; le panneau « Archives du Web » contient des textes fictifs distincts.
+**Forum expérimental en React + TypeScript, alimenté en priorité par une API REST.**
 
-## Démarrer
-Prérequis : Node.js 20.19+ (ou 22+).
+Afterhours présente les données de démonstration de [DummyJSON](https://dummyjson.com/) dans une interface futuriste : fil de discussions, recherche, tris, cartes de communautés, commentaires et laboratoire HTTP. Le projet comporte également des **archives françaises fictives** et une **mini-API locale** pour créer un compte et publier pendant une session.
+
+> Projet pédagogique. Les publications de DummyJSON et les archives sont des données de démonstration, pas des contenus vérifiés ou un forum public.
+
+## Lancer le projet
+
+**Prérequis :** Node.js 20.19+ ou 22.12+, npm et une connexion Internet pour les appels DummyJSON.
 
 ```bash
+cd exercices-html/afterhours
 npm install
 npm run dev
 ```
 
-Aucune clé API ni variable d'environnement n'est nécessaire.
+Ouvrir l'adresse indiquée par Vite (généralement `http://localhost:5173`).
+
+Vérifier le code avant une présentation :
+
+```bash
+npm run build
+```
+
+Aucune clé API ni base de données à installer.
 
 ## Fonctionnalités
-- Accueil avec fil de publications, cartes et pages de détail sur `/posts/:id`.
-- Recherche texte et **deux filtres combinables** (communauté/tag + nombre de likes).
-- Filtrage et pagination côté client sur **l'ensemble** des publications obtenues via `GET /posts?limit=0`. Retour à la première page dès qu'un filtre change. Les critères vivent dans un contexte React et survivent à un aller-retour sur une fiche.
-- Sauvegardes accessibles depuis `/saved`, persistées dans `localStorage`, sans doublons.
-- Création de publication via `POST /posts/add`, formulaire validé, états d'envoi, confirmation et ajout local en mémoire.
-- Bonus : thème sombre via contexte et `localStorage`; TypeScript.
-- États de chargement, erreur avec réessai et liste vide. Navigation React Router et affichage responsive.
 
-DummyJSON **simule** les créations : les nouvelles publications disparaissent après une actualisation (conforme au sujet). Les utilisateurs et les publications de l’API sont fictifs.
+- **API prioritaire :** chargement des posts, des auteurs et des commentaires avec trois requêtes `GET` vers DummyJSON.
+- **Exploration :** recherche textuelle, catégories, popularité, quatre modes de classement, pagination, favoris et navigation entre les sujets.
+- **Laboratoire REST :** démonstration de `GET`, `POST`, `PATCH` et `DELETE` avec affichage des réponses JSON et des statuts HTTP.
+- **Comptes et échanges locaux :** inscription, connexion, profil, nouveaux sujets, réponses imbriquées, modification et suppression de ses contenus.
+- **Archives fictives :** rubriques en français et discussions générées de façon déterministe. Elles servent de contenu alternatif si l'API externe est inaccessible.
+- **Interface :** thème sombre/clair, panneaux, animations GSAP/CSS, publicités parodiques **explicitement fictives**, notifications et fenêtre d'introduction refermables.
+- **Accessibilité :** navigation clavier, titres sémantiques, états d'erreur, mise en page responsive et respect de `prefers-reduced-motion`.
 
-## Scripts
-```bash
-npm run lint
-npm run format:check
-npm run build
-npm run test:e2e
+## Deux API, deux responsabilités
+
+| Source | Fonctionnement | Persistance |
+| --- | --- | --- |
+| **DummyJSON (externe)** | `GET /posts`, `GET /users`, `GET /comments` ; CRUD simulé dans le laboratoire | Données de démonstration fournies par le service |
+| **`/session-api` (locale)** | Comptes, publications et commentaires personnels ; cookie de session `HttpOnly` | Mémoire vive du processus Node.js : **effacée au redémarrage** |
+| **Archives françaises** | Données et réponses fictives fournies avec le code | Identiques à chaque démarrage |
+
+**Important :** les opérations `POST`, `PATCH` et `DELETE` de DummyJSON simulent un résultat, mais n'écrivent pas durablement dans sa base. Les créations personnelles sont envoyées à **notre API locale**, pas à DummyJSON. Actualiser le navigateur conserve les données locales tant que le serveur tourne ; redémarrer le serveur les efface.
+
+Le thème et certains réglages d'interface peuvent rester dans `localStorage` : ce ne sont pas des données du forum.
+
+## Organisation du code
+
+```text
+afterhours/
+├── README.md
+├── docs/
+│   ├── PRESENTATION.md          # Démonstration et explications pour l'oral
+│   ├── ARCHITECTURE.md          # Circulation des données et dossiers
+│   └── REVUE_CODE.md            # Choix techniques, contrôles et limites
+├── server/
+│   └── sessionApi.ts            # API temporaire intégrée à Vite
+├── src/
+│   ├── App.tsx                  # Navigation et routes
+│   ├── main.tsx                 # Point d'entrée React + CSS
+│   ├── components/
+│   │   ├── api/ApiPlayground.tsx
+│   │   ├── discussion/Discussion.tsx
+│   │   ├── experience/Experience.tsx
+│   │   ├── feed/
+│   │   │   ├── ControlRoom.tsx
+│   │   │   └── PostCard.tsx
+│   │   └── ui/PageHeader.tsx    # En-tête réutilisable avec classes CSS
+│   ├── context/NetworkContext.tsx
+│   ├── data/                    # Archives fictives et réponses
+│   ├── pages/                   # Accueil, sujet, favoris, création, compte
+│   ├── services/api.ts          # Requêtes HTTP
+│   ├── styles/                  # CSS séparé par rôle
+│   ├── types/                   # Types Post, Member et Reply
+│   └── utils/avatar.ts
+├── vite.config.ts
+├── tsconfig.json
+└── package.json
 ```
-Tests E2E : `npx playwright install chromium` (première fois), puis `npm run test:e2e`.
 
-## Architecture
-- `src/api.ts` : accès HTTP GET/POST.
-- `src/types.ts` : interfaces de l'API et des filtres.
-- `src/context/NetworkContext.tsx` : données partagées, filtres, pagination, favoris, thème.
-- `src/pages/` : fil, détail, sauvegardes, création.
-- `src/components/` : carte réutilisable.
-- `src/styles.css` : direction visuelle rétro.
+Les pages utilisent les mêmes composants réutilisables. Par exemple, `PageHeader` affiche les en-têtes du profil, des favoris et du formulaire de création. Les classes `.page-heading__*` permettent de modifier leur style au même endroit, en conservant des `h1` corrects pour l'accessibilité.
 
-## Choix et limites
-La pagination côté client est choisie pour combiner recherche partielle et filtres multi-critères sur **tout** le catalogue, sans limiter la recherche à la page courante. DummyJSON n'enregistre pas les POST. Les favoris conservent des IDs ; ceux de publications uniquement locales ne sont plus disponibles après rechargement. Les archives satiriques sont des textes de démonstration distincts du catalogue API. Les médias externes sont évités pour l'affichage fiable.
+## Comprendre l'API en 30 secondes
 
-## Usage de l'IA
-ChatGPT a été utilisé pour discuter de la direction artistique, expliquer la structure React/TypeScript et assister à la rédaction et à la révision du code. Les choix techniques et leur fonctionnement doivent être compris et défendus à l'oral.
+```ts
+const response = await fetch('https://dummyjson.com/posts?limit=0')
+if (!response.ok) throw new Error('Erreur HTTP')
+const json = await response.json()
+console.log(json.posts)
+```
 
-## Discussions et réponses
-Sur une fiche, il est possible de répondre au fil ou de répondre directement à un commentaire (réponses imbriquées). Les messages sont conservés dans le `localStorage` **du navigateur utilisé**, y compris après rechargement. Ce n’est **pas** un système multi-utilisateur partagé : il faut une base de données et une API côté serveur pour permettre des échanges entre appareils et visiteurs.
+Dans le véritable projet, `src/services/api.ts` regroupe trois appels dans `Promise.all`. `NetworkContext` gère le chargement, les erreurs et les données partagées par les composants.
 
-Une réponse automatique locale est planifiée **10 à 30 secondes** après chaque commentaire. Le compte est explicitement marqué « Compte automatisé ». Le générateur est un moteur de règles contextuelles basé sur des mots-clés, **pas un modèle d’IA**. Les tâches planifiées sont persistées ; lorsque l’utilisateur rouvre la page après l’heure prévue, la réponse apparaît.
+Pour observer les échanges : **F12 → Réseau (Network) → Fetch/XHR → Actualiser API**.
 
-Aucune clé externe n’est nécessaire. Pour une véritable génération par IA, prévoir un backend qui appelle un modèle, protège sa clé API et enregistre les messages et tâches différées côté serveur.
+## Limites et sécurité
 
-## Catalogue éditorial et animation
-- **1 260 publications en français**, issues de 252 situations et cinq angles éditoriaux par situation, réparties en **18 communautés**. Les titres, corps, pseudonymes, dates et métriques sont générés de façon déterministe dans `src/data/community.ts`. Cette collection est visible même sans connexion API.
-- **3 commentaires d'archives** par publication éditoriale, dont une réponse imbriquée ; les réponses de l'utilisateur restent enregistrées localement.
-- Les publications réelles de l'API DummyJSON sont récupérées puis ajoutées au catalogue et peuvent être recherchées simultanément.
-- **GSAP 3.15** : timeline d'entrée du bandeau, fenêtre terminal, cascade des cartes lors du chargement et des changements de filtre. Animations CSS supplémentaires pour les orbes, curseurs et points lumineux. Les animations sont désactivées lorsque le système demande moins de mouvement.
-- **16 personnalités automatisées** pour les réponses temporisées, choisies en fonction de la communauté. Le moteur reste basé sur des règles et non sur un appel à un service d'intelligence artificielle.
-- L'esthétique mêle un navigateur des années 2000 à une interface moderne, adaptée au mobile.
+Ce projet est prévu pour **une démonstration locale** :
 
-**Limite du jeu de données :** les 1 260 publications sont des variantes écrites autour de 252 situations ; elles ne sont pas 1 260 histoires indépendantes. Les dates d'archives sont construites entre 2025 et 2026 pour créer un fil historiquement stable. Comme auparavant, aucun commentaire n'est partagé entre plusieurs navigateurs.
+- `server/sessionApi.ts` fonctionne avec **`npm run dev`**, pas avec un simple hébergement statique de `dist/`.
+- Les comptes et leurs données ne sont pas destinés à une utilisation publique. Il manque notamment une vraie base de données, une protection contre les abus, des tests de sécurité et un déploiement serveur adapté.
+- Les archives françaises et leurs compteurs sont **fictifs**. Les commentaires importés depuis DummyJSON n'ont pas de date fournie par l'API.
+- Une panne réseau peut empêcher le chargement de DummyJSON ; les archives restent accessibles.
+
+## Présenter le projet
+
+Consulter **[le guide d'oral](docs/PRESENTATION.md)**, **[l'architecture](docs/ARCHITECTURE.md)** et **[la revue de code](docs/REVUE_CODE.md)**.
+
+## Outils et assistance
+
+React, TypeScript, React Router, Vite, CSS, GSAP, Node.js et DummyJSON.
+
+ChatGPT a participé aux propositions visuelles, à la refactorisation, à la documentation et à la rédaction du code. Le fonctionnement doit être compris et expliqué lors de la présentation.
