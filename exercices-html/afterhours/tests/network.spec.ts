@@ -1,112 +1,173 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
+/**
+ * Les tests bloquent les appels externes vers DummyJSON pour rester stables.
+ * Les interactions avec notre serveur local /session-api restent réelles.
+ */
 const posts = [
-  { id: 1, userId: 1, title: 'Premier débat', body: 'Une opinion qui divise tout le monde.', tags: ['social'], reactions: { likes: 230, dislikes: 10 }, views: 930 },
-  { id: 2, userId: 2, title: 'Discussion technique', body: 'Parlons de TypeScript et des réseaux.', tags: ['tech'], reactions: { likes: 14, dislikes: 1 }, views: 100 },
-  { id: 3, userId: 1, title: 'Second débat', body: 'Autre discussion sur Internet.', tags: ['social'], reactions: { likes: 25, dislikes: 2 }, views: 300 },
+  {
+    id: 1,
+    userId: 1,
+    title: 'Premier débat',
+    body: 'Une opinion qui divise tout le monde.',
+    tags: ['social'],
+    reactions: { likes: 230, dislikes: 10 },
+    views: 930,
+  },
+  {
+    id: 2,
+    userId: 2,
+    title: 'Discussion technique',
+    body: 'Parlons de TypeScript et des réseaux.',
+    tags: ['tech'],
+    reactions: { likes: 14, dislikes: 1 },
+    views: 100,
+  },
+  {
+    id: 3,
+    userId: 1,
+    title: 'Second débat',
+    body: 'Autre discussion sur Internet.',
+    tags: ['social'],
+    reactions: { likes: 25, dislikes: 2 },
+    views: 300,
+  },
 ]
+
 const users = [
   { id: 1, username: 'anon1', firstName: 'Alice', lastName: 'X', image: '/avatar.svg' },
   { id: 2, username: 'anon2', firstName: 'Bob', lastName: 'Y', image: '/avatar.svg' },
 ]
+
+const comments = [
+  {
+    id: 1,
+    postId: 1,
+    body: 'Un commentaire issu de la fausse API.',
+    likes: 3,
+    user: { id: 2, username: 'anon2', fullName: 'Bob Y' },
+  },
+]
+
 test.beforeEach(async ({ page }) => {
-  await page.route('https://dummyjson.com/**', route => {
+  // Le pop-up n'est pas l'objet des tests fonctionnels du forum.
+  await page.addInitScript(() => sessionStorage.setItem('ah-intro-seen', '1'))
+
+  await page.route('https://dummyjson.com/**', (route) => {
     const url = new URL(route.request().url())
-    if (url.pathname === '/posts' && route.request().method() === 'GET') {
+    if (url.pathname === '/posts' && route.request().method() === 'GET')
       return route.fulfill({ json: { posts, total: posts.length } })
-    }
-    if (url.pathname === '/users') return route.fulfill({ json: { users, total: users.length } })
-    if (url.pathname === '/posts/add') {
+    if (url.pathname === '/users')
+      return route.fulfill({ json: { users, total: users.length } })
+    if (url.pathname === '/comments')
+      return route.fulfill({ json: { comments, total: comments.length } })
+    if (url.pathname === '/posts/add')
       return route.fulfill({ status: 201, json: { ...route.request().postDataJSON(), id: 201 } })
-    }
+
     const id = Number(url.pathname.split('/').at(-1))
-    const post = posts.find(p => p.id === id)
-    return route.fulfill(post ? { json: post } : { status: 404, json: { message: 'Not found' } })
+    const post = posts.find((item) => item.id === id)
+    return route.fulfill(
+      post ? { json: post } : { status: 404, json: { message: 'Not found' } },
+    )
   })
 })
 
-test('affiche un catalogue avec images et fiches consultables', async ({ page }) => {
+test('la vraie API reste la source prioritaire avec des filtres réutilisables', async ({
+  page,
+}) => {
   await page.goto('/')
-  await expect(page.getByText('1263 publication(s)')).toBeVisible()
-  await expect(page.locator('.post-card')).toHaveCount(9)
-  await expect(page.locator('.post-card img')).toHaveCount(9)
-  await page.getByRole('searchbox', { name: 'Rechercher une publication' }).fill('Premier débat')
+  await expect(page.locator('.api-source-counts')).toContainText('3 posts API')
+  await expect(page.locator('.post-card')).toHaveCount(3)
+
+  await page.getByRole('searchbox', { name: 'RECHERCHER' }).fill('Premier débat')
   await expect(page.locator('.post-card')).toHaveCount(1)
   await page.getByRole('link', { name: 'Premier débat' }).click()
   await expect(page).toHaveURL(/\/posts\/1$/)
   await expect(page.getByRole('heading', { name: 'Premier débat' })).toBeVisible()
-  await expect(page.getByText('930')).toBeVisible()
-  await page.reload()
-  await expect(page.getByRole('heading', { name: 'Premier débat' })).toBeVisible()
+  await expect(page.getByText('Un commentaire issu de la fausse API.')).toBeVisible()
 })
 
-test('combine texte, communauté et popularité, puis restaure les critères', async ({ page }) => {
+test('les catégories, le mode archives et le laboratoire REST fonctionnent', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('searchbox', { name: 'Rechercher une publication' }).fill('Premier débat')
-  await page.getByLabel('Communauté').selectOption('social')
-  await page.getByLabel('Popularité').selectOption('popular')
+  await expect(page.locator('.api-source-counts')).toContainText('3 posts API')
+
+  await page.getByLabel('CATÉGORIE').selectOption('tech')
   await expect(page.locator('.post-card')).toHaveCount(1)
-  await page.getByRole('link', { name: 'Premier débat' }).click()
-  await page.getByRole('link', { name: /Retour au fil/ }).click()
-  await expect(page.getByRole('searchbox', { name: 'Rechercher une publication' })).toHaveValue('Premier débat')
-  await expect(page.getByLabel('Communauté')).toHaveValue('social')
-  await expect(page.getByLabel('Popularité')).toHaveValue('popular')
+  await page.getByLabel('CATÉGORIE').selectOption('')
+
+  await page.getByRole('button', { name: 'GET', exact: true }).click()
+  await expect(page.locator('.api-lab-result')).toContainText('HTTP 200')
+
+  await page.getByRole('button', { name: 'ARCHIVES FR' }).click()
+  await expect(page.locator('.post-card').first()).toBeVisible()
+  await expect(page.locator('.api-source-panel')).toContainText('ARCHIVES FR')
 })
 
-test('sauvegarde et retire un fil, même après actualisation', async ({ page }) => {
-  await page.goto('/')
-  await page.locator('.post-card').first().getByRole('button', { name: /Sauvegarder/ }).click()
-  await page.getByRole('link', { name: /Sauvegardes \(1\)/ }).click()
-  await expect(page.locator('.post-card')).toHaveCount(1)
-  await page.reload()
-  await expect(page.locator('.post-card')).toHaveCount(1)
-  await page.getByRole('button', { name: /Retirer/ }).click()
-  await expect(page.getByText('Aucun fil sauvegardé.')).toBeVisible()
-})
+test('une inscription, une publication et un commentaire survivent à une actualisation', async ({
+  page,
+}) => {
+  const username = 'test_' + Math.floor(Math.random() * 1000000)
+  await page.goto('/account')
+  await page.getByRole('button', { name: 'Inscription' }).click()
+  await page.getByLabel('Pseudo').fill(username)
+  await page.getByLabel('Mot de passe').fill('SecretDemo2026')
+  await page.getByRole('button', { name: 'Créer mon compte' }).click()
+  await expect(page.getByRole('heading', { name: '@' + username })).toBeVisible()
 
-test('publie via POST et rend le fil consultable', async ({ page }) => {
   await page.goto('/new')
-  await page.getByLabel('Titre du fil').fill('Un fil de test')
-  await page.getByLabel('Message').fill('Voici un contenu de test suffisamment long.')
+  await page.getByLabel('Titre du fil').fill('Une publication de test')
+  await page.getByLabel('Message').fill('Voici un texte suffisamment long pour publier un vrai sujet local.')
   await page.getByRole('button', { name: 'Publier le fil' }).click()
   await expect(page.getByText('Publication envoyée')).toBeVisible()
   await page.getByRole('link', { name: /Voir la publication/ }).click()
-  await expect(page.getByRole('heading', { name: 'Un fil de test' })).toBeVisible()
+
+  await page.getByLabel('Ta réponse').first().fill('Une réponse locale persistante.')
+  await page.getByRole('button', { name: 'Répondre', exact: true }).first().click()
+  await expect(page.getByText('Une réponse locale persistante.')).toBeVisible()
+  await page.reload()
+  await expect(page.getByText('Une réponse locale persistante.')).toBeVisible()
 })
 
-test('gère le thème sombre et un écran mobile', async ({ page }) => {
+/**
+ * Contraste WCAG : comparer les couleurs CSS réelles, après passage en clair.
+ * Cela détecte les anciens titres blancs sur cartes blanches.
+ */
+test('le thème clair garde des titres et textes lisibles, y compris sur mobile', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 375, height: 812 })
   await page.goto('/')
-  await page.getByRole('button', { name: 'Activer le mode sombre' }).click()
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.reload()
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await expect(page.getByRole('link', { name: 'Créer un fil +' })).toBeVisible()
-})
+  await expect(page.locator('.post-card').first()).toBeVisible()
 
-test('conserve les réponses imbriquées après actualisation', async ({ page }) => {
-  await page.goto('/posts/1')
-  const discussion = page.locator('.discussion')
-  await discussion.getByLabel('Votre réponse').first().fill('Première réponse persistante')
-  await discussion.getByRole('button', { name: 'Répondre', exact: true }).first().click()
-  await expect(discussion.getByText('Première réponse persistante')).toBeVisible()
-  await discussion.getByRole('button', { name: '↳ Répondre' }).first().click()
-  await discussion.getByLabel('Votre réponse').last().fill('Réponse à la réponse')
-  await discussion.getByRole('button', { name: 'Répondre', exact: true }).last().click()
-  await expect(discussion.getByText('Réponse à la réponse')).toBeVisible()
-  await page.reload()
-  await expect(discussion.getByText('Première réponse persistante')).toBeVisible()
-  await expect(discussion.getByText('Réponse à la réponse')).toBeVisible()
-})
+  await page.getByRole('button', { name: 'Activer le thème clair' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
 
-test('affiche des archives en français, datées et réparties en 18 communautés', async ({ page }) => {
-  await page.goto('/')
-  await expect(page.getByText('1263 publication(s)')).toBeVisible()
-  await expect(page.getByText('18', { exact: true }).first()).toBeVisible()
-  await expect(page.locator('.post-card')).toHaveCount(9)
-  await page.getByLabel('Communauté').selectOption('nostalgie')
-  await expect(page.getByText('70 publication(s)')).toBeVisible()
-  await page.locator('.post-card').first().getByRole('link', { name: /Ouvrir le fil/ }).click()
-  await expect(page.locator('.discussion .reply-card')).toHaveCount(3)
-  await expect(page.locator('.byline')).toContainText('202')
+  const ratios = await page.locator('.post-card').first().evaluate((card) => {
+    function rgb(value: string): number[] {
+      const match = value.match(/[\d.]+/g) ?? []
+      return match.slice(0, 3).map(Number)
+    }
+    function luminance(c: number[]) {
+      const channel = c.map((n) => {
+        const v = n / 255
+        return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+      })
+      return channel[0] * 0.2126 + channel[1] * 0.7152 + channel[2] * 0.0722
+    }
+    function contrast(element: Element) {
+      const foreground = luminance(rgb(getComputedStyle(element).color))
+      const background = luminance(rgb(getComputedStyle(card).backgroundColor))
+      return (Math.max(foreground, background) + 0.05) /
+        (Math.min(foreground, background) + 0.05)
+    }
+    return {
+      title: contrast(card.querySelector('h3 a')!),
+      paragraph: contrast(card.querySelector('p')!),
+    }
+  })
+
+  expect(ratios.title).toBeGreaterThanOrEqual(4.5)
+  expect(ratios.paragraph).toBeGreaterThanOrEqual(4.5)
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
 })
