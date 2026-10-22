@@ -2,6 +2,7 @@ import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from 'node:crypt
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Plugin } from 'vite'
 import { communityPosts } from './src/data/community'
+import { archiveReplyCount } from './src/data/archiveReplies'
 
 /**
  * API LOCALE D'AFTERHOURS
@@ -275,14 +276,83 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
       return sendJson(res, 400, { error: 'Commentaire invalide.' })
     }
 
-    // On autorise les réponses aux trois commentaires fictifs d'une archive.
-    const archivedParents = [
-      `archive-${postId}-a`,
-      `archive-${postId}-b`,
-      `archive-${postId}-c`,
-    ]
+    // Les fils d'archive ont désormais un nombre variable de réponses.
+    // On n'accepte un parent fictif que si son index existe vraiment.
+    const archivePost = communityPosts.find(post => post.id === postId)
+    const match = parentId?.match(new RegExp('^archive-' + postId + '-(a|b|c|[0-9]+)
+
+    if (!validParent) return sendJson(res, 400, { error: 'Réponse introuvable.' })
+
+    const comment: NewComment = {
+      id: randomUUID(),
+      postId,
+      parentId,
+      author: user.username,
+      userId: user.id,
+      body,
+      createdAt: Date.now(),
+      automated: false,
+    }
+    newComments.push(comment)
+    return sendJson(res, 201, { comment })
+  }
+
+  // PATCH/DELETE /comments/:id : autorisation contrôlée sur le serveur.
+  const commentMatch = path.match(/^\/comments\/([a-z\d-]+)$/i)
+  if (commentMatch && (method === 'PATCH' || method === 'DELETE')) {
+    const index = newComments.findIndex(comment => comment.id === commentMatch[1])
+    if (index === -1) return sendJson(res, 404, { error: 'Commentaire introuvable.' })
+    if (newComments[index].userId !== user.id) {
+      return sendJson(res, 403, { error: 'Ce commentaire ne t’appartient pas.' })
+    }
+    if (method === 'DELETE') {
+      newComments.splice(index, 1)
+      return sendJson(res, 200, { ok: true })
+    }
+    const data = await readBody(req)
+    const body = String(data.body || '').trim()
+    if (!body || body.length > 2000) {
+      return sendJson(res, 400, { error: 'Commentaire invalide.' })
+    }
+    newComments[index].body = body
+    return sendJson(res, 200, { comment: newComments[index] })
+  }
+
+  return sendJson(res, 404, { error: 'Cette route n’existe pas.' })
+}
+
+/**
+ * 4. Une seule ligne de configuration Vite suffit.
+ * Le plugin intercepte les URL /session-api avant de servir les fichiers React.
+ * Cette API existe pendant « npm run dev », pas sur un hébergement statique.
+ */
+export function sessionApi(): Plugin {
+  return {
+    name: 'afterhours-memory-api',
+    configureServer(server) {
+      server.middlewares.use('/session-api', (req, res) => {
+        void handle(req, res).catch(error => {
+          sendJson(res, 400, {
+            error: error instanceof Error ? error.message : 'Erreur du serveur local.',
+          })
+        })
+      })
+    },
+  }
+}
+))
+    const archiveIndex = match
+      ? ('abc'.includes(match[1]) && match[1].length === 1
+          ? 'abc'.indexOf(match[1])
+          : Number(match[1]))
+      : -1
+    const validArchiveParent = Boolean(
+      archivePost && match && Number.isInteger(archiveIndex) &&
+      archiveIndex >= 0 && archiveIndex < archiveReplyCount(archivePost) &&
+      (archiveIndex < 3 || match[1] === String(archiveIndex)),
+    )
     const validParent = !parentId ||
-      archivedParents.includes(parentId) ||
+      validArchiveParent ||
       newComments.some(comment => comment.id === parentId && comment.postId === postId)
 
     if (!validParent) return sendJson(res, 400, { error: 'Réponse introuvable.' })
