@@ -1,43 +1,57 @@
-# Revue de code — Afterhours
+# Revue technique — Afterhours
 
-## Nettoyage effectué
+## Travaux effectués
 
-- Les fichiers ont été classés par **responsabilité** : composants, pages, services, types, utilitaires, styles, serveur et documentation.
-- Le CSS futuriste a été découpé en fichiers thématiques ; les anciens styles rétro ont été retirés des imports.
-- Un composant `PageHeader` évite la duplication des en-têtes sur les pages Compte, Création et Favoris ; son style repose sur des classes.
-- Les formulaires de compte et de création ont été remis en forme, avec traitement visible des erreurs et des états d'envoi.
-- Les discussions imbriquées utilisent un composant récursif lisible, avec un compteur et un chargement progressif des fils.
-- L'identité du commentaire local est liée à `userId` et non au seul pseudonyme ; le serveur vérifie également les droits.
-- La création ne transmet plus `userId` depuis le formulaire : l'auteur est déduit du cookie de session.
-- L'ancien moteur de réponses automatiques et sa persistance en `localStorage` ne font plus partie de l'architecture active.
-- Les commentaires dans le code expliquent **pourquoi** une partie existe : gestion des sources, sécurité locale, états React, limites de DummyJSON et méthodes REST.
+### Factorisation
 
-## Points contrôlés lors de la revue
+- Composants génériques `Button`, `ButtonLink`, `InputField`, `TextareaField`, `SelectField`, `Panel` et `PageHeader`.
+- Extraction des filtres et tris purs vers `features/feed/selectors.ts`.
+- Extraction du panneau source/API et des contrôles de recherche hors du grand composant `Feed`.
+- Extraction des méthodes HTTP de démonstration vers `services/demoApi.ts`.
+- Extraction des appels externes vers `features/api/useRemoteDataset.ts`.
+- Extraction des actions et de la synchronisation locale vers `features/session/useLocalSession.ts`.
+- `NetworkContext` se concentre sur l'assemblage des sources et les préférences du navigateur.
 
-- **Séparation des sources :** DummyJSON (externe), session locale (écriture temporaire), archives françaises (fiction).
-- **Métadonnées :** les commentaires DummyJSON n'ont pas de date fabriquée.
-- **Modification/suppression :** actions réservées aux contenus créés par l'utilisateur connecté, validation côté serveur.
-- **Accessibilité :** titres sémantiques même quand on applique des classes CSS ; composants fermables ; réduction des animations.
-- **Cohérence :** les favoris sont réinitialisés au changement d'identifiant de démarrage du serveur.
+### CSS et thème clair
 
-## Ce qui reste volontairement hors périmètre
+- Les anciens blocs CSS en une seule ligne ont été réindentés en règles lisibles.
+- `styles/ui.css` contient les variables sémantiques communes aux boutons, champs, panneaux et thème clair/sombre.
+- Le thème clair comporte des styles dédiés pour les textes, cartes, formulaires et contrôles, plutôt que de remplacer uniquement la couleur du fond.
+- La bannière futuriste et certaines publicités fictives restent volontairement sombres et gardent leurs propres couleurs de texte.
 
-Le projet est une démo pédagogique, **pas une application de production**. À ajouter pour un usage réel :
+### Qualité du code
 
-- Base de données et migrations, sauvegardes, gestion des utilisateurs et sessions persistantes.
-- Protection CSRF, limitation de débit, configuration HTTPS et surveillance.
-- Modération des contenus, validation plus poussée et tests automatisés complets.
-- Adaptation de l'API locale pour qu'elle fonctionne également en production (pas uniquement dans Vite dev).
+- Prettier est une dépendance du projet et possède un fichier de configuration.
+- Ajout de `.editorconfig`, `.vscode/settings.json`, `.vscode/extensions.json` pour déclencher Prettier automatiquement à l'enregistrement.
+- Scripts `format`, `format:css`, `format:check`, `lint`, `build` et `check`.
+- Tests Playwright mis à jour : appels API simulés de manière déterministe, filtres, laboratoire HTTP, compte local, réponses, persistance et contraste en mode clair.
 
-## Vérifications à faire après récupération
+## Régressions explicitement ciblées
+
+1. Ancienne API remplacée par un faux tableau : l'accueil utilise toujours DummyJSON en priorité.
+2. Écritures de DummyJSON non persistantes : création et réponses personnelles continuent de passer par `/session-api`.
+3. Trois commentaires fixes partout : seules les archives fictives sont générées en quantité variable.
+4. Texte blanc invisible en mode clair : adaptations de contraste et vérification automatisée.
+5. Duplication des boutons et formulaires : composants UI communs.
+6. CSS compact impossible à lire : reformatage et formatage automatique.
+
+## Les limites qui restent
+
+Le projet est un **TP local**, pas une plateforme de production : pas de base de données persistante, pas de modération à grande échelle, pas de limitation de débit ni de protections déployées côté serveur public.
+
+Les animations ne sont pas désactivées par défaut, mais la préférence `prefers-reduced-motion` est respectée.
+
+## Contrôles à lancer
 
 ```powershell
-git pull origin main
 npm install
+npm run format
+npm run lint
 npm run build
-npm run dev
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Ensuite tester les cinq routes, les appels DummyJSON dans **F12 → Réseau**, les quatre boutons CRUD du laboratoire, l'inscription, la publication, la réponse, l'édition, la suppression, les favoris et la réinitialisation au redémarrage.
+**Attention :** `npm run format` réécrit les fichiers non conformes à Prettier. Le contrôle `npm run format:check` ne fait que signaler les écarts. Pour utiliser le formatage à l'enregistrement, ouvrir le dossier `afterhours` directement dans VS Code et installer l'extension Prettier recommandée.
 
-**Note de transparence :** les modifications du dépôt ont été relues statiquement depuis GitHub. La compilation dans l'environnement Windows local et le rendu visuel du navigateur ne sont pas vérifiables depuis cette session ; `npm run build` reste nécessaire avant de présenter le projet.
+Les scripts GitHub Actions effectuent des contrôles automatiques ; leur résultat doit être consulté après le dernier commit, car une réussite antérieure ne valide pas les modifications ultérieures.
