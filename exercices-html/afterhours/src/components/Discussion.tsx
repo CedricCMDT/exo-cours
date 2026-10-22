@@ -44,7 +44,11 @@ function Comment({ comment, all, postId, depth = 0 }: {
     <article className="reply-card">
       <header><strong>@{comment.author}</strong>
         {comment.automated && <span className="bot-marker">Compte automatisé</span>}
-        <time dateTime={new Date(comment.createdAt).toISOString()}>{new Date(comment.createdAt).toLocaleString('fr-FR')}</time>
+        {/* L'API DummyJSON ne fournit pas de date : on évite d'en inventer. */}
+        {typeof comment.createdAt === 'number' &&
+          <time dateTime={new Date(comment.createdAt).toISOString()}>
+            {new Date(comment.createdAt).toLocaleString('fr-FR')}
+          </time>}
       </header>
       <p>{comment.body}</p>
       {user?.username===comment.author && !comment.id.startsWith('archive-') && <div><button onClick={()=>{setNewBody(comment.body);setEditing(!editing)}}>Modifier</button><button onClick={()=>{if(window.confirm('Supprimer ce commentaire ?'))void deleteReply(comment.id)}}>Supprimer</button>{editing&&<form onSubmit={e=>{e.preventDefault();void editReply(comment.id,newBody).then(()=>setEditing(false))}}><textarea value={newBody} maxLength={2000} onChange={e=>setNewBody(e.target.value)}/><button>Enregistrer</button></form>}</div>}
