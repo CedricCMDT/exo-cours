@@ -1,5 +1,5 @@
 import type { Post } from '../types'
-import type { Reply } from '../replies'
+import type { Reply } from '../types/reply'
 import { communityMembers } from './community'
 
 /**
