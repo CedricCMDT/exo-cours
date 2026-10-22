@@ -1,0 +1,31 @@
+# Vérification automatique : évite les erreurs TypeScript ou Vite après un push.
+# Ne touche pas aux données de l'application et ne déploie rien.
+name: Afterhours - build
+
+on:
+  push:
+    paths:
+      - 'exercices-html/afterhours/**'
+      - '.github/workflows/afterhours-build.yml'
+  pull_request:
+    paths:
+      - 'exercices-html/afterhours/**'
+      - '.github/workflows/afterhours-build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: exercices-html/afterhours
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Installer les dépendances
+        run: npm install --no-audit --no-fund
+      - name: Vérifier TypeScript et Vite
+        run: npm run build
