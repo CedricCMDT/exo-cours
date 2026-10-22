@@ -11,7 +11,7 @@ import type { Post } from '../../types'
  * 3. useState : retenir le numéro du sujet affiché.
  *
  * Les données viennent du forum déjà chargé, sans API supplémentaire.
- * Les archives sont fictives : il ne faut pas présenter leurs chiffres comme du direct.
+ * Les chiffres décrivent uniquement la source choisie (API de démo ou archives).
  */
 
 type RoomProps = {
