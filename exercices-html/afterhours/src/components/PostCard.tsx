@@ -9,7 +9,9 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
   const { savedIds, toggleSaved, replies } = useNetwork()
   const saved = savedIds.includes(post.id)
   const name = member?.username || 'anonymous_' + post.userId
-  const date = post.createdAt ? formatDate.format(new Date(post.createdAt)) : 'Archive'
+  const date = post.source === 'api'
+    ? 'Données DummyJSON'
+    : post.createdAt ? formatDate.format(new Date(post.createdAt)) : 'Session'
   // Même formule de comptage que sur la page du sujet : pas de '+ 3' artificiel.
   const count = archiveReplyCount(post) + replies.filter(reply => reply.postId === post.id).length
   // Même carte pour les anciennes archives et les posts créés pendant la session.
@@ -22,7 +24,7 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
       <img className="post-avatar" src={post.source === 'community' ? avatarFor(name) : member?.image || avatarFor(name)} alt={'Avatar de ' + name} loading="lazy" />
       <div className="post-identity">
         <strong>@{name}</strong>
-        <small><span className="board-chip">/{post.tags[0] || 'random'}/</span> · #{post.id} · {post.source === 'community' ? 'Archive' : 'Session'}</small>
+        <small><span className="board-chip">/{post.tags[0] || 'random'}/</span> · #{post.id} · {post.source === 'api' ? 'API REST' : post.source === 'community' ? 'Archive fictive' : 'Session locale'}</small>
       </div>
       <time className="post-date" dateTime={post.createdAt || undefined}>{date}</time>
     </div>
@@ -37,7 +39,7 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
       <span aria-label={likes + ' mentions j’aime'}>♥ {likes}</span>
       <span aria-label={dislikes + ' mentions je n’aime pas'}>↓ {dislikes}</span>
       <span>◌ {post.views ?? 0} vues</span>
-      {(count > 0 || post.source === 'community') && <span>↳ {count} réponses</span>}
+      {count > 0 && <span>↳ {count} réponses</span>}
       <button type="button" onClick={() => toggleSaved(post.id)} aria-pressed={saved}>
         {saved ? '★ Retirer' : '☆ Sauvegarder'}
       </button>
