@@ -45,3 +45,26 @@
 .site-footer{margin-top:auto;border-top:1px solid #ffffff2a;background:#0b1020;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:26px max(30px,calc((100vw - 1740px)/2));color:#8493ab;font:800 10px 'Consolas',monospace;letter-spacing:.09em}
 .site-footer strong{color:white}.site-footer strong span{color:var(--acid)}
 
+
+/* PageHeader est un composant partagé par le profil, les favoris et la création.
+   Les noms de classes restent stables si on change la balise ou la structure. */
+.page-heading { position: relative; overflow: hidden; }
+.page-heading__eyebrow {
+  display: block;
+  color: var(--acid);
+  font: 900 11px 'Consolas', monospace;
+  letter-spacing: .11em;
+}
+.page-heading__title {
+  margin: 12px 0 8px;
+  color: #fff;
+  font: 1000 clamp(30px, 4vw, 61px)/1.05 'Segoe UI', sans-serif;
+  letter-spacing: -.06em;
+}
+.page-heading__description {
+  margin: 7px 0 0;
+  color: #c2ccdf;
+  font: 500 13px/1.7 'Segoe UI', sans-serif;
+}
+:root[data-theme=light] .page-heading__title { color: #17213d; }
+:root[data-theme=light] .page-heading__description { color: #34455f; }
