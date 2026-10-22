@@ -48,6 +48,15 @@ export function Feed() {
     ...c, count: posts.filter(post => post.tags.includes(c.slug)).length,
   })).sort((a, b) => b.count - a.count), [posts])
 
+  // Centraliser la navigation : carte et barre latérale ont le même comportement.
+  function exploreCommunity(tag: string) {
+    setCriteria({ tag })
+    document.getElementById('feed-results')?.scrollIntoView({
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
+
   useEffect(() => {
     if (!container.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const context = gsap.context(() => {
@@ -78,29 +87,22 @@ export function Feed() {
       <span className="hero-orb orb-b" aria-hidden="true" />
       <div className="hero-copy">
         <div className="eyebrow"><span className="pulse-light" /> LE WEB APRÈS MINUIT <span className="hero-year">EST. 2008</span></div>
-        <h1>Ça commence<br /><em>à discuter fort.</em></h1>
-        <p>Une remarque qui dérape, un débat qui n'en finit plus, un inconnu qui a peut-être raison. Bienvenue dans les commentaires.</p>
-        <div className="hero-cta"><Link to="/new">Lancer un sujet ↗</Link><button type="button" onClick={() => setSpotlightIndex(v => v + 1)}>Surprends-moi ↻</button></div>
+        <h1>T'avais dit<br /><em>« cinq minutes ».</em></h1>
+        <p>Un sujet, puis un autre. Tu lis les réponses, tu ouvres un onglet. Et te voilà encore ici.</p>
+        <div className="hero-cta"><Link to="/new">Lancer un sujet ↗</Link><button type="button" onClick={() => setSpotlightIndex(v => v + 1)}>Sujet suivant ↻</button></div>
         <div className="hero-numbers"><div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>publications</small></div><div><strong>{communities.length}</strong><small>communautés</small></div><div><strong>{posts.filter(p => p.source === 'community').length.toLocaleString('fr-FR')}</strong><small>discussions FR</small></div></div>
       </div>
-      <div className="hero-terminal" aria-hidden="true">
+      <div className="hero-terminal">
         <div className="terminal-top"><span className="terminal-dots">● ● ●</span><span>afterhours / terminal</span><span>□ ×</span></div>
         <div className="terminal-screen"><small>LE SUJET QUI DIVISE</small>{spotlight ? <><p className="terminal-accent">/{spotlight.tags[0]}/ · {spotlight.reactions.likes} réactions positives</p><p className="terminal-headline">{spotlight.title}</p><Link className="terminal-link" to={'/posts/'+spotlight.id}>Lire le débat ↗</Link></> : <p>Des discussions arrivent…</p>}</div>
         <div className="terminal-sticker">ENCORE UN DÉBAT ↗</div>
       </div>
     </section>
-    <ControlRoom posts={posts} onCommunity={tag => {
-      setCriteria({ tag })
-      // Une case du tableau de bord emmène directement vers la liste filtrée.
-      document.getElementById('feed-results')?.scrollIntoView({
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-        block: 'start',
-      })
-    }} />
+    <ControlRoom posts={posts} onCommunity={exploreCommunity} />
     <div className="hot-strip"><span>ÇA FAIT PARLER</span><div>{debated.slice(0,4).map(p=><Link key={p.id} to={'/posts/'+p.id}>{p.title} ↗</Link>)}</div></div>
     <div className="layout">
       <section className="main-column">
-        <div className="section-header feed-section-title"><div><small>COMMUNITY / TIMELINE</small><h2>Les discussions <span className="spark">✳</span></h2><p>De tout, surtout de n'importe quoi. Entre dans le fil.</p></div><span className="live-label"><span className="pulse-light" /> EN LIGNE</span></div>
+        <div className="section-header feed-section-title"><div><small>COMMUNITY / TIMELINE</small><h2>Les discussions <span className="spark">✳</span></h2><p>De tout, surtout de n'importe quoi. Entre dans le fil.</p></div><span className="live-label"><span className="pulse-light" /> EN LOCAL</span></div>
         <form className="filter-panel" onSubmit={e => e.preventDefault()}>
           <label>Rechercher une publication<input type="search" placeholder="Un mot, une polémique…" value={query.text} onChange={e => setCriteria({ text: e.target.value })} /></label>
           <label>Communauté<select value={query.tag} onChange={e => setCriteria({ tag: e.target.value })}><option value="">Toutes les communautés</option>{tags.map(tag => <option key={tag} value={tag}>/{tag}/</option>)}</select></label>
@@ -119,7 +121,7 @@ export function Feed() {
         {!loading && <nav aria-label="Pagination" className="pagination"><button disabled={page === 1} onClick={() => setPage(page - 1)}>← Précédent</button><span>Page {page} sur {pages}</span><button disabled={page === pages} onClick={() => setPage(page + 1)}>Suivant →</button></nav>}
       </section>
       <aside className="sidebar">
-        <div className="widget community-widget"><h2>EXPLORER LES COMMUNAUTÉS</h2><div className="community-list">{categoryStats.map(item => <button type="button" key={item.slug} onClick={() => { setCriteria({ tag: item.slug }); window.scrollTo({ top: 470, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }} className={query.tag === item.slug ? 'chosen' : ''}><span>/{item.slug}/</span><b>{item.count}</b></button>)}</div></div>
+        <div className="widget community-widget"><h2>EXPLORER LES COMMUNAUTÉS</h2><div className="community-list">{categoryStats.map(item => <button type="button" key={item.slug} onClick={() => exploreCommunity(item.slug)} className={query.tag === item.slug ? 'chosen' : ''}><span>/{item.slug}/</span><b>{item.count}</b></button>)}</div></div>
         <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Forum local en ligne</p><p>Archives fictives du Web · session locale</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
         <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Discussions populaires</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
       </aside>
