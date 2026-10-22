@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import type { Member, Post } from '../types'
 import { useNetwork } from '../context/NetworkContext'
 import { avatarFor } from '../avatar'
+import { archiveReplyCount } from '../data/archiveReplies'
 
 const formatDate = new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 export function PostCard({ post, member }: { post: Post; member?: Member }) {
@@ -9,7 +10,8 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
   const saved = savedIds.includes(post.id)
   const name = member?.username || 'anonymous_' + post.userId
   const date = post.createdAt ? formatDate.format(new Date(post.createdAt)) : 'Archive'
-  const count = replies.filter(reply => reply.postId === post.id).length
+  // Même formule de comptage que sur la page du sujet : pas de '+ 3' artificiel.
+  const count = archiveReplyCount(post) + replies.filter(reply => reply.postId === post.id).length
   // Même carte pour les anciennes archives et les posts créés pendant la session.
   const likes = post.reactions?.likes ?? 0
   const dislikes = post.reactions?.dislikes ?? 0
@@ -35,7 +37,7 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
       <span aria-label={likes + ' mentions j’aime'}>♥ {likes}</span>
       <span aria-label={dislikes + ' mentions je n’aime pas'}>↓ {dislikes}</span>
       <span>◌ {post.views ?? 0} vues</span>
-      {(count > 0 || post.source === 'community') && <span>↳ {count + (post.source === 'community' ? 3 : 0)} réponses</span>}
+      {(count > 0 || post.source === 'community') && <span>↳ {count} réponses</span>}
       <button type="button" onClick={() => toggleSaved(post.id)} aria-pressed={saved}>
         {saved ? '★ Retirer' : '☆ Sauvegarder'}
       </button>
