@@ -53,7 +53,7 @@ function readArray(): number[] {
 }
 function readTheme(): 'light' | 'dark' {
   // Le mode sombre futuriste est désormais la première expérience du site.
-  try { return localStorage.getItem('afterhours-theme') === 'light' ? 'light' : 'dark' }
+  try { return localStorage.getItem('afterhours-future-theme') === 'light' ? 'light' : 'dark' }
   catch { return 'dark' }
 }
 export function NetworkProvider({ children }: { children: ReactNode }) {
@@ -114,7 +114,7 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   }, [savedIds])
   useEffect(() => {
     document.documentElement.dataset.theme = theme
-    try { localStorage.setItem('afterhours-theme', theme) } catch { /* stockage indisponible */ }
+    try { localStorage.setItem('afterhours-future-theme', theme) } catch { /* stockage indisponible */ }
   }, [theme])
 
   async function addReply(postId:number,parentId:string|null,body:string) {
