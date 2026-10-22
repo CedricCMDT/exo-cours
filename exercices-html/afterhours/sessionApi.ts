@@ -119,8 +119,12 @@ function createSession(res: ServerResponse, account: Account) {
 }
 
 function isKnownPost(id: number): boolean {
+  // Les archives et les posts locaux sont connus ici.
+  // Les IDs 1..9999 sont réservés aux posts de l'API DummyJSON.
+  // Cette limite simplifiée est suffisante pour notre démonstration locale.
   return newPosts.some(post => post.id === id) ||
-    communityPosts.some(post => post.id === id)
+    communityPosts.some(post => post.id === id) ||
+    (Number.isInteger(id) && id >= 1 && id <= 9999)
 }
 
 // ── 3. Routes : une URL et une méthode HTTP déclenchent une action.
@@ -297,8 +301,14 @@ async function handle(req: IncomingMessage, res: ServerResponse) {
         : match[1] === String(archiveIndex)),
     )
 
+    // Les réponses renvoyées par DummyJSON ont des IDs 'api-123'.
+    // Le contenu est importé dans le navigateur via le vrai GET /comments.
+    const validApiParent = postId > 0 && postId <= 9999 &&
+      /^api-[1-9][0-9]*$/.test(parentId || '')
+
     const validParent = !parentId ||
       validArchiveParent ||
+      validApiParent ||
       newComments.some(comment => comment.id === parentId && comment.postId === postId)
 
     if (!validParent) return sendJson(res, 400, { error: 'Réponse introuvable.' })
