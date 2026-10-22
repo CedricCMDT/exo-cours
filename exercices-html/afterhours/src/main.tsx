@@ -11,7 +11,9 @@ import './styles/dashboard.css'
 import './styles/feed.css'
 import './styles/pages.css'
 import './styles/overlays.css'
+import './styles/theme.css'
 import './styles/responsive.css'
+import './styles/effects.css'
 import './styles/api.css'
 
 createRoot(document.getElementById('root')!).render(
