@@ -1,83 +1,159 @@
-# Architecture technique d'Afterhours
+# Architecture d'Afterhours
+
+## Objectif de cette refonte
+
+L'application doit être **complexe visuellement mais simple à expliquer**. Les responsabilités sont désormais séparées selon trois niveaux :
+
+1. **UI générique** : des composants réutilisables sans connaissance du forum ;
+2. **features** : la logique métier (API, session, recherche, filtres, tris) ;
+3. **pages** : assemblage des composants dans les routes React.
+
+```text
+afterhours/
+├── .vscode/
+│   ├── settings.json               # Format à l'enregistrement dans VS Code
+│   └── extensions.json             # Extensions Prettier et ESLint conseillées
+├── .editorconfig                   # Indentation et fins de ligne cohérentes
+├── .prettierrc.json                # Configuration partagée de Prettier
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── PRESENTATION.md
+│   └── REVUE_CODE.md
+├── server/
+│   └── sessionApi.ts               # API locale, données en mémoire vive
+├── src/
+│   ├── main.tsx                    # Initialisation de React et CSS
+│   ├── App.tsx                     # Navigation et routes
+│   ├── components/
+│   │   ├── ui/                      # Design system générique
+│   │   │   ├── Button.tsx           # Button + ButtonLink (4 variantes)
+│   │   │   ├── Fields.tsx           # InputField, TextareaField, SelectField
+│   │   │   ├── Panel.tsx            # Panneau de présentation réutilisable
+│   │   │   └── PageHeader.tsx       # En-tête réutilisable
+│   │   ├── api/ApiPlayground.tsx    # Démonstration REST
+│   │   ├── discussion/Discussion.tsx
+│   │   ├── feed/                    # PostCard, ControlRoom
+│   │   └── experience/Experience.tsx
+│   ├── features/
+│   │   ├── api/useRemoteDataset.ts # GET externes + chargement/erreurs
+│   │   ├── session/useLocalSession.ts
+│   │   └── feed/
+│   │       ├── selectors.ts        # Filtrage, tri et pagination
+│   │       └── components/
+│   │           ├── SourceSwitcher.tsx
+│   │           └── FeedControls.tsx
+│   ├── context/
+│   │   └── NetworkContext.tsx      # Réunit données distantes et locales
+│   ├── data/                      # Archives françaises fictives
+│   ├── pages/                     # Feed, Detail, Saved, Create, Account
+│   ├── services/
+│   │   ├── api.ts                  # Client HTTP partagé
+│   │   └── demoApi.ts              # Méthodes GET/POST/PATCH/DELETE
+│   ├── styles/
+│   │   ├── foundation.css          # Structure globale
+│   │   ├── dashboard.css           # Accueil, radar et cartes
+│   │   ├── feed.css                # Colonnes et fils
+│   │   ├── pages.css               # Compte, formulaire, discussion
+│   │   ├── overlays.css            # Notifications et popup
+│   │   ├── theme.css               # Variables clair/sombre
+│   │   ├── responsive.css          # Breakpoints
+│   │   ├── effects.css             # Animations
+│   │   ├── api.css                 # Panneaux API
+│   │   └── ui.css                  # Design tokens + composants + contraste
+│   ├── types/                      # Post, Member, Reply, Query…
+│   └── utils/avatar.ts
+├── tests/network.spec.ts           # Tests Playwright du fonctionnement et thème
+├── vite.config.ts
+└── package.json
+```
 
 ## Circulation des données
 
 ```text
-                        Navigateur / React
-                                 │
-                    NetworkContext.tsx
-                     ┌───────────┼───────────┐
-                     │           │           │
-              API externe    API locale   Archives fictives
-               DummyJSON     Vite/Node     data/
-                     │           │           │
-           services/api.ts   server/       community.ts
-                     │       sessionApi.ts archiveReplies.ts
-              GET posts       │              │
-              GET users       │              │
-              GET comments    │              │
-                     └───────────┼───────────┘
-                                 │
-                     Post[], Member[], Reply[]
-                                 │
-                 Feed / Detail / Account / Saved
+          HTTP GET DummyJSON                 API locale Vite
+          posts / users / comments           comptes / posts / commentaires
+                    │                                  │
+        services/api.ts                       services/api.ts
+                    │                                  │
+      features/api/useRemoteDataset     features/session/useLocalSession
+                    │                                  │
+                    └──────────────┬───────────────────┘
+                                   │
+                        NetworkContext.tsx
+                  (+ archives françaises fictives)
+                                   │
+                   Pages et composants de l'interface
+                                   │
+                     FeedControls, PostCard, Discussion…
 ```
 
-Le mode d'accueil par défaut est **API EN PRIORITÉ**. Le sélecteur d'accueil peut afficher les archives fictives ou les deux sources. Les créations locales restent consultables pendant la session.
+**API-first :** DummyJSON reste la source affichée par défaut. Les écritures sur DummyJSON sont simulées et ne modifient pas sa base. Les créations personnelles sont enregistrées dans la mémoire temporaire de Node.js : elles persistent après actualisation mais disparaissent lors du redémarrage du serveur.
 
-## Responsabilités des dossiers
+## Un bouton, toutes les pages
 
-- **`src/pages/` :** définit les écrans liés aux routes : fil, détail, favoris, création et profil.
-- **`src/components/feed/` :** carte d'un post et tableau de bord des communautés.
-- **`src/components/discussion/` :** formulaire et arbre de réponses, imbriqués de manière récursive.
-- **`src/components/experience/` :** publicités fictives, bande de titres et pop-up.
-- **`src/components/api/` :** démonstrateur des quatre verbes HTTP.
-- **`src/components/ui/` :** blocs génériques indépendants du métier, par exemple `PageHeader`.
-- **`src/services/` :** fonctions qui dialoguent avec des API.
-- **`src/context/` :** états partagés et actions des pages.
-- **`src/types/` :** contrats TypeScript.
-- **`src/utils/` :** petites fonctions réutilisables sans interface, par exemple les avatars.
-- **`src/data/` :** données françaises fictives, stables et indépendantes de DummyJSON.
-- **`src/styles/` :** styles classés par zone : structure, tableau de bord, fil, formulaires, overlays, responsive, panneau API.
-- **`server/` :** mini API Node/Vite et données en mémoire vive.
+Le composant `src/components/ui/Button.tsx` accepte les propriétés natives d'un bouton plus :
 
-## Trois catégories de contenus
-
-| Catégorie | Origine | Droits |
-| --- | --- | --- |
-| Post `source: 'api'` | DummyJSON, HTTP GET | Lecture ; réponses locales autorisées |
-| Post `source: 'community'` | Archive fictive du projet | Lecture ; réponses locales autorisées |
-| Post `source: 'session'` | Utilisateur connecté à l'API locale | Auteur : modification / suppression |
-
-Les ID des posts proviennent de plages différentes pour limiter les conflits (API, archives, nouvelles créations). Les commentaires distants portent le préfixe `api-`, ceux des archives `archive-`, et les commentaires locaux reçoivent un UUID.
-
-## API locale et sécurité
-
-`server/sessionApi.ts` est branché au serveur **de développement** par `vite.config.ts`.
-
-- Les comptes, tokens de session, posts et commentaires sont gardés dans des tableaux / une `Map` JS.
-- Le mot de passe est haché via `scrypt` ; le cookie de session est `HttpOnly` et `SameSite=Lax`.
-- Le serveur vérifie qu'un auteur peut réellement modifier ou supprimer son contenu.
-- Les données sont **réinitialisées au redémarrage** ; aucune base de données n'est installée.
-
-Ce n'est pas une authentification de production : il manque notamment persistance, politique de sessions adaptée à un déploiement, contrôle des abus et protections supplémentaires.
-
-## Pourquoi des classes CSS plutôt que des sélecteurs HTML ?
+- `variant="primary" | "secondary" | "ghost" | "danger"` ;
+- `size="sm" | "md" | "lg"` ;
+- `loading`, `disabled` et `fullWidth`.
 
 ```tsx
-<PageHeader eyebrow="MON ESPACE" title="Mon profil" />
+<Button variant="primary" type="submit" loading={saving}>
+  Enregistrer
+</Button>
+<Button variant="danger" onClick={removePost}>
+  Supprimer
+</Button>
+<ButtonLink to="/new" variant="primary">
+  Publier un sujet
+</ButtonLink>
 ```
 
-Le composant rend un titre `h1` accessible. Sa présentation utilise `.page-heading`, `.page-heading__title`, etc., et n'est donc pas attachée à un sélecteur fragile comme `header h1`.
+La classe commune `.ui-button` est gérée dans `styles/ui.css`. `ButtonLink` reste un **vrai lien HTML**, donc utilisable au clavier ou dans un nouvel onglet.
 
-Les styles sont répartis entre `foundation.css`, `dashboard.css`, `feed.css`, `pages.css`, `overlays.css`, `theme.css`, `responsive.css`, `effects.css` et `api.css`.
+## Des formulaires réutilisables
 
-## Où commencer pour lire le code ?
+```tsx
+<InputField
+  label="Pseudo"
+  value={username}
+  onChange={(event) => setUsername(event.target.value)}
+/>
+<TextareaField label="Message" rows={5} value={message} onChange={handleChange} />
+```
 
-1. `src/main.tsx` — point d'entrée.
-2. `src/App.tsx` — routes et navigation.
-3. `src/services/api.ts` — appels REST.
-4. `src/context/NetworkContext.tsx` — chargement et combinaison des sources.
-5. `src/pages/Feed.tsx` — filtres et tris.
-6. `src/components/feed/PostCard.tsx` — carte réutilisée dans le fil et les favoris.
-7. `server/sessionApi.ts` — actions utilisateur temporaires.
+Les `label` et `input` sont automatiquement liés grâce à `useId()`. La couleur, les erreurs et les espacements sont définis une seule fois.
+
+## Présentation séparée de la logique métier
+
+Dans `features/feed/selectors.ts` :
+
+- `selectSource(posts, source)` choisit la provenance ;
+- `filterPosts(posts, query)` applique les critères ;
+- `orderPosts(posts, mode)` trie **une copie** du tableau ;
+- `feedCategories(posts)` calcule les sections visibles ;
+- `pageCount(total, size)` calcule le nombre de pages.
+
+La page `Feed.tsx` appelle ces fonctions et affiche les résultats. Les contrôles de recherche vivent dans `FeedControls.tsx` ; le choix de l'API ou des archives vit dans `SourceSwitcher.tsx`.
+
+## Thèmes et accessibilité
+
+Les variables `--ui-text`, `--ui-surface`, `--ui-input-bg`, `--ui-primary-bg`, etc. définissent le design system. Les composants utilisent ces variables plutôt que de copier des codes hexadécimaux.
+
+L'ancien thème clair changeait simplement quelques fonds en blanc, laissant certains textes blancs. `ui.css` fournit des adaptations pour les cartes, panneaux, textes, formulaires, liens et interactions. Certaines parties (bannière néon, popup, publicités fictives) restent volontairement sombres parce qu'elles disposent de leur propre contraste.
+
+Les nouvelles vérifications Playwright incluent le contraste du texte des cartes en thème clair (ratio 4,5:1 minimum dans ce test).
+
+## Pourquoi ne pas tout mettre dans les composants ?
+
+Cela empêcherait la réutilisation. Un `Button` ne doit pas connaître DummyJSON ; un `FeedControls` ne doit pas connaître `fetch()` ; `orderPosts` ne doit pas connaître React. Cette séparation rend les éléments testables et compréhensibles indépendamment.
+
+## Outils de qualité
+
+- **Prettier** : mise en forme automatique (`npm run format`, `npm run format:css`).
+- **VS Code** : formatage à l'enregistrement avec l'extension Prettier.
+- **ESLint** : `npm run lint`.
+- **TypeScript + Vite** : `npm run build`.
+- **Playwright** : `npm run test:e2e` (navigateur Chromium nécessaire).
+
+Pour bénéficier des réglages VS Code, ouvrir directement le dossier **`exercices-html/afterhours`** en tant que workspace.
