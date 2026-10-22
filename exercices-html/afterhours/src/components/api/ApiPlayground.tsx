@@ -20,7 +20,6 @@ export function ApiPlayground() {
   const [loading, setLoading] = useState(false)
 
   async function test(method: DemoMethod) {
-    const request = demoRequests[method]
     setLoading(true)
     setLastDemoMethod(method)
     setResult('')
@@ -46,13 +45,13 @@ export function ApiPlayground() {
     <p>Appels HTTP réels à DummyJSON. Les écritures sont simulées par le fournisseur.</p>
     <div className="api-lab-methods">
       {(['GET', 'POST', 'PATCH', 'DELETE'] as const).map(method =>
-        <button type="button" key={method} disabled={loading}
+        <Button variant="ghost" size="sm" key={method} loading={loading}
           aria-pressed={lastDemoMethod === method}
-          onClick={() => void test(method)}>{method}</button>)}
+          onClick={() => void test(method)}>{method}</Button>)}
     </div>
     {lastDemoMethod && <div className="api-lab-result">
       <strong>{loading ? 'REQUÊTE EN COURS…' : `HTTP ${httpStatus ?? 'ERREUR'} · ${lastDemoMethod}`}</strong>
-      <code>dummyjson.com{requests[lastDemoMethod].path}</code>
+      <code>dummyjson.com{demoRequests[lastDemoMethod].path}</code>
       <pre>{result || (loading ? 'En attente de la réponse…' : '')}</pre>
     </div>}
     <small>F12 → RÉSEAU : tu peux observer les quatre méthodes.</small>
