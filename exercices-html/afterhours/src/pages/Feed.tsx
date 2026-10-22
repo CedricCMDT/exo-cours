@@ -160,7 +160,7 @@ export function Feed() {
         <div className="future-stats">
           <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS AFFICHÉS</small></div>
           <div><strong>{new Set(posts.flatMap(post => post.tags)).size}</strong><small>CANAUX VISIBLES</small></div>
-          <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS FICTIVES + SESSION</small></div>
+          <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS DES POSTS AFFICHÉS</small></div>
         </div>
       </div>
       <div className="future-hero-feature">
@@ -246,7 +246,7 @@ export function Feed() {
         <ApiPlayground />
         <FictionAd number={1}/>
         <div className="future-pulse-card">
-          <span>◆ ANALYSE LOCALE</span><strong>{replies.length}</strong><p>COMMENTAIRES CRÉÉS PENDANT CETTE SESSION</p>
+          <span>◆ ANALYSE LOCALE</span><strong>{replies.filter(reply => !reply.id.startsWith('api-')).length}</strong><p>COMMENTAIRES CRÉÉS PENDANT CETTE SESSION</p>
           <div className="future-pulse-bars" aria-hidden="true">{[25,68,43,88,54,100,39,75,45,82,56,70].map((height,i)=><i key={i} style={{height:height+'%'}}/>)}</div>
         </div>
         <FictionAd number={2}/>
