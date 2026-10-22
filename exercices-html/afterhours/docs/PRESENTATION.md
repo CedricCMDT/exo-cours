@@ -1,117 +1,81 @@
-# AFTERHOURS — PRÉSENTATION TECHNIQUE (API EN PRIORITÉ)
+# Présentation d'Afterhours
 
-## 1. Le fonctionnement à expliquer au professeur
+**Objectif :** montrer une application React futuriste **dont le contenu principal provient d'une API REST**, tout en conservant des interactions locales temporaires.
 
-L'accueil futuriste est toujours là, mais la **source principale des données est l'API REST DummyJSON**.
+## Déroulé conseillé — environ 5 minutes
 
-Au chargement, le navigateur lance **trois requêtes HTTP GET réelles en parallèle** :
+### 1. Montrer l'interface (45 secondes)
 
-| Requête | Résultat |
-|---|---|
-| `GET https://dummyjson.com/posts?limit=0` | Publications de la base de démonstration de DummyJSON. |
-| `GET https://dummyjson.com/users?limit=0&select=id,username,firstName,lastName,image` | Profils associés aux `userId` des publications. |
-| `GET https://dummyjson.com/comments?limit=0` | Commentaires associés à chaque `postId`. |
+Présenter l'accueil futuriste : navigation, modules, filtres, fil de publications et page d'un sujet. Les publicités et notifications sont des éléments **fictifs et locaux**, pas une vraie régie. Le design reste indépendant des données.
 
-Les résultats JSON sont transformés en `Post[]`, `Member[]`, `Reply[]` dans `src/api.ts`, puis fournis aux composants React par `NetworkContext`.
+### 2. Prouver que l'API travaille (1 minute)
 
-**À montrer dans Chrome :** F12 → onglet **Réseau / Network** → filtre **Fetch/XHR** → recharger la page. Tu verras les GET de DummyJSON et le GET local `/session-api/state`.
+1. Ouvrir les outils de développement avec **F12**.
+2. Aller dans l'onglet **Réseau / Network**, filtre **Fetch/XHR**.
+3. Cliquer sur **« Actualiser API »**.
+4. Montrer trois appels `GET` vers `dummyjson.com` :
+   - `/posts?limit=0`
+   - `/users?limit=0&select=id,username,firstName,lastName,image`
+   - `/comments?limit=0`
+5. Montrer la réponse JSON, puis les posts qui utilisent ces données.
 
-L'affichage par défaut est **« API EN PRIORITÉ »**. Les anciennes publications françaises fictives sont accessibles par **« ARCHIVES FR »**. Le mode « TOUT AFFICHER » combine les sources.
+Les résultats DummyJSON sont des **données de test**, pas des utilisateurs en direct.
 
-Si DummyJSON ne répond pas, les archives locales apparaissent comme source de secours avec un message d'erreur clairement indiqué. Le bouton « Actualiser API » relance les GET.
+### 3. Montrer les méthodes REST (45 secondes)
 
-## 2. Quels fichiers comprendre ?
+Dans le **laboratoire HTTP** à droite, essayer successivement :
 
-| Fichier | Rôle |
-|---|---|
-| `src/api.ts` | Trois GET HTTP et conversion des réponses JSON en données React. |
-| `src/context/NetworkContext.tsx` | Gère séparément les résultats distants, la session locale et les archives. |
-| `src/pages/Feed.tsx` | Source API sélectionnée par défaut, recherche, filtres, tris et présentation. |
-| `src/components/ApiPlayground.tsx` | Laboratoire GET / POST / PATCH / DELETE, avec résultat JSON. |
-| `src/components/PostCard.tsx` | Identification de la source (API, archive ou session). |
-| `src/components/Discussion.tsx` | Commentaires importés depuis DummyJSON et réponses locales. |
-| `sessionApi.ts` | Petit serveur Node/Vite en mémoire vive pour tes propres comptes et messages. |
-| `src/components/ControlRoom.tsx` | Catégories et statistiques calculées sur la source sélectionnée. |
-| `src/future.css` | Mise en page futuriste, animations, responsive et panneaux API. |
+| Méthode | Endpoint | Sens |
+| --- | --- | --- |
+| GET | `/posts/1` | Lire un post |
+| POST | `/posts/add` | Simuler une création |
+| PATCH | `/posts/1` | Simuler une modification |
+| DELETE | `/posts/1` | Simuler une suppression |
 
-## 3. Pourquoi deux API ?
+Afficher la réponse HTTP et le JSON. Préciser : **DummyJSON ne persiste pas les écritures simulées**.
 
-### API externe : DummyJSON
+### 4. Expliquer React et les composants (1 minute)
 
-Elle fournit **des données JSON distantes**. C'est le cas classique d'un client HTTP en JavaScript :
+- `fetch()` récupère les données HTTP dans `services/api.ts`.
+- `Promise.all()` lance les trois téléchargements en parallèle.
+- `NetworkContext` rend les posts et commentaires accessibles aux pages.
+- `filter()`, `map()` et `sort()` construisent le fil, les communautés et les tris.
+- `useState()` conserve le mode de tri, les saisies et les fenêtres ouvertes.
+- `PostCard`, `Discussion` et `PageHeader` sont réutilisables.
 
-```ts
-const response = await fetch('https://dummyjson.com/posts?limit=0')
-const data = await response.json()
-console.log(data.posts)
-```
+**Exemple à citer :** `PageHeader` reçoit `eyebrow`, `title` et `description` : le composant conserve un vrai titre `h1`, mais ses styles utilisent les classes `.page-heading__*`. On peut le réutiliser sur plusieurs pages sans copier le HTML.
 
-Le site utilise `Promise.all` pour récupérer simultanément les posts, les utilisateurs et les commentaires. Un `AbortController` évite de mettre à jour React avec une requête devenue inutile.
+### 5. Montrer le serveur temporaire (1 minute)
 
-### API locale : `/session-api`
+1. Créer un compte local.
+2. Publier un sujet et lui répondre.
+3. Actualiser la page : tout est encore là.
+4. Arrêter `npm run dev` avec **Ctrl+C**, puis relancer.
+5. Le compte et les publications créés ont disparu : ils étaient gardés en **mémoire vive**, pas en base de données.
 
-Elle sert seulement à conserver les **comptes personnels, nouveaux posts et nouveaux commentaires** en mémoire vive du serveur Vite. Elle ne remplace pas DummyJSON.
+Il y a donc **deux APIs** : DummyJSON pour récupérer le contenu principal et la mini API locale pour les actions du visiteur.
 
-```text
-Navigateur React
-   ├─ GET https://dummyjson.com/posts     → publications distantes
-   ├─ GET https://dummyjson.com/users     → auteurs de la base distante
-   ├─ GET https://dummyjson.com/comments  → commentaires de la base distante
-   └─ /session-api
-       ├─ POST /register                  → inscription locale
-       ├─ POST /login                     → connexion locale
-       ├─ GET /state                      → session et messages locaux
-       ├─ POST /posts                      → nouveau post local
-       └─ POST /comments                   → nouvelle réponse locale
-```
+### 6. Donner une limite et un choix technique (30 secondes)
 
-Les commentaires personnels peuvent aussi être ajoutés à un sujet importé de DummyJSON : ils sont affichés à côté des réponses importées.
+> « J'ai choisi une API REST externe pour les données de démonstration, puis une mini API en mémoire pour les actions personnelles. C'est volontairement temporaire, puisque c'est un TP local. Pour un vrai réseau social, il faudrait une base de données, une authentification renforcée et un backend déployé. »
 
-À chaque redémarrage de Node, ces comptes et messages locaux sont effacés. En revanche, les ressources distantes restent consultables quand l'API répond.
+## Questions fréquentes du professeur
 
-## 4. Les quatre méthodes REST
+**Pourquoi React ?** Pour réutiliser les composants et actualiser seulement les parties nécessaires de l'écran.
 
-Le composant `ApiPlayground.tsx` permet de tester :
+**Pourquoi TypeScript ?** Pour préciser le format attendu de `Post`, `Member` et `Reply`, et détecter des incohérences à la compilation.
 
-- **GET /posts/1** : récupérer un post.
-- **POST /posts/add** : simuler une création.
-- **PATCH /posts/1** : simuler une modification.
-- **DELETE /posts/1** : simuler une suppression.
+**Pourquoi un contexte ?** Pour éviter de transmettre les mêmes données de page en page à travers de nombreux composants intermédiaires.
 
-Le serveur DummyJSON **ne sauvegarde pas** les créations, modifications ni suppressions simulées. Le panneau affiche la réponse retournée ; il ne prétend pas modifier définitivement les données. C'est un point important à expliquer honnêtement.
+**Pourquoi ne pas tout sauvegarder chez DummyJSON ?** Son CRUD est simulé ; les changements ne sont pas enregistrés durablement.
 
-## 5. La partie visuelle, sans complexité cachée
+**Pourquoi conserver du contenu fictif en français ?** Pour proposer un mode archives et un secours visuel lorsque l'API est indisponible, sans présenter ces textes comme des données réellement récupérées.
 
-Le site utilise React + TypeScript, du CSS et GSAP.
+**Pourquoi des classes CSS ?** Les classes sont réutilisables et ne dépendent pas du type de balise. Les titres `h1`, `h2` restent nécessaires à la structure HTML.
 
-- `map()` fabrique les listes et les cartes.
-- `filter()` garde uniquement les posts de la source sélectionnée.
-- `sort()` classe les débats.
-- `useState()` garde l'onglet actif ou l'état d'une fenêtre.
-- CSS Grid organise les trois colonnes et les panneaux.
-- GSAP anime l'apparition des cartes et titres.
+**Que fait GSAP ?** Il anime l'apparition des titres et des cartes. Les formes néon et mouvements permanents simples sont animés en CSS.
 
-Les fausses publicités et la popup sont des éléments purement visuels, sans collecte ni régie extérieure. Les anciennes archives françaises sont clairement affichées comme des **fictions**, et les textes DummyJSON comme **données de démonstration en anglais**.
-
-## 6. Démonstration de 2 minutes
-
-1. Exécuter `npm install`, `npm run build`, `npm run dev`.
-2. Ouvrir F12 → Réseau, recharger et montrer **les trois GET DummyJSON**.
-3. Pointer le compteur de posts, utilisateurs et commentaires récupérés.
-4. Choisir « API EN PRIORITÉ », ouvrir un sujet et afficher ses commentaires distants.
-5. Cliquer sur GET, POST, PATCH puis DELETE dans le laboratoire REST et montrer le code HTTP.
-6. Basculer sur « ARCHIVES FR » pour montrer le jeu de données de secours.
-7. Créer un compte, publier et commenter ; montrer que les contenus de session survivent à l'actualisation mais disparaissent au redémarrage.
-
-## 7. Limites importantes
-
-L'API DummyJSON est une **API de test**, pas un vrai réseau social en direct. Les posts API sont essentiellement en anglais et les commentaires peuvent être peu nombreux : le site n'invente pas de nouveaux commentaires sur ces posts. Les archives françaises ont leur propre génération fictive, séparée.
-
-Les identifiants locaux et les publications de session ne sont pas stockés dans DummyJSON, car ses endpoints d'écriture simulent les opérations sans persister les données.
-
-Le projet est prévu pour `npm run dev` sur une machine. Un déploiement purement statique ne fournira pas le serveur `/session-api`.
-
-**Vérification recommandée :**
+## Avant l'oral
 
 ```powershell
 git pull origin main
@@ -119,3 +83,5 @@ npm install
 npm run build
 npm run dev
 ```
+
+Vérifier la console, les requêtes réseau, les cinq pages, le responsive, les formulaires et les commentaires. Si l'API externe est indisponible, expliquer le basculement vers les archives fictives au lieu de masquer l'erreur.
