@@ -1,0 +1,38 @@
+/* ───── 09. Thème clair : autre esthétique futuriste, pas un retour rétro ───── */
+:root[data-theme=light]{
+  --bg:#e5e9f1;--panel:#f6f8ff;--panel2:#eef2fc;--glass:#f5f6ffe9;
+  --edge:#18264a32;--text:#10182b;--muted:#526078;--acid:#9fbc00;
+  --pink:#cb2462;--cyan:#087e9f;--purple:#6143cf;--orange:#bc6a32;
+}
+:root[data-theme=light] body{background:var(--bg);color:var(--text)}
+:root[data-theme=light] .future-workspace .post-card,
+:root[data-theme=light] .future-trend-card,
+:root[data-theme=light] .future-filter,
+:root[data-theme=light] .future-pulse-card,
+:root[data-theme=light] .room-map,
+:root[data-theme=light] .room-radio,
+:root[data-theme=light] .detail-card,
+:root[data-theme=light] .composer,
+:root[data-theme=light] .section-header{background:#ffffff;color:#142039;border-color:#aebcd0}
+:root[data-theme=light] .future-feed-title h2,
+:root[data-theme=light] .future-trend-card h3,
+:root[data-theme=light] .future-rail-heading,
+:root[data-theme=light] .room-intro h2,
+:root[data-theme=light] .section-header h1,
+:root[data-theme=light] .detail-card h1,
+:root[data-theme=light] .room-radio-body h3,
+:root[data-theme=light] .post-card h3 a{color:#17213d}
+:root[data-theme=light] .future-board-list button{color:#273758}
+:root[data-theme=light] .future-board-list button.active{color:#526800;background:#9fbc001c}
+:root[data-theme=light] .post-card p,
+:root[data-theme=light] .room-radio-body p,
+:root[data-theme=light] .section-header p,
+:root[data-theme=light] .detail-body{color:#34455f}
+:root[data-theme=light] .future-filter input,
+:root[data-theme=light] .future-filter select,
+:root[data-theme=light] .composer input,
+:root[data-theme=light] .composer textarea{background:#edf2f7;color:#16213c;border-color:#98a6c1}
+:root[data-theme=light] .post-head strong{color:#1f2942}
+:root[data-theme=light] .post-actions{color:#4e607c}
+:root[data-theme=light] .room-board{color:#eaf2ff}
+
