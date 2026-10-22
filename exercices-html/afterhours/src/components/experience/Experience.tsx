@@ -5,7 +5,7 @@ import type { Post } from '../../types'
 /**
  * Les « publicités » sont de la fiction.
  * Aucune régie, aucun pixel de suivi, aucun clic sortant.
- * Ce sont juste trois objets affichés avec map().
+ * Les trois emplacements réutilisent le même composant paramétré.
  */
 const campaigns = [
   {
@@ -55,7 +55,7 @@ export function FictionAd({ number }: { number: 0 | 1 | 2 }) {
   </aside>
 }
 
-/** La bande défilante n'utilise aucune API : elle tourne sur les vrais titres du forum. */
+/** La bande défilante reçoit les posts du contexte (API ou archives).\n * Elle n'exécute pas elle-même de requête HTTP. */
 export function NewsWire({ posts }: { posts: Post[] }) {
   const items = posts.slice(0, 8)
   if (items.length === 0) return null
