@@ -289,6 +289,21 @@
   color: #37475e;
 }
 
-:root[data-theme='light'] .ui-button--primary, :root[data-theme='light'] .ui-button--secondary, :root[data-theme='light'] .ui-button--ghost, :root[data-theme='light'] .ui-button--danger {
-  color: revert-layer;
+/* Visibilité du radar en clair : accent suffisamment sombre sur surface blanche. */
+:root[data-theme='light'] .room-panel-heading,
+:root[data-theme='light'] .room-radio-body > small,
+:root[data-theme='light'] .room-intro small {
+  color: #285787;
+}
+:root[data-theme='light'] .future-feed-title h2,
+:root[data-theme='light'] .room-intro h2,
+:root[data-theme='light'] .future-rail-heading {
+  color: #1c2b47;
+}
+:root[data-theme='light'] .future-filter .ui-field__control,
+:root[data-theme='light'] .reply-form .ui-field__control,
+:root[data-theme='light'] .post-edit-form .ui-field__control {
+  background: var(--ui-input-bg);
+  color: var(--ui-text);
+  border-color: var(--ui-border);
 }
