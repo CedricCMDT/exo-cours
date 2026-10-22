@@ -170,4 +170,22 @@ test('le thème clair garde des titres et textes lisibles, y compris sur mobile'
   expect(ratios.paragraph).toBeGreaterThanOrEqual(4.5)
   await page.reload()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+
+  // Vérifier aussi la page de compte : les labels étaient presque blancs sur blanc.
+  await page.goto('/account')
+  const labelContrast = await page.locator('.composer .ui-field__label').first().evaluate((label) => {
+    function luminance(value: string) {
+      const [r, g, b] = (value.match(/[\\d.]+/g) ?? []).slice(0, 3).map(Number)
+      const [rr, gg, bb] = [r, g, b].map((n) => {
+        const channel = n / 255
+        return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+      })
+      return rr * 0.2126 + gg * 0.7152 + bb * 0.0722
+    }
+    const foreground = luminance(getComputedStyle(label).color)
+    const background = luminance(getComputedStyle(label.closest('.composer')!).backgroundColor)
+    return (Math.max(foreground, background) + 0.05) /
+      (Math.min(foreground, background) + 0.05)
+  })
+  expect(labelContrast).toBeGreaterThanOrEqual(4.5)
 })
