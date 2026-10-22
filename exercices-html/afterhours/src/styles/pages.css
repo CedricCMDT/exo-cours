@@ -68,3 +68,30 @@
 }
 :root[data-theme=light] .page-heading__title { color: #17213d; }
 :root[data-theme=light] .page-heading__description { color: #34455f; }
+
+/* Composants réutilisables des pages « Compte » et « Discussion ». */
+.account-tabs { display: flex; gap: 8px; }
+.account-tabs button { flex: 1; }
+.account-tabs button[aria-pressed='true'] {
+  background: var(--acid);
+  color: #141a22;
+  border-color: var(--acid);
+}
+.account-profile__identity h2 { margin: 0 0 8px; }
+.account-profile__identity small { color: var(--muted); line-height: 1.6; }
+.account-profile__logout { justify-self: start; }
+.account-entries { display: grid; gap: 8px; }
+.account-entries h2 { font-size: 19px; margin: 8px 0; }
+.account-entries h2 span { color: var(--cyan); }
+.account-entries p { font-size: 13px; color: var(--muted); }
+.account-entries a {
+  display: block; padding: 10px 12px; border: 1px solid var(--edge);
+  background: var(--panel2); color: var(--text); overflow-wrap: anywhere;
+}
+.account-entries a:hover { border-color: var(--cyan); }
+.reply-card__meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.reply-card__meta time { margin-left: auto; }
+.reply-card__actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.reply-card__edit { flex-basis: 100%; display: grid; gap: 8px; }
+.reply-card__edit button { justify-self: start; }
+.discussion__title small { font-size: 12px; color: var(--cyan); }
