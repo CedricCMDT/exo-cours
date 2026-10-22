@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
+import { Button } from '../components/ui/Button'
+import { InputField, TextareaField } from '../components/ui/Fields'
 import { Discussion } from '../components/discussion/Discussion'
 import { useNetwork } from '../context/NetworkContext'
 
@@ -66,18 +68,18 @@ export function Detail() {
 
       {/* Les autorisations sont aussi vérifiées côté serveur, pas seulement ici. */}
       {isOwner && <div className="detail-owner-tools">
-        <button type="button" onClick={() => {
+        <Button variant="secondary" onClick={() => {
           setTitle(post.title)
           setBody(post.body)
           setEditing(!editing)
           setError('')
-        }}>{editing ? 'Annuler' : 'Modifier mon post'}</button>
-        <button type="button" onClick={() => void remove()}>Supprimer mon post</button>
+        }}>{editing ? 'Annuler' : 'Modifier mon post'}</Button>
+        <Button variant="danger" onClick={() => void remove()}>Supprimer mon post</Button>
 
         {editing && <form className="post-edit-form" onSubmit={saveChanges}>
-          <label>Titre<input required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} /></label>
-          <label>Texte<textarea required minLength={15} maxLength={10000} rows={6} value={body} onChange={e => setBody(e.target.value)} /></label>
-          <button type="submit" className="primary">Enregistrer</button>
+          <InputField label="Titre" required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} />
+          <TextareaField label="Texte" required minLength={15} maxLength={10000} rows={6} value={body} onChange={e => setBody(e.target.value)} />
+          <Button type="submit" variant="primary">Enregistrer</Button>
         </form>}
       </div>}
       {error && <p role="alert" className="notice error">{error}</p>}
@@ -89,9 +91,9 @@ export function Detail() {
         <div><dt>Communauté</dt><dd>/{post.tags[0] || 'random'}/</dd></div>
       </dl>
 
-      <button className="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>
+      <Button variant="primary" aria-pressed={savedIds.includes(post.id)} onClick={() => toggleSaved(post.id)}>
         {savedIds.includes(post.id) ? '★ Retirer des sauvegardes' : '☆ Sauvegarder ce fil'}
-      </button>
+      </Button>
       <Discussion key={post.id} postId={post.id} post={post} />
     </article>
   </main>
