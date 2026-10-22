@@ -70,7 +70,7 @@ Ce n'est pas une authentification de production : il manque notamment persistanc
 
 Le composant rend un titre `h1` accessible. Sa présentation utilise `.page-heading`, `.page-heading__title`, etc., et n'est donc pas attachée à un sélecteur fragile comme `header h1`.
 
-Les styles sont répartis entre `foundation.css`, `dashboard.css`, `feed.css`, `pages.css`, `overlays.css`, `responsive.css` et `api.css`.
+Les styles sont répartis entre `foundation.css`, `dashboard.css`, `feed.css`, `pages.css`, `overlays.css`, `theme.css`, `responsive.css`, `effects.css` et `api.css`.
 
 ## Où commencer pour lire le code ?
 
