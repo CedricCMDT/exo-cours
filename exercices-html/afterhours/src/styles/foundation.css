@@ -1,0 +1,88 @@
+/* ==========================================================================
+   AFTERHOURS // FUTURE OVERLOAD
+   ==========================================================================
+   Cette feuille REMPLACE les thèmes rétro, sans nouvelle dépendance.
+
+   Architecture simple à expliquer :
+   1) Des variables CSS définissent toute la palette.
+   2) CSS Grid place les colonnes, cartes, fenêtres et fausses publicités.
+   3) @keyframes anime de simples éléments (transform, opacity, background).
+   4) React pilote les éléments interactifs (popups, filtres, navigation).
+   5) prefers-reduced-motion coupe les mouvements continus si demandé.
+   ========================================================================== */
+
+:root {
+  --bg:#070a12;
+  --panel:#111727;
+  --panel2:#181e31;
+  --glass:#131a2ce8;
+  --edge:#ffffff20;
+  --text:#f4f6ff;
+  --muted:#9daac3;
+  --acid:#dbff4a;
+  --pink:#ff437b;
+  --cyan:#4ceaff;
+  --purple:#9776ff;
+  --orange:#ffb36e;
+  --shadow:0 20px 80px #0007;
+  font-family:Inter,'Segoe UI',Arial,system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:130px}
+body{margin:0;min-width:320px;background:var(--bg);color:var(--text)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.26;background-image:linear-gradient(#acbfff0b 1px,transparent 1px),linear-gradient(90deg,#acbfff0b 1px,transparent 1px);background-size:44px 44px}
+body::after{content:'';position:fixed;inset:-30%;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 22% 12%,#7841ff12,transparent 32%),radial-gradient(ellipse at 90% 60%,#4ceaff0d,transparent 36%);animation:futureAtmosphere 22s ease-in-out infinite alternate}
+@keyframes futureAtmosphere{to{transform:translate(3%,2%) rotate(2deg)}}
+#root{min-height:100vh;display:flex;flex-direction:column;position:relative;z-index:1}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.42}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--acid);outline-offset:3px}
+button{background:#222c42;color:var(--text);border:1px solid var(--edge);border-radius:5px;padding:10px 14px}
+button:hover:not(:disabled){border-color:var(--cyan)}
+::selection{color:var(--bg);background:var(--acid)}
+
+/* ───── 01. Ligne d'état et navigation ───── */
+.future-topline{height:28px;background:var(--acid);color:#151b06;display:flex;gap:22px;align-items:center;justify-content:space-between;padding:0 clamp(12px,3vw,45px);font:950 10px/1 'Consolas',monospace;letter-spacing:.1em;overflow:hidden}
+.future-topline span:first-child{background:#0e1422;color:var(--acid);padding:7px 10px;align-self:stretch;display:grid;place-items:center}
+.site-header{position:sticky;top:0;z-index:60;border:0;border-bottom:1px solid #ffffff26;background:#0b0f19ed;backdrop-filter:blur(22px);box-shadow:0 20px 34px #02040a4d}
+.header-inner{max-width:1800px;margin:auto;padding:13px 30px;display:flex;align-items:center;gap:22px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;font-weight:1000;font-size:clamp(20px,2vw,29px);color:white;letter-spacing:-.08em;text-shadow:none}
+.brand:hover{color:white}
+.future-mark{background:var(--acid);width:47px;height:47px;flex:none;color:#121a05;display:grid;place-items:center;position:relative;font-size:26px;letter-spacing:-.12em;clip-path:polygon(0 0,83% 0,100% 25%,100% 100%,0 100%)}
+.future-mark>span{position:absolute;right:2px;top:-4px;font-size:15px;color:#101907;animation:slowSymbol 8s linear infinite}
+@keyframes slowSymbol{to{transform:rotate(360deg)}}
+.future-brand-word{display:block;line-height:.95}
+.future-brand-word>span{color:var(--acid)}
+.future-brand-word small{display:block;margin-top:6px;letter-spacing:.21em;font:800 9px 'Consolas',monospace;color:var(--muted)}
+.future-header-status{margin-left:auto;color:var(--acid);font:800 10px 'Consolas',monospace;letter-spacing:.07em;display:flex;align-items:center;gap:9px}
+.future-header-status i,.future-nav-signal i,.future-live-dot{width:7px;height:7px;background:var(--acid);box-shadow:0 0 12px var(--acid);border-radius:50%;display:inline-block;flex:none;animation:signalGlow 2.5s ease-in-out infinite alternate}
+@keyframes signalGlow{to{opacity:.35;box-shadow:0 0 22px var(--acid)}}
+.theme-toggle{background:#1f2941;color:#dce7fa;border:1px solid #ffffff2c;padding:10px 13px;font:800 10px 'Consolas',monospace;border-radius:4px;white-space:nowrap}
+.navbar{max-width:1800px;margin:auto;display:flex;align-items:stretch;padding:0 30px;gap:2px;min-height:47px}
+.navbar>a{color:#aab6cc;display:flex;align-items:center;gap:8px;font:900 11px 'Consolas',monospace;letter-spacing:.04em;padding:13px 17px;border:0;border-radius:0;position:relative}
+.navbar>a:hover{background:#ffffff13;color:white}
+.navbar>a.active{background:#dfff4016;color:var(--acid);border:0}
+.navbar>a.active::after{content:'';height:2px;position:absolute;bottom:0;left:0;right:0;background:var(--acid);box-shadow:0 0 12px var(--acid)}
+.navbar>a span{color:var(--acid)}
+.navbar>a.future-new-thread{background:#f43c6a;color:white}
+.navbar>a.future-new-thread:hover{background:#ff5884}
+.future-nav-spacer{flex:1}
+.future-nav-signal{display:flex;align-items:center;gap:7px;color:#9aaec5;font:700 10px 'Consolas',monospace;letter-spacing:.08em}
+
+/* ───── 02. Ticker : les vrais titres circulent (animation CSS uniquement) ───── */
+.future-wire{height:39px;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid #ffffff2a;background:#121625;color:white}
+.future-wire-label{align-self:stretch;background:var(--pink);color:white;display:grid;place-items:center;min-width:115px;padding:0 13px;font:950 11px 'Consolas',monospace;z-index:1}
+.future-wire-end{color:#a6acc7;padding:0 14px;white-space:nowrap;font:800 9px 'Consolas',monospace}
+.future-wire-track{min-width:0;overflow:hidden;flex:1}
+.future-wire-scroll{display:flex;align-items:center;gap:34px;min-width:max-content;animation:wireMove 52s linear infinite}
+.future-wire-track:hover .future-wire-scroll{animation-play-state:paused}
+.future-wire a{font:800 11px 'Consolas',monospace;white-space:nowrap;color:#f2f2ff}
+.future-wire a:hover{color:var(--acid)}
+.future-wire a b{color:var(--pink);margin-right:8px}
+@keyframes wireMove{to{transform:translateX(-50%)}}
+
