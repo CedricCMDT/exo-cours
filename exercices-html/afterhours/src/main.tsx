@@ -4,10 +4,16 @@ import { BrowserRouter } from 'react-router'
 import { App } from './App'
 import { NetworkProvider } from './context/NetworkContext'
 
-// Les fichiers CSS se complètent dans cet ordre, du général au spécifique.
-import './styles.css'
-// Refonte futuriste : plus aucun CSS rétro chargé.
-import './future.css'
+// Styles rangés par rôle : les fichiers tardifs complètent les précédents.
+// Les anciens thèmes rétro ne sont plus importés.
+import './styles/base.css'
+import './styles/foundation.css'
+import './styles/dashboard.css'
+import './styles/feed.css'
+import './styles/pages.css'
+import './styles/overlays.css'
+import './styles/responsive.css'
+import './styles/api.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
