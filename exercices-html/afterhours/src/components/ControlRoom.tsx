@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import type { Post } from '../types'
-import { communities } from '../data/community'
 
 /**
  * RADAR FUTURISTE
@@ -37,16 +36,19 @@ function disagreement(post: Post): number {
 export function ControlRoom({ posts, onCommunity }: RoomProps) {
   const [channel, setChannel] = useState(0)
 
-  // Les 12 communautés les plus commentées/réactives : calculées, jamais codées en dur.
+  // Les 12 catégories générant le plus de réactions : calculées, jamais codées en dur.
   const boards = useMemo(() => {
-    return communities
-      .map(community => {
-        const belonging = posts.filter(post => post.tags.includes(community.slug))
+    // On déduit les communautés des tags de la source actuellement affichée.
+    // Ainsi, ce sont les catégories DummyJSON en mode API, et les rubriques
+    // françaises lorsque l'utilisateur passe volontairement aux archives.
+    return [...new Set(posts.flatMap(post => post.tags))]
+      .map(slug => {
+        const belonging = posts.filter(post => post.tags.includes(slug))
         const reactions = belonging.reduce(
           (sum, post) => sum + post.reactions.likes + post.reactions.dislikes,
           0,
         )
-        return { ...community, count: belonging.length, reactions }
+        return { slug, label: slug, count: belonging.length, reactions }
       })
       .sort((a, b) => b.reactions - a.reactions)
       .slice(0, 12)
@@ -74,7 +76,7 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
           <small>◆ MODULE / SIGNAL MATRIX / 01</small>
           <h2 id="control-room-title">LA <em>CHAMBRE D'ÉCHO.</em></h2>
         </div>
-        <p>Dix-huit zones, des désaccords et des milliers de réactions fictives. Choisis un angle d'attaque.</p>
+        <p>Les zones évoluent selon la source choisie : API DummyJSON ou archives fictives. Clique pour filtrer.</p>
       </div>
 
       <div className="room-grid">
