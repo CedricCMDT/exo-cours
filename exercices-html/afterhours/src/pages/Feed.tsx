@@ -7,7 +7,8 @@ import { FictionAd, NewsWire } from '../components/experience/Experience'
 import { ApiPlayground } from '../components/api/ApiPlayground'
 import { useNetwork } from '../context/NetworkContext'
 import { Button, ButtonLink } from '../components/ui/Button'
-import { InputField, SelectField } from '../components/ui/Fields'
+import { SourceSwitcher } from '../features/feed/components/SourceSwitcher'
+import { FeedControls } from '../features/feed/components/FeedControls'
 import { controversy, feedCategories, filterPosts, orderPosts, pageCount, selectSource as selectPostsBySource } from '../features/feed/selectors'
 import type { FeedOrder, FeedSource } from '../features/feed/selectors'
 
@@ -82,36 +83,14 @@ export function Feed() {
   return <main className="feed-shell future-home" ref={root}>
     <NewsWire posts={posts} />
 
-    {/* Ce bandeau prouve à l'oral que les contenus principaux viennent de l'API.
-        Bouton « Actualiser » => nouveaux GET visibles dans F12 > Réseau. */}
-    <section className="api-source-panel" aria-label="Source des données du forum">
-      <div className="api-source-heading">
-        <div><strong>◆ API REST / DUMMYJSON</strong>
-          <span>{apiStatus === 'loading' ? 'Connexion HTTP en cours…' :
-            apiStatus === 'ready' ? 'Données reçues par 3 requêtes GET' : 'API distante indisponible'}</span>
-        </div>
-        <Button onClick={reloadApi} disabled={apiStatus === 'loading'} variant="primary" size="sm">↻ ACTUALISER API</Button>
-      </div>
-      <div className="api-endpoints">
-        <code>GET /posts?limit=0</code>
-        <code>GET /users?limit=0</code>
-        <code>GET /comments?limit=0</code>
-      </div>
-      <div className="api-source-bottom">
-        <div className="api-source-counts">
-          <span>{apiCounts.posts} posts API</span>
-          <span>{apiCounts.members} utilisateurs API</span>
-          <span>{apiCounts.comments} commentaires API</span>
-        </div>
-        <div className="api-source-buttons" role="group" aria-label="Choisir la source des publications">
-          <Button variant="ghost" size="sm" aria-pressed={source === 'api'} onClick={() => changeSource('api')}>API EN PRIORITÉ</Button>
-          <Button variant="ghost" size="sm" aria-pressed={source === 'archive'} onClick={() => changeSource('archive')}>ARCHIVES FR</Button>
-          <Button variant="ghost" size="sm" aria-pressed={source === 'all'} onClick={() => changeSource('all')}>TOUT AFFICHER</Button>
-        </div>
-      </div>
-      {apiStatus === 'error' && <p className="api-source-error">Impossible de joindre DummyJSON : {apiError}. Affichage de secours des archives fictives. Réessaie « Actualiser API ».</p>}
-      {apiStatus === 'ready' && <p className="api-source-note">Les textes DummyJSON sont en anglais et proviennent d'un jeu de données de démonstration. Les archives françaises sont fictives ; tes propres publications restent locales.</p>}
-    </section>
+    <SourceSwitcher
+      source={source}
+      status={apiStatus}
+      error={apiError}
+      counts={apiCounts}
+      onReload={reloadApi}
+      onSourceChange={changeSource}
+    />
 
     <section className="future-hero" aria-label="Accueil Afterhours">
       <div className="future-hero-decoration" aria-hidden="true"><span>AH</span><i/><i/><i/></div>
@@ -174,21 +153,13 @@ export function Feed() {
         </div>
         <div className="future-feed-title"><h2>LE <em>FIL.</em></h2><span>{sorted.length.toLocaleString('fr-FR')} THREADS FILTRÉS</span></div>
 
-        <form className="filter-panel future-filter" onSubmit={event => event.preventDefault()}>
-          <InputField label="RECHERCHER" type="search" value={query.text} onChange={event => setCriteria({ text: event.target.value })} placeholder="Une polémique, un pseudo, un sujet…" />
-          <SelectField label="CATÉGORIE" value={query.tag} onChange={event => setCriteria({ tag: event.target.value })}><option value="">Toutes</option>{boards.map(board => <option value={board.slug} key={board.slug}>/{board.slug}/</option>)}</SelectField>
-          <SelectField label="POPULARITÉ" value={query.popularity} onChange={event => setCriteria({ popularity: event.target.value })}><option value="all">Toutes</option><option value="popular">100+ likes</option><option value="quiet">Moins de 100</option></SelectField>
-        </form>
-
-        <div className="future-sort-tabs" role="group" aria-label="Trier les discussions">
-          {([
-            ['recent', 'LES DERNIERS'],
-            ['clash', 'ÇA DIVISE'],
-            ['popular', 'SURCHAUFFE'],
-            ['ignored', 'LES OUBLIÉS'],
-          ] as const).map(([id, label]) =>
-            <Button key={id} variant="ghost" size="sm" aria-pressed={order === id} onClick={() => { setOrder(id); setPage(1) }}>{label}</Button>)}
-        </div>
+        <FeedControls
+          query={query}
+          order={order}
+          categories={boards}
+          onCriteriaChange={setCriteria}
+          onOrderChange={(next) => { setOrder(next); setPage(1) }}
+        />
 
         {(loading || (apiStatus === 'loading' && source === 'api')) &&
           <p className="notice" role="status">Chargement des données API et du serveur local…</p>}
