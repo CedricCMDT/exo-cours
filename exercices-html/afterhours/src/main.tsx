@@ -8,3 +8,5 @@ import './styles.css'
 createRoot(document.getElementById('root')!).render(<StrictMode><BrowserRouter><NetworkProvider><App /></NetworkProvider></BrowserRouter></StrictMode>)
 
 import './neo.css'
+// Dernière couche CSS : salle de contrôle et commandes du fil.
+import './control-room.css'
