@@ -2,7 +2,7 @@ import type { Member, Post } from '../types'
 /**
  * Catalogue éditorial déterministe.
  * 18 communautés × 14 situations × 5 angles = 1260 publications.
- * Les posts DummyJSON restent chargés séparément depuis l'API.
+ * Les nouveaux posts des membres viennent uniquement du serveur local en mémoire.
  */
 export const communities = [
   {
@@ -1246,7 +1246,9 @@ const spotlights: Record<string, { title: string; body: string }> = {
   }
 }
 
-const categoryLimits = [68, 54, 70, 63, 57, 65, 60, 69, 53, 61, 58, 67, 56, 64, 59, 66, 55, 62]
+// Chaque communauté a sa propre taille : les archives n'ont pas toutes la même activité.
+// On garde plus de 1 000 fils au total, mais certaines sections sont beaucoup plus petites.
+const categoryLimits = [68, 65, 69, 64, 55, 63, 57, 70, 68, 59, 62, 67, 33, 46, 45, 69, 34, 46]
 
 export const communityPosts: Post[] = communities.flatMap((community, i) =>
   topics[community.slug].flatMap((_, topic) =>
