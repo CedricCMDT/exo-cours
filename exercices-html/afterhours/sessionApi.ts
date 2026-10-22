@@ -349,7 +349,7 @@ export function sessionApi(): Plugin {
     const validArchiveParent = Boolean(
       archivePost && match && Number.isInteger(archiveIndex) &&
       archiveIndex >= 0 && archiveIndex < archiveReplyCount(archivePost) &&
-      (archiveIndex < 3 || match[1] === String(archiveIndex)),
+      (archiveIndex < 3 ? match[1] === 'abc'[archiveIndex] : match[1] === String(archiveIndex)),
     )
     const validParent = !parentId ||
       validArchiveParent ||
