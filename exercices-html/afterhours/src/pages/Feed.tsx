@@ -6,9 +6,10 @@ import { ControlRoom } from '../components/feed/ControlRoom'
 import { FictionAd, NewsWire } from '../components/experience/Experience'
 import { ApiPlayground } from '../components/api/ApiPlayground'
 import { useNetwork } from '../context/NetworkContext'
-import { Button, ButtonLink } from '../components/ui/Button'
+import { Button } from '../components/ui/Button'
 import { SourceSwitcher } from '../features/feed/components/SourceSwitcher'
 import { FeedControls } from '../features/feed/components/FeedControls'
+import { FeedHero } from '../features/feed/components/FeedHero'
 import { controversy, feedCategories, filterPosts, orderPosts, pageCount, selectSource as selectPostsBySource } from '../features/feed/selectors'
 import type { FeedOrder, FeedSource } from '../features/feed/selectors'
 
@@ -32,7 +33,6 @@ export function Feed() {
   }
   const root = useRef<HTMLElement>(null)
   const [order, setOrder] = useState<FeedOrder>('recent')
-  const [focus, setFocus] = useState(0)
 
   // Les chiffres sont calculés sur les archives fictives + les vrais posts de la session.
   const reactions = useMemo(
@@ -44,7 +44,6 @@ export function Feed() {
     () => [...posts].sort((a, b) => controversy(b) - controversy(a)).slice(0, 8),
     [posts],
   )
-  const selected = headlines[focus % Math.max(1, headlines.length)]
 
   const filtered = useMemo(() => filterPosts(posts, query), [posts, query])
   const sorted = useMemo(() => orderPosts(filtered, order), [filtered, order])
@@ -92,34 +91,7 @@ export function Feed() {
       onSourceChange={changeSource}
     />
 
-    <section className="future-hero" aria-label="Accueil Afterhours">
-      <div className="future-hero-decoration" aria-hidden="true"><span>AH</span><i/><i/><i/></div>
-      <div className="future-hero-content">
-        <p className="future-kicker"><span className="future-live-dot"/> / LE BRUIT NE S'ARRÊTE JAMAIS / FORUM LOCAL</p>
-        <h1>INTERNET<br/><span>SANS</span> <em>FREIN.</em></h1>
-        <p className="future-intro">Des avis tranchés, des discussions qui dérapent et beaucoup trop d'onglets ouverts. C'est un forum, pas une conférence de presse.</p>
-        <div className="future-hero-actions">
-          <ButtonLink to="/new" className="future-hero-publish" variant="primary">+ LANCER UN SUJET <b>↗</b></ButtonLink>
-          <Button variant="ghost" onClick={() => setFocus(v => v + 1)}>↻ CHANGER DE DÉBAT</Button>
-        </div>
-        <div className="future-stats">
-          <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS AFFICHÉS</small></div>
-          <div><strong>{new Set(posts.flatMap(post => post.tags)).size}</strong><small>CANAUX VISIBLES</small></div>
-          <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS DES POSTS AFFICHÉS</small></div>
-        </div>
-      </div>
-      <div className="future-hero-feature">
-        <div className="future-feature-bar"><span>◆ CONTENTION / {String(focus % Math.max(1, headlines.length) + 1).padStart(2,'0')}</span><span>✳ SÉLECTION</span></div>
-        {selected ? <>
-          <span className="future-feature-tag">/{selected.tags[0]}/</span>
-          <h2>{selected.title}</h2>
-          <p>{selected.body}</p>
-          <div className="future-feature-meter"><span style={{width: `${Math.round(selected.reactions.likes / Math.max(1,selected.reactions.likes + selected.reactions.dislikes)*100)}%`}}/></div>
-          <div className="future-feature-foot"><span>♥ {selected.reactions.likes} / ↓ {selected.reactions.dislikes}</span><Link to={'/posts/' + selected.id}>ENTRER DANS LE FIL ↗</Link></div>
-        </> : <p>Chargement des fils disponibles…</p>}
-      </div>
-      <span className="future-hero-vertical" aria-hidden="true">CONTENTS MAY CAUSE DISAGREEMENT // AH-26</span>
-    </section>
+    <FeedHero posts={posts} headlines={headlines} reactions={reactions} />
 
     <div className="future-data-strip" aria-label="Informations sur la démonstration">
       <span>◇ {activeSource === 'api' ? 'SOURCE : REST API DUMMYJSON' : activeSource === 'archive' ? 'SOURCE : ARCHIVES FICTIVES' : 'SOURCE : API + ARCHIVES'}</span><span>◆ ARCHIVES FICTIVES DISPONIBLES</span>
