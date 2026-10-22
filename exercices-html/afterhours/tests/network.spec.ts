@@ -144,7 +144,7 @@ test('le thème clair garde des titres et textes lisibles, y compris sur mobile'
 
   const ratios = await page.locator('.post-card').first().evaluate((card) => {
     function rgb(value: string): number[] {
-      const match = value.match(/[\d.]+/g) ?? []
+      const match = value.match(/[0-9.]+/g) ?? []
       return match.slice(0, 3).map(Number)
     }
     function luminance(c: number[]) {
@@ -175,7 +175,7 @@ test('le thème clair garde des titres et textes lisibles, y compris sur mobile'
   await page.goto('/account')
   const labelContrast = await page.locator('.composer .ui-field__label').first().evaluate((label) => {
     function luminance(value: string) {
-      const [r, g, b] = (value.match(/[\\d.]+/g) ?? []).slice(0, 3).map(Number)
+      const [r, g, b] = (value.match(/[0-9.]+/g) ?? []).slice(0, 3).map(Number)
       const [rr, gg, bb] = [r, g, b].map((n) => {
         const channel = n / 255
         return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
