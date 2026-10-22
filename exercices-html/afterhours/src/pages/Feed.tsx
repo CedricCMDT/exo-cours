@@ -1,14 +1,18 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router'
 import { gsap } from 'gsap'
 import { useNetwork } from '../context/NetworkContext'
 import { PostCard } from '../components/PostCard'
 import { archives } from '../content'
-import { communities, communityCount } from '../data/community'
+import { communities } from '../data/community'
 
 const SIZE = 9
 export function Feed() {
   const { posts, members, loading, error, reload, query, setCriteria, setPage } = useNetwork()
   const container = useRef<HTMLElement>(null)
+  const [spotlightIndex, setSpotlightIndex] = useState(0)
+  const debated = useMemo(() => [...posts].sort((a,b) => ((b.reactions?.likes||0)+(b.reactions?.dislikes||0)*3) - ((a.reactions?.likes||0)+(a.reactions?.dislikes||0)*3)).slice(0,8), [posts])
+  const spotlight = debated[spotlightIndex % Math.max(1, debated.length)]
   const tags = useMemo(() => [...new Set(posts.flatMap(p => p.tags))].sort(), [posts])
   const filtered = useMemo(() => posts.filter(post => {
     const text = (post.title + ' ' + post.body).toLocaleLowerCase('fr')
@@ -55,16 +59,18 @@ export function Feed() {
       <span className="hero-orb orb-b" aria-hidden="true" />
       <div className="hero-copy">
         <div className="eyebrow"><span className="pulse-light" /> LE WEB APRÈS MINUIT <span className="hero-year">EST. 2008</span></div>
-        <h1>Il est tard.<br /><em>Le forum est encore là.</em></h1>
-        <p>Des débats, des histoires, des prises de tête. Pose ton message ou viens lire ce qui se raconte.</p>
-        <div className="hero-numbers"><div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>publications</small></div><div><strong>{communities.length}</strong><small>communautés</small></div><div><strong>{communityCount.toLocaleString('fr-FR')}</strong><small>discussions FR</small></div></div>
+        <h1>Ça commence<br /><em>à discuter fort.</em></h1>
+        <p>Une remarque qui dérape, un débat qui n'en finit plus, un inconnu qui a peut-être raison. Bienvenue dans les commentaires.</p>
+        <div className="hero-cta"><Link to="/new">Lancer un sujet ↗</Link><button type="button" onClick={() => setSpotlightIndex(v => v + 1)}>Surprends-moi ↻</button></div>
+        <div className="hero-numbers"><div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>publications</small></div><div><strong>{communities.length}</strong><small>communautés</small></div><div><strong>{posts.filter(p => p.source === 'community').length.toLocaleString('fr-FR')}</strong><small>discussions FR</small></div></div>
       </div>
       <div className="hero-terminal" aria-hidden="true">
         <div className="terminal-top"><span className="terminal-dots">● ● ●</span><span>afterhours / terminal</span><span>□ ×</span></div>
-        <div className="terminal-screen"><small>CONNECTED_</small><p><b>anonymous@afterhours</b>:~$ open --timeline</p><p className="terminal-accent">→ 18 communautés synchronisées</p><p>→ 1 260 sujets en français</p><p>→ aucun silence garanti</p><span className="cursor-block">▌</span></div>
-        <div className="terminal-sticker">100% WEB CULTURE ✳</div>
+        <div className="terminal-screen"><small>LE SUJET QUI DIVISE</small>{spotlight ? <><p className="terminal-accent">/{spotlight.tags[0]}/ · {spotlight.reactions.likes} réactions positives</p><p className="terminal-headline">{spotlight.title}</p><Link className="terminal-link" to={'/posts/'+spotlight.id}>Lire le débat ↗</Link></> : <p>Des discussions arrivent…</p>}</div>
+        <div className="terminal-sticker">ENCORE UN DÉBAT ↗</div>
       </div>
     </section>
+    <div className="hot-strip"><span>ÇA FAIT PARLER</span><div>{debated.slice(0,4).map(p=><Link key={p.id} to={'/posts/'+p.id}>{p.title} ↗</Link>)}</div></div>
     <div className="layout">
       <section className="main-column">
         <div className="section-header feed-section-title"><div><small>COMMUNITY / TIMELINE</small><h2>Les discussions <span className="spark">✳</span></h2><p>De tout, surtout de n'importe quoi. Entre dans le fil.</p></div><span className="live-label"><span className="pulse-light" /> EN LIGNE</span></div>
@@ -81,7 +87,7 @@ export function Feed() {
       </section>
       <aside className="sidebar">
         <div className="widget community-widget"><h2>EXPLORER LES COMMUNAUTÉS</h2><div className="community-list">{categoryStats.map(item => <button type="button" key={item.slug} onClick={() => { setCriteria({ tag: item.slug }); window.scrollTo({ top: 470, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }) }} className={query.tag === item.slug ? 'chosen' : ''}><span>/{item.slug}/</span><b>{item.count}</b></button>)}</div></div>
-        <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Forum local en ligne</p><p>Depuis 2008 · communauté active</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
+        <div className="widget status-widget"><h2>STATUT DU RÉSEAU</h2><p><span className="online">●</span> Forum local en ligne</p><p>Archives fictives du Web · session locale</p><small>Nous ne garantissons ni le bon goût ni la véracité des opinions.</small></div>
         <div className="widget"><h2>ARCHIVES DU WEB</h2><p className="widget-note">Discussions populaires</p>{archives.map(item => <div className="archive" key={item.author}><small>{item.author} · {item.board}</small><p>{item.text}</p><small>↳ {item.replies} réponses</small></div>)}</div>
       </aside>
     </div>
