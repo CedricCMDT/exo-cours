@@ -74,7 +74,7 @@ afterhours/
 │   ├── data/                    # Archives fictives et réponses
 │   ├── pages/                   # Accueil, sujet, favoris, création, compte
 │   ├── services/api.ts          # Requêtes HTTP
-│   ├── styles/                  # CSS séparé par rôle
+│   ├── styles/                  # CSS : structure, pages, thème, responsive, effets
 │   ├── types/                   # Types Post, Member et Reply
 │   └── utils/avatar.ts
 ├── vite.config.ts
