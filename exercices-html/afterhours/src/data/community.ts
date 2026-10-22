@@ -1,7 +1,8 @@
 import type { Member, Post } from '../types'
 /**
  * Catalogue éditorial déterministe.
- * 18 communautés × 14 situations × 5 angles = 1260 publications.
+ * 18 communautés, 14 situations possibles chacune, 5 points de vue par situation.
+ * Un nombre de publications différent est retenu pour chaque communauté.
  * Les nouveaux posts des membres viennent uniquement du serveur local en mémoire.
  */
 export const communities = [
@@ -1128,26 +1129,125 @@ const handles = ["xX_ToxicMood_Xx","rainbow.exe","tradition_1984","admin_partiel
 export const communityMembers: Member[] = handles.map((username, i) => ({
   id: 3000 + i, username, firstName: username, lastName: '', image: '/avatar.svg',
 }))
+/**
+ * Cinq façons différentes de lancer la discussion autour d'un même sujet.
+ * Le nombre « seed » (numéro stable) choisit une formulation parmi plusieurs.
+ * Ainsi, chaque page chargée affiche les mêmes archives, mais pas 1 000
+ * publications commençant toutes par la même phrase.
+ */
+function pick(options: string[], seed: number) {
+  return options[seed % options.length]
+}
+
 const angles = [
   {
-    title: (title: string) => title,
-    body: (_title: string, caseText: string) => `Ça me dégoûte de voir ça passer pour une anecdote : ${caseText}. Et il y a déjà des gens pour justifier le truc comme si c'était normal. On va en parler ou continuer à faire semblant ?`,
+    title: (title: string, _seed: number) => title,
+    body: (_title: string, scenario: string, seed: number) =>
+      `${pick([
+        "Je suis tombé sur cette histoire tout à l'heure.",
+        "Ça fait trois fois que ce sujet revient dans mon fil.",
+        "Bon, j'avais pas prévu de poster, mais tant pis.",
+        "J'ai lu les réponses et je crois qu'on oublie l'essentiel.",
+        "Je comprends pas pourquoi personne ne pose la question.",
+      ], seed)} En résumé : ${scenario}. ${pick([
+        "Vous en pensez quoi, sans vous envoyer des noms d'oiseaux ?",
+        "C'est moi qui trouve ça bizarre ou il manque une explication ?",
+        "Ça mérite mieux que deux réactions à chaud.",
+        "J'aimerais bien entendre des gens qui connaissent le contexte.",
+        "À quel moment on a décidé que c'était normal ?",
+      ], seed + 2)}`,
   },
   {
-    title: (title: string) => `[DÉBAT] ${title}`,
-    body: (_title: string, caseText: string) => `Attendez deux secondes. ${caseText}. Tous ceux qui hurlent dans les réponses sont persuadés d'avoir raison, mais il y a clairement un truc qu'on ne sait pas. Qui a une source, un témoignage, quelque chose ?`,
+    title: (title: string, seed: number) => pick([
+      `Quelqu'un a la suite de « ${title} » ?`,
+      `On connaît les faits sur « ${title} » ?`,
+      `Vous avez vu passer ça : ${title} ?`,
+      `Je cherche le contexte : ${title}`,
+      `Il manque des infos sur « ${title} »`,
+    ], seed),
+    body: (_title: string, scenario: string, seed: number) =>
+      `${pick([
+        "Je vois des captures partout mais pas la source.",
+        "Un ami m'en a parlé et j'ai voulu vérifier.",
+        "Tout le monde donne son verdict, et moi j'arrive après.",
+        "Je tombe sur cinq versions différentes de l'histoire.",
+        "J'ai cherché un peu, sans trouver le début du truc.",
+      ], seed)} Ce que j'ai compris : ${scenario}. ${pick([
+        "Si vous avez un lien complet, je prends.",
+        "J'aimerais bien lire autre chose que les titres.",
+        "Il y a une mise à jour que j'ai ratée ?",
+        "Avant de prendre position, on pourrait vérifier deux ou trois choses.",
+        "Quelqu'un a un témoignage direct ?",
+      ], seed + 1)}`,
   },
   {
-    title: (title: string) => `C'est donc ça, votre liberté ? — ${title}`,
-    body: (_title: string, caseText: string) => `Je vois déjà arriver les « on peut plus rien dire ». Désolé mais ${caseText.toLocaleLowerCase('fr')}. Défendre une opinion, c'est une chose. Faire comme si personne n'avait le droit de te répondre que tu racontes de la merde, c'en est une autre.`,
+    title: (title: string, seed: number) => pick([
+      `Le détail oublié dans « ${title} »`,
+      `On parle de tout sauf de ça : ${title}`,
+      `C'est peut-être moins simple que ça : ${title}`,
+      `Le truc qui me gêne dans « ${title} »`,
+      `Personne ne pose la bonne question sur « ${title} »`,
+    ], seed),
+    body: (_title: string, scenario: string, seed: number) =>
+      `${pick([
+        "Je vais probablement me faire contredire, mais autant le dire.",
+        "J'ai changé d'avis deux fois en lisant ce fil.",
+        "Je trouve les réactions beaucoup trop catégoriques.",
+        "Ça commence toujours avec une phrase choc et ça finit en règlement de comptes.",
+        "Le problème est intéressant, pas les petites attaques personnelles.",
+      ], seed)} Le point de départ, c'est ça : ${scenario}. ${pick([
+        "On peut critiquer sans caricaturer l'autre camp.",
+        "J'aimerais comprendre la décision plutôt que deviner les intentions.",
+        "Il y a forcément plus que ces trois lignes.",
+        "Ça n'empêche pas de discuter du fond.",
+        "Je suis prêt à lire des contre-arguments, pas des insultes.",
+      ], seed + 3)}`,
   },
   {
-    title: (title: string) => `Vous allez encore vous déchirer sur : ${title}`,
-    body: (_title: string, caseText: string) => `Je prends les paris : vingt messages avant la première insulte. Pour rappel, ${caseText.toLocaleLowerCase('fr')}. Les uns vont hurler à la censure, les autres au scandale absolu. Quelqu'un peut discuter sans jouer les victimes ?`,
+    title: (title: string, seed: number) => pick([
+      `La journée normale d'Internet : ${title}`,
+      `On en est vraiment là ? — ${title}`,
+      `Je pensais avoir tout lu : ${title}`,
+      `La discussion est partie en vrille : ${title}`,
+      `Bon, on parle de « ${title} » ?`,
+    ], seed),
+    body: (_title: string, scenario: string, seed: number) =>
+      `${pick([
+        "J'ai fermé l'onglet, puis je l'ai rouvert. Mauvaise idée.",
+        "Il est peut-être temps de quitter Internet pour ce soir.",
+        "Le nombre de gens qui s'engueulent sur ce sujet est impressionnant.",
+        "Je me suis dit que c'était un troll. Visiblement non.",
+        "Je pensais que le débat allait durer dix minutes. Raté.",
+      ], seed)} Pour ceux qui arrivent : ${scenario}. ${pick([
+        "La suite des commentaires vaut presque le détour.",
+        "Vous arrivez à discuter de ça calmement, vous ?",
+        "J'ai besoin qu'on m'explique ce qui se passe.",
+        "Je prends du pop-corn, mais aussi les bonnes sources.",
+        "On va peut-être finir par comprendre ce qui s'est passé.",
+      ], seed + 4)}`,
   },
   {
-    title: (title: string) => `Qui assume vraiment son avis sur « ${title} » ?`,
-    body: (_title: string, caseText: string) => `Bon, j'en ai marre des sous-entendus. ${caseText}. Si vous trouvez ça acceptable, dites pourquoi. Si vous trouvez ça ignoble, expliquez aussi. Les réponses en trois insultes et les comptes qui disparaissent dès qu'on pose une question, ça suffit.`,
+    title: (title: string, seed: number) => pick([
+      `Petite objection sur « ${title} »`,
+      `Je suis pas d'accord avec tout ce fil : ${title}`,
+      `Une nuance, quand même : ${title}`,
+      `J'ai un autre avis sur « ${title} »`,
+      `Il y a un angle mort dans « ${title} »`,
+    ], seed),
+    body: (_title: string, scenario: string, seed: number) =>
+      `${pick([
+        "Je sais que je vais être minoritaire dans les réponses.",
+        "J'ai lu les arguments des deux côtés et je reste sceptique.",
+        "C'est trop facile de transformer ce sujet en choix binaire.",
+        "Je suis d'accord sur une partie du problème, pas sur la conclusion.",
+        "Il y a quelque chose qui me dérange dans la façon dont on raconte ça.",
+      ], seed)} La situation évoquée est la suivante : ${scenario}. ${pick([
+        "Vous êtes sûrs qu'il n'y a pas une troisième lecture possible ?",
+        "Ça ne veut pas dire que tout se vaut.",
+        "Je veux bien changer d'avis si quelqu'un a mieux.",
+        "Un désaccord n'est pas forcément une provocation.",
+        "On peut discuter des conséquences concrètes plutôt que des slogans.",
+      ], seed + 2)}`,
   },
 ]
 const epoch = Date.parse('2026-10-20T17:55:00Z')
@@ -1160,8 +1260,8 @@ function buildPost(category: string, categoryIndex: number, topic: number, angle
   const minuteOffset = (n * 131) % 1260
   return {
     id: 20000 + n,
-    title: angles[angle].title(title),
-    body: angles[angle].body(title, scenario),
+    title: angles[angle].title(title, topic + categoryIndex * 7),
+    body: angles[angle].body(title, scenario, topic + categoryIndex * 7),
     tags: [category],
     reactions: { likes: Math.floor(Math.pow(((n * 31337 + 7919) % 1009) / 1009, 3.8) * (24 + ((n * 17) % 2300))), dislikes: Math.floor(Math.pow(((n * 6701 + 431) % 997) / 997, 3.2) * (3 + ((n * 23) % 280))) },
     views: 14 + Math.floor(Math.pow(((n * 15331 + 97) % 1013) / 1013, 2.5) * (110 + ((n * 97) % 35000))),
