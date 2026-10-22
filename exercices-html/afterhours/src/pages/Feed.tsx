@@ -22,7 +22,7 @@ export function Feed() {
   const [order, setOrder] = useState<Order>('recent')
   const [focus, setFocus] = useState(0)
 
-  // Les statistiques affichées viennent du forum, elles ne sont pas fabriquées.
+  // Les chiffres sont calculés sur les archives fictives + les vrais posts de la session.
   const reactions = useMemo(
     () => posts.reduce((total, p) => total + p.reactions.likes + p.reactions.dislikes, 0),
     [posts],
