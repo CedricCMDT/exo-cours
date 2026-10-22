@@ -95,7 +95,10 @@ export function IntrusionLayer({ posts }: { posts: Post[] }) {
   useEffect(() => {
     if (!open) return
     function onKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpen(false)
+      if (event.key === 'Escape') {
+        setOpen(false)
+        sessionStorage.setItem('ah-intro-seen', '1')
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
