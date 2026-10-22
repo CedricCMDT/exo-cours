@@ -5,6 +5,11 @@ import { PageHeader } from '../components/ui/PageHeader'
 import { useNetwork } from '../context/NetworkContext'
 import type { Post } from '../types'
 
+/**
+ * Formulaire de publication vers /session-api/posts.
+ * Le serveur déduit l'auteur du cookie de connexion : aucun userId
+ * n'est fourni par le navigateur.
+ */
 export function Create() {
   const { publish, user } = useNetwork()
   const [title, setTitle] = useState('')
@@ -17,29 +22,89 @@ export function Create() {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError('')
-    if (title.trim().length < 5) return setError('Le titre doit contenir au moins 5 caractères.')
-    if (body.trim().length < 15) return setError('Le message doit contenir au moins 15 caractères.')
-    if (!/^[a-z0-9-]{2,20}$/i.test(tag.trim())) return setError('La communauté doit contenir 2 à 20 lettres, chiffres ou tirets.')
-    if (!user) return setError('Connecte-toi pour publier.')
+
+    if (title.trim().length < 5) {
+      setError('Le titre doit contenir au moins 5 caractères.')
+      return
+    }
+    if (body.trim().length < 15) {
+      setError('Le message doit contenir au moins 15 caractères.')
+      return
+    }
+    if (!/^[a-z0-9-]{2,20}$/i.test(tag.trim())) {
+      setError('La communauté doit contenir 2 à 20 lettres, chiffres ou tirets.')
+      return
+    }
+    if (!user) {
+      setError('Connecte-toi pour publier.')
+      return
+    }
+
     setSubmitting(true)
     try {
-      const result = await publish({ title: title.trim(), body: body.trim(), tags: [tag.trim().toLowerCase()], userId: user.id })
-      setCreated(result)
-    } catch (e) { setError(e instanceof Error ? e.message : 'Publication impossible.') }
-    finally { setSubmitting(false) }
+      // La même validation est réalisée côté serveur (ne jamais se fier au client).
+      const post = await publish({
+        title: title.trim(),
+        body: body.trim(),
+        tags: [tag.trim().toLowerCase()],
+      })
+      setCreated(post)
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Publication impossible.')
+    } finally {
+      setSubmitting(false)
+    }
   }
+
+  function resetForm() {
+    setTitle('')
+    setBody('')
+    setError('')
+    setCreated(null)
+  }
+
   return <main className="narrow-page">
-    <PageHeader eyebrow="AFTERHOURS / COMPOSE" title="Nouveau fil" description="Écris dans ta communauté et retrouve le post pendant cette session." />
-    {created ? <div className="notice success" role="status"><h2>Publication envoyée</h2><p>« {created.title} » — ID #{created.id}</p><p>{created.body}</p><Link to={'/posts/' + created.id}>Voir la publication →</Link><button onClick={() => { setCreated(null); setTitle(''); setBody('') }}>Créer une autre publication</button><small>Publication conservée dans cette session.</small></div> :
-    !user ? <p className="notice">Connecte-toi pour publier. <Link to="/account">Connexion / inscription →</Link></p> : <form className="composer" onSubmit={submit} noValidate>
-      <label>Titre du fil <span>*</span><input required minLength={5} maxLength={100} value={title} onChange={e => setTitle(e.target.value)} placeholder="Le sujet de ton message" /></label>
-      <label>Message <span>*</span><textarea required minLength={15} rows={7} value={body} onChange={e => setBody(e.target.value)} placeholder="Qu'as-tu à dire ?" /></label>
-      <div className="form-row">
-        <label>Communauté <span>*</span><input required value={tag} maxLength={20} onChange={e => setTag(e.target.value)} /></label>
-        
+    <PageHeader
+      eyebrow="AFTERHOURS / COMPOSE"
+      title="Nouveau fil"
+      description="Écris dans ta communauté et retrouve ton post pendant cette session."
+    />
+
+    {created ? (
+      <section className="notice success" role="status">
+        <h2>Publication envoyée</h2>
+        <p>« {created.title} » — ID #{created.id}</p>
+        <p>{created.body}</p>
+        <Link to={'/posts/' + created.id}>Voir la publication ↗</Link>
+        <button type="button" onClick={resetForm}>Créer un autre sujet</button>
+        <small>Ce contenu sera effacé au redémarrage du serveur.</small>
+      </section>
+    ) : !user ? (
+      <div className="notice">
+        Connecte-toi pour publier. <Link to="/account">Connexion / inscription ↗</Link>
       </div>
-      {error && <p role="alert" className="notice error">{error}</p>}
-      <button type="submit" className="primary" disabled={submitting}>{submitting ? 'Publication en cours…' : 'Publier le fil'}</button>
-    </form>}
+    ) : (
+      <form className="composer" onSubmit={submit} noValidate>
+        <label>Titre du fil
+          <input required minLength={5} maxLength={100} value={title}
+            onChange={event => setTitle(event.target.value)}
+            placeholder="De quoi veux-tu parler ?" />
+        </label>
+        <label>Message
+          <textarea required minLength={15} rows={7} value={body}
+            onChange={event => setBody(event.target.value)}
+            placeholder="Écris ton message…" />
+        </label>
+        <label>Communauté
+          <input required maxLength={20} value={tag}
+            onChange={event => setTag(event.target.value)}
+            placeholder="social, tech, gaming…" />
+        </label>
+        {error && <p role="alert" className="notice error">{error}</p>}
+        <button className="primary" type="submit" disabled={submitting}>
+          {submitting ? 'Publication en cours…' : 'Publier le fil'}
+        </button>
+      </form>
+    )}
   </main>
 }
