@@ -4,8 +4,9 @@ import { sessionRequest } from '../api'
 import type { Creation, Member, Post, Query } from '../types'
 
 import type { Reply } from '../replies'
-type PendingReply = { id:string; postId:number; parentId:string; originalBody:string; dueAt:number; author?:string }
 import { communityMembers, communityPosts } from '../data/community'
+
+type PendingReply = { id:string; postId:number; parentId:string; originalBody:string; dueAt:number; author?:string }
 
 // Réponse du petit serveur local (les archives de démonstration sont chargées à part).
 type SessionState = {
@@ -96,7 +97,7 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     return ()=>{cancelled=true}
   },[revision,syncState])
   async function refreshSession(){
-    const data=await sessionRequest<{user:Member|null;members:Member[];posts:Post[];comments:Reply[]}>('/state')
+    const data=await sessionRequest<SessionState>('/state')
     syncState(data)
   }
   async function register(username:string,password:string){await sessionRequest('/register','POST',{username,password});await refreshSession()}
