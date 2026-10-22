@@ -1,0 +1,405 @@
+/* ==========================================================================
+   AFTERHOURS — LA SALLE DE CONTRÔLE
+   --------------------------------------------------------------------------
+   OBJECTIF PÉDAGOGIQUE :
+   - L'HTML/React contient les informations et les boutons.
+   - CSS Grid place les panneaux et les douze communautés.
+   - Les pseudo-éléments ::before/::after dessinent les détails décoratifs.
+   - Les animations changent seulement transform/opacité.
+   Il n'y a ni Canvas, ni graphique complexe, ni nouvelle bibliothèque.
+   ========================================================================== */
+
+/* 01 — Titre éditorial : volontairement différent des cartes du fil. */
+.control-room {
+  max-width: 1220px;
+  margin: 44px auto 32px;
+  padding: 0 4px;
+  color: var(--neo-ink);
+}
+.room-intro {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+.room-intro small {
+  display: block;
+  color: #ae5386;
+  font-family: Consolas, monospace;
+  letter-spacing: .1em;
+  font-size: 11px;
+  font-weight: 900;
+}
+.room-intro h2 {
+  margin: 8px 0 0;
+  font: 950 clamp(27px, 3.4vw, 47px)/1.07 'Trebuchet MS', system-ui, sans-serif;
+  letter-spacing: -.055em;
+  max-width: 670px;
+}
+.room-intro h2 em {
+  font-style: normal;
+  color: #e55f8d;
+}
+.room-intro > p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--neo-muted);
+  max-width: 265px;
+  margin: 0 0 3px;
+}
+
+/* 02 — Deux zones qui s'adaptent automatiquement à la largeur de l'écran. */
+.room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  gap: 16px;
+}
+.room-panel {
+  position: relative;
+  min-width: 0;
+  padding: 21px;
+  overflow: hidden;
+  border: 1px solid #cad3e8;
+  border-radius: 14px;
+  box-shadow: 0 15px 34px #1a24500f;
+}
+.room-panel-heading {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+  font: 800 11px Consolas, monospace;
+  letter-spacing: .045em;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 19px;
+}
+.room-panel-heading > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.room-panel-heading small {
+  color: inherit;
+  opacity: .6;
+  white-space: nowrap;
+}
+.room-led {
+  flex: none;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #21bb91;
+  box-shadow: 0 0 0 4px #21bb911e;
+}
+.room-led-pink {
+  background: #ffa568;
+  box-shadow: 0 0 0 4px #ffa56824;
+}
+
+/* 03 — Les 12 cases sont de simples boutons CSS Grid, pas une image. */
+.room-map {
+  background: #f9f9f7;
+  color: #22283d;
+}
+.room-map::before {
+  content: 'AFTERHOURS • LOCAL NETWORK';
+  position: absolute;
+  right: -78px;
+  top: 50%;
+  transform: rotate(-90deg);
+  letter-spacing: .2em;
+  color: #2b32680a;
+  font: 900 14px Consolas, monospace;
+  pointer-events: none;
+}
+.room-map-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+.room-board {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 112px;
+  gap: 6px;
+  border: 1px solid #0f173815;
+  border-radius: 7px;
+  padding: 12px 11px 10px;
+  color: #26304b;
+  box-shadow: 0 3px 0 #08132b0a;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.room-board-0 { background: #e3f3ef; }
+.room-board-1 { background: #f5dfeb; }
+.room-board-2 { background: #f9e8cd; }
+.room-board-3 { background: #e5e7fc; }
+.room-board:hover, .room-board:focus-visible {
+  transform: translateY(-4px) rotate(-1deg);
+  box-shadow: 0 8px 0 #111a3a1a;
+  border-color: #1b2449;
+}
+.room-board-number {
+  align-self: end;
+  font: 900 11px Consolas, monospace;
+  opacity: .44;
+}
+.room-board strong {
+  font: 900 clamp(11px, 1.2vw, 15px)/1.1 'Trebuchet MS', sans-serif;
+  overflow-wrap: anywhere;
+}
+.room-board-count {
+  font: 700 10px Consolas, monospace;
+  opacity: .7;
+}
+.room-board-meter {
+  width: 100%;
+  height: 4px;
+  overflow: hidden;
+  background: #17213a20;
+  border-radius: 4px;
+}
+.room-board-meter > span {
+  display: block;
+  background: #243653;
+  height: 100%;
+  border-radius: inherit;
+}
+.room-explain {
+  margin: 14px 0 0;
+  color: #7a8194;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+/* 04 — Le panneau radio. Le disque derrière le texte est du CSS pur. */
+.room-radio {
+  display: flex;
+  flex-direction: column;
+  color: #f1edff;
+  border-color: #252247;
+  background:
+    radial-gradient(circle at 88% 17%, #9e4ba077 0, transparent 33%),
+    repeating-linear-gradient(0deg, #ffffff08 0, #ffffff08 1px, transparent 1px, transparent 20px),
+    linear-gradient(145deg, #282046, #131932 84%);
+}
+.room-disc {
+  position: absolute;
+  top: 49px;
+  right: -57px;
+  height: 250px;
+  width: 250px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid #ffa1be49;
+  box-shadow: inset 0 0 0 27px #d46cab0a, inset 0 0 0 55px #e06ca50d,
+    inset 0 0 0 56px #ffa1be45, 0 0 55px #f290ab19;
+  opacity: .64;
+  pointer-events: none;
+  animation: roomOrbit 22s linear infinite;
+}
+.room-disc::before, .room-disc::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px dashed #ffa0b852;
+  border-radius: 50%;
+}
+.room-disc::after {
+  inset: 79px;
+  border: 1px solid #ff9b7a99;
+}
+.room-disc > span {
+  font: 900 21px Consolas, monospace;
+  letter-spacing: -.07em;
+  color: #ffa4b6;
+}
+@keyframes roomOrbit { to { transform: rotate(360deg); } }
+
+.room-radio-body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  min-height: 232px;
+  animation: roomAppear .32s ease-out both;
+}
+@keyframes roomAppear {
+  from { opacity: .25; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.room-radio-body > small {
+  color: #ffad7e;
+  font: 700 11px Consolas, monospace;
+}
+.room-radio-body h3 {
+  font: 950 clamp(22px, 2.5vw, 32px)/1.15 'Trebuchet MS', sans-serif;
+  letter-spacing: -.035em;
+  max-width: 365px;
+  margin: 15px 0 12px;
+  position: relative;
+}
+.room-radio-body p {
+  font-size: 12px;
+  line-height: 1.75;
+  color: #bfc7dc;
+  max-width: 350px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+.room-opinions {
+  position: relative;
+  z-index: 2;
+  margin: 16px 0 18px;
+}
+.room-opinions-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font: 700 10px Consolas, monospace;
+  color: #d1c4de;
+  margin-bottom: 9px;
+}
+.room-opinions-bar {
+  height: 9px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #ff936b;
+}
+.room-opinions-bar span {
+  display: block;
+  height: 100%;
+  background: #55d8c0;
+  border-right: 2px solid #1c2641;
+}
+.room-radio-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+.room-radio-actions button,
+.room-radio-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 11px 13px;
+  min-height: 43px;
+  font-size: 12px;
+  font-weight: 900;
+  border: 1px solid #ffffff40;
+  border-radius: 7px;
+  transition: transform .2s ease, background .2s ease;
+}
+.room-radio-actions button {
+  color: #fff;
+  background: #ffffff17;
+}
+.room-radio-actions a {
+  color: #231b33;
+  background: #ffad77;
+  border-color: #ffad77;
+}
+.room-radio-actions button:hover,
+.room-radio-actions a:hover {
+  transform: translateY(-3px);
+}
+.room-radio-empty {
+  color: #d1cadf;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.room-disclaimer {
+  margin: 13px 0;
+  color: var(--neo-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* 05 — Les trois tris ont l'aspect de touches de console. */
+.feed-deck {
+  display: flex;
+  gap: 9px;
+  margin: 3px 0 22px;
+  flex-wrap: wrap;
+}
+.feed-deck button {
+  background: #f9f9ff;
+  color: #495673;
+  border: 1px solid #d8dceb;
+  padding: 11px 16px;
+  border-radius: 9px;
+  font: 900 12px 'Trebuchet MS', sans-serif;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.feed-deck button:hover { transform: translateY(-2px); }
+.feed-deck button[aria-pressed='true'] {
+  background: #242347;
+  border-color: #242347;
+  color: #fff3ce;
+}
+.feed-deck small {
+  display: block;
+  font: 500 10px Consolas, monospace;
+  opacity: .73;
+  margin-top: 3px;
+}
+.feed-deck-description {
+  font-size: 12px;
+  color: var(--neo-muted);
+  margin: -9px 0 17px;
+}
+
+/* 06 — Ajustements de thème : mêmes informations, couleurs lisibles. */
+:root[data-theme=dark] .room-map { background: #1d2942; color: #e8efff; border-color: #394864; }
+:root[data-theme=dark] .room-map .room-panel-heading { color: #c6d3ef; }
+:root[data-theme=dark] .room-board-0 { background: #234840; color: #f0fff9; }
+:root[data-theme=dark] .room-board-1 { background: #53374f; color: #fff1fa; }
+:root[data-theme=dark] .room-board-2 { background: #54432c; color: #fff0dc; }
+:root[data-theme=dark] .room-board-3 { background: #383c69; color: #edf0ff; }
+:root[data-theme=dark] .room-board-meter { background: #ffffff31; }
+:root[data-theme=dark] .room-board-meter > span { background: #fff2da; }
+:root[data-theme=dark] .room-explain { color: #a9b3cb; }
+:root[data-theme=dark] .feed-deck button { background: #28344f; color: #c8d4e9; border-color: #445573; }
+:root[data-theme=dark] .feed-deck button[aria-pressed='true'] { background: #ffac70; color: #211d32; }
+
+/* 07 — Adaptation mobile, sans deuxième version du composant React. */
+@media (max-width: 1260px) {
+  .control-room { padding: 0 20px; }
+}
+@media (max-width: 1000px) {
+  .room-grid { grid-template-columns: 1fr; }
+  .room-radio-body { min-height: 190px; }
+}
+@media (max-width: 650px) {
+  .control-room { margin-top: 29px; padding: 0 12px; }
+  .room-intro { flex-direction: column; align-items: start; gap: 8px; }
+  .room-intro > p { max-width: unset; }
+  .room-panel { padding: 16px; }
+  .room-map-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .room-board { min-height: 102px; padding: 10px; }
+  .room-panel-heading { font-size: 10px; }
+  .room-disc { width: 190px; height: 190px; }
+  .room-radio-actions { flex-wrap: wrap; }
+  .feed-deck { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .feed-deck button { font-size: 11px; padding: 9px 6px; }
+}
+@media (max-width: 370px) {
+  .room-map-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-disc, .room-radio-body { animation: none !important; }
+  .room-board, .room-radio-actions a, .room-radio-actions button, .feed-deck button { transition: none; }
+}
