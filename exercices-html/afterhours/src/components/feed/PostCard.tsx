@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { Button } from '../ui/Button'
 import type { Member, Post } from '../../types'
 import { useNetwork } from '../../context/NetworkContext'
 import { avatarFor } from '../../utils/avatar'
@@ -40,9 +41,9 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
       <span aria-label={dislikes + ' mentions je n’aime pas'}>↓ {dislikes}</span>
       <span>◌ {post.views ?? 0} vues</span>
       {count > 0 && <span>↳ {count} réponses</span>}
-      <button type="button" onClick={() => toggleSaved(post.id)} aria-pressed={saved}>
+      <Button variant="ghost" size="sm" onClick={() => toggleSaved(post.id)} aria-pressed={saved}>
         {saved ? '★ Retirer' : '☆ Sauvegarder'}
-      </button>
+      </Button>
       <Link to={'/posts/' + post.id}>Ouvrir le fil <span aria-hidden="true">↗</span></Link>
     </div>
   </article>
