@@ -10,7 +10,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "format:css": "prettier --write \"src/styles/**/*.css\"",
+    "check": "npm run build && npm run lint && npm run format:check"
   },
   "dependencies": {
     "react": "^19.2.0",
