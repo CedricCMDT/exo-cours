@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { fetchApiDataset, sessionRequest } from '../api'
+import { fetchApiDataset, sessionRequest } from '../services/api'
 import type { ApiDataset } from '../api'
 import type { Creation, Member, Post, Query } from '../types'
-import type { Reply } from '../replies'
+import type { Reply } from '../types/reply'
 import { communityMembers, communityPosts } from '../data/community'
 
 /**
@@ -58,7 +58,6 @@ type ContextValue = {
   publish: (draft: Creation) => Promise<Post>
   reload: () => void
   addReply: (postId: number, parentId: string | null, body: string) => Promise<void>
-  pendingReplies: PendingReply[]
   theme: 'light' | 'dark'
   toggleTheme: () => void
 }
@@ -94,7 +93,6 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const [revision, setRevision] = useState(0)
   const [query, setQuery] = useState<Query>({ text: '', tag: '', popularity: 'all', page: 1 })
   const [savedIds, setSavedIds] = useState<number[]>(readArray)
-  const pendingReplies: PendingReply[] = []
   const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
 
   // API distante : les trois vrais GET sont la PREMIÈRE source du fil.
@@ -248,7 +246,7 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     apiCounts, reloadApi: () => setApiRevision(value => value + 1),
     loading, error, query, setCriteria,
     setPage: page => setQuery(current => ({ ...current, page })),
-    savedIds, toggleSaved, publish, addReply, pendingReplies,
+    savedIds, toggleSaved, publish, addReply,
     reload: () => { setLoading(true); setRevision(value => value + 1) },
     theme, toggleTheme: () => setTheme(current => current === 'dark' ? 'light' : 'dark'),
   }}>{children}</NetworkContext.Provider>
