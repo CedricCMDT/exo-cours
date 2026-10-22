@@ -72,26 +72,6 @@ export async function fetchApiDataset(signal?: AbortSignal): Promise<ApiDataset>
   return { posts, members, comments }
 }
 
-/**
- * Vrai POST HTTP vers une API de démo.
- * Important : DummyJSON renvoie un objet simulé mais ne persiste PAS l'ajout.
- * Ce test est séparé du bouton « Publier », qui utilise notre serveur local.
- */
-export async function simulateApiPost(): Promise<{ id: number; title: string; userId: number }> {
-  const response = await fetch(API_URL + '/posts/add', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      title: 'Afterhours : test REST API',
-      body: 'Création simulée dans DummyJSON depuis le laboratoire API.',
-      userId: 1,
-      tags: ['demo', 'api'],
-    }),
-  })
-  if (!response.ok) throw new Error(`POST DummyJSON : HTTP ${response.status}`)
-  return response.json() as Promise<{ id: number; title: string; userId: number }>
-}
-
 /** Appels vers le serveur Vite : vraies modifications temporaires. */
 export async function sessionRequest<T>(
   path: string,
