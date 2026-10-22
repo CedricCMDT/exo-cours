@@ -1,128 +1,78 @@
-# Afterhours — Guide pour présenter le projet
+# AFTERHOURS // FUTURE OVERLOAD
 
-> **Idée générale :** une interface qui a l'air riche (un poste d'observation d'un forum),
-> mais un fonctionnement composé de quelques mécanismes simples en React et JavaScript.
+## Objectif du projet
 
-## 1. L'expérience à montrer
+Créer un forum de démonstration **volontairement dense et futuriste** : néons, panneaux, publicité parodique, popup, flux de sujets et données de discussion. L'apparence est compliquée, mais l'essentiel du fonctionnement tient dans des tableaux JavaScript et des états React.
 
-L'accueil ne se contente pas de lister des messages.
+Le rétro a été abandonné : `neo.css` et `control-room.css` ne sont plus importés. Seuls `styles.css` (base) et `future.css` (nouveau design) sont chargés dans `main.tsx`.
 
-- **Carte du réseau** : 12 communautés sont affichées sous forme de cases colorées.
-  Chaque case est un bouton. Le nombre de fils et la barre d'activité sont calculés sur les données.
-- **Un fil à ouvrir** : une sélection de publications avec réactions des deux côtés.
-  Le bouton « Autre fréquence » affiche la suivante ; le lien ouvre le fil.
-- **Trois vues du fil** : « Les récents », « Ça divise » et « Les oubliés ».
-  On change l'ordre d'affichage sans recharger la page ni appeler une autre API.
-- **Comptes temporaires** : on peut s'inscrire, se connecter, publier, répondre et gérer ses messages.
-  Actualiser la page conserve les données ; redémarrer le serveur les efface.
-- **Archives fictives** : plus de 1 000 messages de démonstration dans 18 communautés,
-  avec différentes dates, réactions et auteurs. Ils ne sont pas de vraies données Internet.
+## Les modules à présenter
 
-- **Discussions fictives variables** : certains posts ont 0 à 2 réponses, d'autres 10, 50 ou plus de 100. Les conversations sont imbriquées et affichées progressivement (12 fils racines par clic). Les comptes sont des personnages de démonstration, pas de vrais utilisateurs.\n\n## 2. Quels fichiers regarder ?
-
-| Fichier | Rôle |
+| Fichier | Fonctionnement |
 | --- | --- |
-| `src/pages/Feed.tsx` | Affichage du fil, recherche, pagination et trois modes de classement. |
-| `src/components/ControlRoom.tsx` | Carte des communautés et sélection du sujet en vedette. |
-| `src/control-room.css` | Grille, couleurs, formes décoratives, animations et responsive. |
-| `src/components/PostCard.tsx` | Présentation d'une publication, compteur de réponses et équilibre likes/dislikes. |\n| `src/data/archiveReplies.ts` | Générateur reproductible de commentaires fictifs, avec nombres irréguliers et thèmes variés. |\n| `src/components/Discussion.tsx` | Affiche les réponses imbriquées et un bouton pour développer la suite. |
-| `src/data/community.ts` | Contenu de démonstration et distribution des publications. |
-| `src/context/NetworkContext.tsx` | État React partagé par les pages, fonctions de connexion et chargement. |
-| `src/api.ts` | Une fonction `fetch()` commune à toutes les requêtes locales. |
-| `sessionApi.ts` | Petit serveur temporaire : utilisateurs, posts, commentaires, sessions. |
-| `vite.config.ts` | Branche la mini-API au serveur Vite de développement. |
+| `src/App.tsx` | Barre de navigation futuriste, navigation React Router, popup globale. |
+| `src/pages/Feed.tsx` | Trois colonnes, recherche, quatre tris, fil, radar de discussions et animations GSAP. |
+| `src/components/ControlRoom.tsx` | Carte des communautés et sujet à réactions contradictoires. |
+| `src/components/Experience.tsx` | Bandeau défilant, trois publicités fictives, deux notifications et popup d'accueil. |
+| `src/future.css` | Tous les effets visuels, formes, couleurs, animation CSS et responsive. |
+| `src/components/PostCard.tsx` | Cartes de publications, barres de réaction et compteur de réponses. |
+| `src/data/community.ts` | Archives fictives réparties dans les catégories. |
+| `src/data/archiveReplies.ts` | Nombre de réponses variable et fils de discussions imbriqués, reproductibles. |
+| `src/context/NetworkContext.tsx` | Données partagées, connexion et rafraîchissement après les actions. |
+| `sessionApi.ts` | API en mémoire vive (utilisateurs, posts, commentaires, sessions). |
 
-Les parties nouvelles portent des commentaires directement dans le code.
+## À expliquer à l'oral
 
-## 3. Quatre notions suffisent pour expliquer le « tableau de bord »
+### 1. On part d'un seul tableau
 
-### A — `useState` : retenir un choix
+`posts` est transmis aux composants. Les chiffres de la page sont calculés avec `filter`, `map`, `reduce` et `sort` : les mêmes données sont affichées sous plusieurs formes.
 
-Dans `ControlRoom.tsx`, `channel` mémorise le numéro du sujet mis en avant :
+Exemples : une liste de sujets, un total de réactions, un radar des débats les plus contradictoires et un nombre de fils dans chaque communauté.
 
-```tsx
-const [channel, setChannel] = useState(0)
-```
-
-Cliquer sur « Autre fréquence » change juste ce nombre. React met l'affichage à jour.
-
-### B — `map` et `filter` : fabriquer les 12 cases
+### 2. Les boutons ne changent qu'une variable
 
 ```tsx
-communities.map(community => {
-  const belonging = posts.filter(post => post.tags.includes(community.slug))
-  return { ...community, count: belonging.length }
-})
+const [order, setOrder] = useState('recent')
 ```
 
-On ne dessine **pas** les cases une par une. React répète un bouton à partir d'un tableau.
+Changer `order` suffit pour réorganiser le tableau affiché. React met l'écran à jour. Aucun appel réseau supplémentaire.
 
-### C — `sort` : changer l'ordre
+### 3. Les animations sont simples
 
-- Récent : dates décroissantes.
-- Ça divise : nombre de réactions de chaque côté (`Math.min(likes, dislikes)`).
-- Oubliés : peu de vues d'abord.
+`future.css` contient des `@keyframes` qui déplacent ou font tourner de petits éléments. Le bandeau de titres défile grâce à `transform: translateX(...)`. Les barres pulsent grâce à `opacity` et `scaleY`.
 
-On fait une copie du tableau avec `[...filtered]` avant de le trier, pour ne pas modifier les données partagées.
+GSAP est utilisé **uniquement** pour l'entrée du grand écran et l'arrivée des cartes de posts : `opacity`, `x`, `y` et `scale`. Un paramètre système `prefers-reduced-motion` coupe les effets continus.
 
-### D — CSS Grid : donner une apparence complexe
+### 4. Les pop-ups sont contrôlés avec React
 
-```css
-.room-map-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
+Dans `Experience.tsx` :
+
+```tsx
+const [open, setOpen] = useState(false)
 ```
 
-Une seule règle place les douze cases sur quatre colonnes. Les autres règles ajoutent
-couleurs, reliefs, petites barres et effets de survol. Le « disque radio » est simplement
-un cercle CSS avec une animation de rotation ; ce n'est pas une vidéo ou un canvas.
+`setOpen(true)` ouvre la fenêtre, `setOpen(false)` la ferme. Elle apparaît une fois par onglet grâce à `sessionStorage`, et peut être fermée par le bouton, en cliquant à l'extérieur ou avec la touche Échap.
 
-## 4. Comment expliquer les comptes temporaires
+Les deux petites notifications peuvent être fermées séparément.
 
-```text
-React (dans le navigateur)
-    |
-    |  fetch('/session-api/posts')
-    v
-Vite + sessionApi.ts (sur ta machine)
-    |
-    |  newPosts.push(...) ou newPosts.unshift(...)
-    v
-Tableau JavaScript en mémoire RAM
-```
+### 5. Les publicités ne sont pas réelles
 
-Le serveur garde quatre choses en mémoire : les comptes, les nouveaux posts, les commentaires
-et les tokens de session. Les mots de passe sont hachés avec `scrypt`; le navigateur reçoit
-seulement un cookie de connexion `HttpOnly`, jamais le hash.
+`FictionAd` lit simplement une fiche prédéfinie dans un tableau : nom, titre, phrase et couleur. Le bouton ouvre un texte explicatif **sur la même page**. Aucun paiement, tracker ni lien vers une vraie régie. On les présente toujours comme « PUBLICITÉ FICTIVE ».
 
-Un `bootId` différent est créé à chaque redémarrage de Node.js. Le navigateur le compare
-à la valeur précédente pour vider les anciens favoris. Le thème clair/sombre peut rester
-dans les préférences du navigateur.
+### 6. Comptes et messages temporaires
 
-**Limite importante :** il s'agit d'une application de démonstration locale, pas d'une plateforme
-prête à recevoir des utilisateurs sur Internet. L'API n'existe que lorsque Vite tourne en mode
-développement (`npm run dev`). Un simple hébergement statique n'exécutera pas cette API.
+Le serveur Vite intercepte `/session-api/*` grâce à `sessionApi.ts`. Les comptes, nouveaux messages et commentaires sont gardés dans des tableaux **en mémoire RAM**. Après l'arrêt et le redémarrage de Node.js, ils sont effacés. Les archives fictives sont dans les sources et reviennent à chaque lancement.
 
-## 5. Démonstration en classe (ordre conseillé)
+Les mots de passe sont hachés, les droits de suppression/modification sont vérifiés côté serveur.
 
-1. Lancer `npm install`, puis `npm run dev`.
-2. Ouvrir une communauté depuis la carte, montrer que le fil se filtre et qu'il défile.
-3. Basculer entre « Les récents », « Ça divise » et « Les oubliés ».
-4. Cliquer sur « Autre fréquence » puis ouvrir le sujet choisi.
-5. Créer un compte, publier un sujet et lui répondre.
-6. Actualiser la page : les contenus de la session restent là.
-7. Couper le serveur avec `Ctrl+C`, le relancer : compte et contenus de session disparus,
-   tandis que les archives fictives réapparaissent.
+## Démonstration recommandée
 
-## 6. Pour vérifier avant l'oral
+1. Exécuter `npm install`, puis `npm run build` et `npm run dev`.
+2. Montrer le thème sombre et le flux de titres qui défile.
+3. Fermer la popup d'accueil et les deux notifications.
+4. Cliquer sur une publicité fictive : c'est un panneau interactif local.
+5. Utiliser le radar de débats, les catégories, puis les quatre tris du flux.
+6. Créer un compte, écrire une publication et répondre dans un fil existant.
+7. Actualiser : les données de session existent toujours ; redémarrer le serveur les efface.
 
-```powershell
-npm install
-npm run build
-npm run dev
-```
-
-Teste aussi les boutons sur un écran de téléphone (outils développeur du navigateur)
-et le thème sombre. Le projet n'a pas été compilé dans l'environnement local de
-l'assistant : ce contrôle reste nécessaire sur la machine qui héberge Afterhours.
+**Important :** le projet est pensé pour une démo locale `npm run dev` et n'est pas un service Internet prêt à accueillir de vrais utilisateurs. La compilation et le rendu sont à vérifier sur la machine du projet.
