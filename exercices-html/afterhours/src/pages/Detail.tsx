@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
-import { Discussion } from '../components/Discussion'
+import { Discussion } from '../components/discussion/Discussion'
 import { useNetwork } from '../context/NetworkContext'
 
 /**
