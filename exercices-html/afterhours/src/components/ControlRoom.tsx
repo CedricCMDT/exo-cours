@@ -36,7 +36,7 @@ function disagreement(post: Post): number {
 export function ControlRoom({ posts, onCommunity }: RoomProps) {
   const [channel, setChannel] = useState(0)
 
-  // Les 12 communautés ayant le plus de publications : calculées, jamais codées en dur.
+  // Les 12 communautés les plus commentées/réactives : calculées, jamais codées en dur.
   const boards = useMemo(() => {
     return communities
       .map(community => {
@@ -60,7 +60,7 @@ export function ControlRoom({ posts, onCommunity }: RoomProps) {
   }, [posts])
 
   const maxActivity = Math.max(1, ...boards.map(board => board.reactions))
-  const featured = debated[channel % debated.length]
+  const featured = debated.length ? debated[channel % debated.length] : undefined
   const negativeShare = featured
     ? Math.round(100 * featured.reactions.dislikes /
         Math.max(1, featured.reactions.likes + featured.reactions.dislikes))
