@@ -7,7 +7,7 @@ import { useNetwork } from '../context/NetworkContext'
 /**
  * Page d'un sujet : aucune requête externe.
  * Les publications proviennent soit des archives fictives du projet,
- * soit de la mémoire du petit serveur local.
+ * soit de la mémoire du petit serveur local, soit de l'API DummyJSON.
  */
 export function Detail() {
   const { id } = useParams()
@@ -57,7 +57,7 @@ export function Detail() {
   return <main className="narrow-page">
     <div className="breadcrumb"><Link to="/">← Retour au fil</Link> / sujet #{post.id}</div>
     <article className="detail-card">
-      <small>AFTERHOURS / {post.source === 'community' ? 'ARCHIVE' : 'SESSION'} #{post.id}</small>
+      <small>AFTERHOURS / {post.source === 'api' ? 'DUMMYJSON / API' : post.source === 'community' ? 'ARCHIVE FICTIVE' : 'SESSION LOCALE'} #{post.id}</small>
       <h1>{post.title}</h1>
       <p className="byline">Publié par @{member?.username || 'anonymous_' + post.userId} · {date}</p>
       <div className="detail-body">{post.body}</div>
