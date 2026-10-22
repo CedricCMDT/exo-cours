@@ -159,7 +159,7 @@ export function Feed() {
         </div>
         <div className="future-stats">
           <div><strong>{posts.length.toLocaleString('fr-FR')}</strong><small>THREADS AFFICHÉS</small></div>
-          <div><strong>{communities.length}</strong><small>SECTIONS</small></div>
+          <div><strong>{new Set(posts.flatMap(post => post.tags)).size}</strong><small>CANAUX VISIBLES</small></div>
           <div><strong>{reactions.toLocaleString('fr-FR')}</strong><small>RÉACTIONS FICTIVES + SESSION</small></div>
         </div>
       </div>
@@ -224,9 +224,10 @@ export function Feed() {
             <button key={id} type="button" aria-pressed={order === id} onClick={() => { setOrder(id); setPage(1) }}>{label}</button>)}
         </div>
 
-        {loading && <p className="notice">Chargement du réseau local…</p>}
+        {(loading || (apiStatus === 'loading' && source === 'api')) &&
+          <p className="notice" role="status">Chargement des données API et du serveur local…</p>}
         {error && <p className="notice error" role="alert">{error} <button type="button" onClick={reload}>Réessayer</button></p>}
-        {!loading && (visible.length
+        {!loading && !(apiStatus === 'loading' && source === 'api') && (visible.length
           ? visible.map(post => <PostCard key={post.id} post={post} member={members.find(member => member.id === post.userId)} />)
           : <div className="future-empty"><h3>RIEN DANS LE RADAR.</h3><p>Essaie une autre recherche ou retire un filtre.</p></div>)}
 
