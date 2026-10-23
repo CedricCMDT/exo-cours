@@ -5,14 +5,12 @@ import { communityPosts } from '../src/data/community'
 import { archiveReplyCount } from '../src/data/archiveReplies'
 
 /**
- * API LOCALE D'AFTERHOURS
+ * Routeur HTTP utilisé par le plugin Vite pour /session-api.
  *
- * Toutes les données créées par l'utilisateur vivent dans ces tableaux.
- * Rien n'est écrit sur le disque : quand Node.js s'arrête, ces tableaux
- * disparaissent. Les archives de démonstration, elles, sont dans le code.
- *
- * À expliquer à l'oral :
- *   navigateur  →  fetch('/session-api/...')  →  ce fichier  →  réponse JSON
+ * Les comptes, sessions, publications et commentaires sont conservés en
+ * mémoire du processus Node.js ; ce choix répond au périmètre du TD.
+ * L'API externe DummyJSON et ce service local ont des responsabilités
+ * distinctes et ne partagent pas leur stockage.
  */
 
 type Account = {
@@ -47,18 +45,18 @@ type NewComment = {
   automated: false
 }
 
-// ── 1. Notre « base de données » temporaire : quatre variables JavaScript.
+// Stockage de session en mémoire, partagé par les routes du processus Node.js.
 const accounts: Account[] = []
 const newPosts: NewPost[] = []
 const newComments: NewComment[] = []
 const sessions = new Map<string, number>() // token de session → ID utilisateur
 
-// Un identifiant change à chaque relancement du serveur, pour vider les favoris.
+// Identifiant de démarrage : permet au client de détecter une nouvelle session serveur.
 const bootId = randomUUID()
 let nextUserId = 100000
 let nextPostId = 1000000
 
-// ── 2. Petites fonctions utilitaires, utilisées dans plusieurs routes.
+// Utilitaires HTTP, authentification et sérialisation des réponses.
 function sendJson(res: ServerResponse, status: number, value: unknown) {
   res.writeHead(status, {
     'Content-Type': 'application/json; charset=utf-8',
@@ -78,7 +76,7 @@ async function readBody(req: IncomingMessage): Promise<Record<string, unknown>> 
   return JSON.parse(text || '{}') as Record<string, unknown>
 }
 
-// Le mot de passe n'est jamais conservé en clair, même pour un projet local.
+// Les mots de passe sont hachés avec un sel aléatoire avant stockage en mémoire.
 function hashPassword(password: string, salt: string): Buffer {
   return scryptSync(password, salt, 64)
 }
@@ -119,15 +117,14 @@ function createSession(res: ServerResponse, account: Account) {
 }
 
 function isKnownPost(id: number): boolean {
-  // Les archives et les posts locaux sont connus ici.
-  // Les IDs 1..9999 sont réservés aux posts de l'API DummyJSON.
-  // Cette limite simplifiée est suffisante pour notre démonstration locale.
+  // Les identifiants 1 à 9999 sont réservés aux publications distantes.
+  // Les autres publications sont résolues à partir des ressources locales.
   return newPosts.some(post => post.id === id) ||
     communityPosts.some(post => post.id === id) ||
     (Number.isInteger(id) && id >= 1 && id <= 9999)
 }
 
-// ── 3. Routes : une URL et une méthode HTTP déclenchent une action.
+// Les actions sont réparties selon la méthode et le chemin de la requête.
 async function handle(req: IncomingMessage, res: ServerResponse) {
   const path = (req.url || '/').split('?')[0]
   const method = req.method || 'GET'
