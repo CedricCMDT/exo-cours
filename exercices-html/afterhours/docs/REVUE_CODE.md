@@ -1,57 +1,68 @@
-# Revue technique — Afterhours
+# Revue de code — Afterhours
 
-## Travaux effectués
+## Périmètre
 
-### Factorisation
+Cette revue porte sur la structure de l'application React/TypeScript, l'utilisation des API REST, les composants communs, les conventions de code et les tests.
 
-- Composants génériques `Button`, `ButtonLink`, `InputField`, `TextareaField`, `SelectField`, `Panel` et `PageHeader`.
-- Extraction des filtres et tris purs vers `features/feed/selectors.ts`.
-- Extraction du panneau source/API et des contrôles de recherche hors du grand composant `Feed`.
-- Extraction des méthodes HTTP de démonstration vers `services/demoApi.ts`.
-- Extraction des appels externes vers `features/api/useRemoteDataset.ts`.
-- Extraction des actions et de la synchronisation locale vers `features/session/useLocalSession.ts`.
-- `NetworkContext` se concentre sur l'assemblage des sources et les préférences du navigateur.
+## 1. Architecture et responsabilités
 
-### CSS et thème clair
+L'application distingue les éléments suivants :
 
-- Les anciens blocs CSS en une seule ligne ont été réindentés en règles lisibles.
-- `styles/ui.css` contient les variables sémantiques communes aux boutons, champs, panneaux et thème clair/sombre.
-- Le thème clair comporte des styles dédiés pour les textes, cartes, formulaires et contrôles, plutôt que de remplacer uniquement la couleur du fond.
-- La bannière futuriste et certaines publicités fictives restent volontairement sombres et gardent leurs propres couleurs de texte.
+| Couche | Responsabilité |
+| --- | --- |
+| `src/pages/` | Composition des écrans et navigation |
+| `src/components/ui/` | Composants visuels génériques |
+| `src/features/` | Gestion de l'API distante, de la session et des traitements métier |
+| `src/services/` | Construction et exécution des requêtes HTTP |
+| `src/context/` | Mise à disposition des ressources et préférences |
+| `server/` | Traitement des opérations locales, authentification et autorisations |
+| `src/types/` | Définition des contrats de données |
 
-### Qualité du code
+La séparation réduit les duplications et limite les dépendances entre présentation, logique applicative et accès au réseau.
 
-- Prettier est une dépendance du projet et possède un fichier de configuration.
-- Ajout de `.editorconfig`, `.vscode/settings.json`, `.vscode/extensions.json` pour déclencher Prettier automatiquement à l'enregistrement.
-- Scripts `format`, `format:css`, `format:check`, `lint`, `build` et `check`.
-- Tests Playwright mis à jour : appels API simulés de manière déterministe, filtres, laboratoire HTTP, compte local, réponses, persistance et contraste en mode clair.
+## 2. Factorisation
 
-## Régressions explicitement ciblées
+**Composants partagés.** Les boutons, liens d'action, champs de formulaire, panneaux et en-têtes disposent d'implémentations communes. Leurs variantes visuelles sont définies dans `src/styles/ui.css`.
 
-1. Ancienne API remplacée par un faux tableau : l'accueil utilise toujours DummyJSON en priorité.
-2. Écritures de DummyJSON non persistantes : création et réponses personnelles continuent de passer par `/session-api`.
-3. Trois commentaires fixes partout : seules les archives fictives sont générées en quantité variable.
-4. Texte blanc invisible en mode clair : adaptations de contraste et vérification automatisée.
-5. Duplication des boutons et formulaires : composants UI communs.
-6. CSS compact impossible à lire : reformatage et formatage automatique.
+**Sélecteurs du catalogue.** `features/feed/selectors.ts` centralise la sélection des ressources, les filtres, le classement et la pagination. Les fonctions travaillent sur les données reçues en paramètres et ne dépendent pas de React.
 
-## Les limites qui restent
+**Hooks de données.** `useRemoteDataset` gère les requêtes de consultation et leurs états ; `useLocalSession` centralise les actions associées à `/session-api`. Le contexte React assemble les deux sources et les met à disposition des pages.
 
-Le projet est un **TP local**, pas une plateforme de production : pas de base de données persistante, pas de modération à grande échelle, pas de limitation de débit ni de protections déployées côté serveur public.
+**Modules de présentation.** `FeedHero`, `SourceSwitcher` et `FeedControls` isolent les principales sections du fil de publications.
 
-Les animations ne sont pas désactivées par défaut, mais la préférence `prefers-reduced-motion` est respectée.
+## 3. Commentaires et conventions
 
-## Contrôles à lancer
+Des commentaires ont été ajoutés aux points structurants du code : appels HTTP, gestion des effets React, synchronisation du serveur local, transformation des données, tri sans mutation des tableaux et règles de composition des composants.
 
-```powershell
-npm install
-npm run format
-npm run lint
-npm run build
-npx playwright install chromium
-npm run test:e2e
-```
+Les commentaires documentent une responsabilité, un contrat ou un choix d'implémentation ; ils n'ont pas vocation à décrire systématiquement les instructions évidentes.
 
-**Attention :** `npm run format` réécrit les fichiers non conformes à Prettier. Le contrôle `npm run format:check` ne fait que signaler les écarts. Pour utiliser le formatage à l'enregistrement, ouvrir le dossier `afterhours` directement dans VS Code et installer l'extension Prettier recommandée.
+Le code utilise un format commun : indentation à deux espaces, configuration Prettier, fichier `.editorconfig` et réglages VS Code pour le formatage à l'enregistrement.
 
-Les scripts GitHub Actions effectuent des contrôles automatiques ; leur résultat doit être consulté après le dernier commit, car une réussite antérieure ne valide pas les modifications ultérieures.
+## 4. Gestion des thèmes
+
+Les variables CSS décrivent les couleurs selon leur rôle : surface, texte, bordure, champ de formulaire, action principale, etc. Les adaptations du mode clair sont regroupées pour maintenir la lisibilité des éléments sans redéfinir intégralement leur apparence.
+
+Les tests d'interface comprennent des contrôles de contraste sur les cartes de publications et les libellés des formulaires.
+
+## 5. Vérifications
+
+| Commande | Contrôle |
+| --- | --- |
+| `npm run lint` | Règles ESLint et hooks React |
+| `npm run build` | Typage et compilation de l'application |
+| `npm run format:check` | Conformité au format Prettier |
+| `npm run test:e2e` | Parcours d'interface avec Playwright |
+
+Les scénarios couvrent la consultation, la navigation, les filtres, les méthodes REST, les contributions locales et le thème clair.
+
+## 6. Limites techniques
+
+L'API locale conserve ses ressources dans le processus Node.js. La durée de vie des données correspond donc à celle du serveur. Les endpoints de mutation de DummyJSON n'assurent pas de persistance.
+
+Un déploiement avec conservation durable des comptes et publications nécessiterait une base de données et un backend autonome, ainsi que des protections adaptées à une exposition sur Internet. Ces évolutions sont distinctes des objectifs du TD.
+
+## Documentation associée
+
+- [README](../README.md) — présentation et démarrage.
+- [Architecture](ARCHITECTURE.md) — organisation et flux de données.
+- [Présentation technique](PRESENTATION.md) — parcours d'explication des fonctionnalités.
