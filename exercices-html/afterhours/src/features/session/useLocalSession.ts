@@ -3,7 +3,7 @@ import { sessionRequest } from '../../services/api'
 import type { Creation, Member, Post } from '../../types'
 import type { Reply } from '../../types/reply'
 
-/** Réponse du serveur local en mémoire vive. */
+/** Structure de la réponse de GET /state, commune aux actions de session. */
 export type SessionState = {
   bootId: string
   user: Member | null
@@ -13,8 +13,10 @@ export type SessionState = {
 }
 
 /**
- * Toutes les mutations passent par cette couche, jamais directement depuis
- * les composants. Après une écriture, on relit /state pour synchroniser l'UI.
+ * Centralise l'authentification et les opérations CRUD locales.
+ *
+ * Les actions effectuent une mutation HTTP puis relisent GET /state :
+ * les différents écrans obtiennent ainsi la même version des ressources.
  */
 export function useLocalSession(onServerBoot: (bootId: string) => void) {
   const [user, setUser] = useState<Member | null>(null)
@@ -25,6 +27,8 @@ export function useLocalSession(onServerBoot: (bootId: string) => void) {
   const [error, setError] = useState('')
   const [revision, setRevision] = useState(0)
 
+  // La réponse du serveur est la référence pour l'utilisateur connecté,
+  // les publications personnelles et leurs commentaires.
   const sync = useCallback(
     (state: SessionState) => {
       onServerBoot(state.bootId)
@@ -42,6 +46,7 @@ export function useLocalSession(onServerBoot: (bootId: string) => void) {
   }, [sync])
 
   useEffect(() => {
+    // Évite les mises à jour d'état après le démontage du composant.
     let cancelled = false
     sessionRequest<SessionState>('/state')
       .then((state) => {
@@ -59,6 +64,7 @@ export function useLocalSession(onServerBoot: (bootId: string) => void) {
     return () => { cancelled = true }
   }, [revision, sync])
 
+  /** Exécute une écriture puis synchronise le contexte à partir du serveur. */
   async function mutate<T>(path: string, method: 'POST' | 'PATCH' | 'DELETE', payload?: unknown) {
     const response = await sessionRequest<T>(path, method, payload)
     await refresh()
@@ -87,6 +93,8 @@ export function useLocalSession(onServerBoot: (bootId: string) => void) {
     addReply: async (postId: number, parentId: string | null, body: string) => {
       await mutate('/comments', 'POST', { postId, parentId, body })
     },
+    // L'auteur n'est pas transmis par le formulaire : il est déterminé
+    // par la session HTTP dans le gestionnaire de routes du serveur.
     publish: async (draft: Creation): Promise<Post> => {
       const response = await mutate<{ post: Post }>('/posts', 'POST', {
         title: draft.title,
