@@ -2,14 +2,11 @@ import type { Member, Post } from '../types'
 import type { Reply } from '../types/reply'
 
 /**
- * DEUX SOURCES DE DONNÉES, DEUX RÔLES DIFFÉRENTS
+ * Couche d'accès aux données.
  *
- * 1. DummyJSON : API REST externe, source PRINCIPALE du forum.
- *    Trois vrais GET HTTP chargent les posts, les utilisateurs et les commentaires.
- * 2. /session-api : notre petite API locale, qui gère les comptes et posts
- *    créés pendant l'exécution de Vite. Ils disparaissent au redémarrage.
- *
- * Ouvrir F12 > Réseau pour voir les requêtes de la première partie.
+ * Deux services sont utilisés : DummyJSON pour la consultation du catalogue
+ * et /session-api pour les actions associées à la session courante.
+ * Les composants n'ont pas à construire eux-mêmes les requêtes HTTP.
  */
 
 const API_URL = 'https://dummyjson.com'
@@ -31,14 +28,18 @@ export type ApiDataset = {
   comments: Reply[]
 }
 
-/** fetch + contrôle du statut HTTP. Une seule fonction pour les trois GET. */
+/** Centralise le contrôle des statuts HTTP et le décodage des réponses JSON. */
 async function getJson<T>(endpoint: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(API_URL + endpoint, { signal })
   if (!response.ok) throw new Error(`API DummyJSON : HTTP ${response.status}`)
   return response.json() as Promise<T>
 }
 
-/** Charge d'abord l'API. Les archives fictives ne sont pas utilisées ici. */
+/**
+ * Récupère le catalogue distant en parallèle.
+ * Promise.all rejette l'ensemble du chargement si l'une des trois requêtes
+ * échoue ; le hook appelant se charge alors de l'état d'erreur.
+ */
 export async function fetchApiDataset(signal?: AbortSignal): Promise<ApiDataset> {
   const [postResult, userResult, commentResult] = await Promise.all([
     getJson<ApiList<ApiPost, 'posts'>>('/posts?limit=0', signal),
@@ -46,7 +47,7 @@ export async function fetchApiDataset(signal?: AbortSignal): Promise<ApiDataset>
     getJson<ApiList<ApiComment, 'comments'>>('/comments?limit=0', signal),
   ])
 
-  // On ajoute source:'api' pour différencier visuellement les données distantes.
+  // La provenance est ajoutée au modèle commun pour les filtres de l'interface.
   const posts: Post[] = postResult.posts.map(post => ({
     ...post,
     source: 'api',
@@ -59,7 +60,7 @@ export async function fetchApiDataset(signal?: AbortSignal): Promise<ApiDataset>
     lastName: member.lastName || '',
   }))
 
-  // DummyJSON n'envoie PAS de dates pour ses commentaires : on n'en invente pas.
+  // Aucun champ de date n'est ajouté : l'endpoint /comments n'en fournit pas.
   const comments: Reply[] = commentResult.comments.map(comment => ({
     id: 'api-' + comment.id,
     postId: comment.postId,
