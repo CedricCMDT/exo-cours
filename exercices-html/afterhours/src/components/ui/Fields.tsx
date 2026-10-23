@@ -5,7 +5,11 @@ type CommonField = { label: string; hint?: string; error?: string; className?: s
 
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & CommonField
 
-/** Un label lié à son champ, un message d'aide et un message d'erreur accessibles. */
+/**
+ * Champ de formulaire réutilisable.
+ * useId() génère un identifiant stable pour associer le label et le contrôle
+ * lorsque le composant est utilisé plusieurs fois sur une page.
+ */
 export function InputField({ label, hint, error, className, id, ...input }: InputFieldProps) {
   const generatedId = useId()
   const fieldId = id ?? generatedId
@@ -29,6 +33,7 @@ export function InputField({ label, hint, error, className, id, ...input }: Inpu
   )
 }
 
+// Les mêmes propriétés de présentation sont utilisées pour les champs multilignes.
 type TextareaFieldProps = TextareaHTMLAttributes<HTMLTextAreaElement> & CommonField
 
 export function TextareaField({ label, hint, error, className, id, ...textarea }: TextareaFieldProps) {
@@ -48,6 +53,7 @@ export function TextareaField({ label, hint, error, className, id, ...textarea }
   )
 }
 
+// Même contrat de label et de présentation pour les listes déroulantes.
 type SelectFieldProps = SelectHTMLAttributes<HTMLSelectElement> & CommonField
 
 export function SelectField({ label, hint, error, className, id, children, ...select }: SelectFieldProps) {
