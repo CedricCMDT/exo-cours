@@ -59,12 +59,11 @@ function readTheme(): 'light' | 'dark' {
 }
 
 /**
- * Le contexte assemble les données : il ne contient plus les requêtes HTTP
- * et ne gère plus lui-même les formulaires ni les opérations CRUD.
+ * Point d'accès commun aux ressources et préférences de l'application.
  *
- * API externe → useRemoteDataset()
- * API locale → useLocalSession()
- * Résultat   → contexte utilisé par les pages.
+ * Les hooks spécialisés sont responsables des opérations HTTP ;
+ * le contexte compose uniquement leurs résultats et expose une API
+ * homogène aux pages React.
  */
 export function NetworkProvider({ children }: { children: ReactNode }) {
   const [query, setQuery] = useState<Query>({
@@ -76,6 +75,8 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const [savedIds, setSavedIds] = useState<number[]>(readBookmarks)
   const [theme, setTheme] = useState<'light' | 'dark'>(readTheme)
 
+  // L'identifiant du processus change à chaque démarrage de Vite.
+  // Les favoris liés à la session précédente sont alors réinitialisés.
   const handleServerBoot = useCallback((bootId: string) => {
     try {
       const previousBoot = localStorage.getItem('afterhours-boot-id')
@@ -92,7 +93,8 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
   const remote = useRemoteDataset()
   const session = useLocalSession(handleServerBoot)
 
-  // Un seul tableau combiné pour les routes, avec les sources distinctes.
+  // Les ressources sont regroupées pour la consultation ; la propriété
+  // source permet de distinguer l'API distante, le catalogue et la session.
   const posts = useMemo(
     () => [...session.posts, ...remote.data.posts, ...communityPosts],
     [session.posts, remote.data.posts],
@@ -106,6 +108,8 @@ export function NetworkProvider({ children }: { children: ReactNode }) {
     [session.replies, remote.data.comments],
   )
 
+  // Une modification de filtre repart de la première page pour éviter
+  // d'afficher une pagination devenue invalide.
   function setCriteria(changes: Partial<Omit<Query, 'page'>>) {
     setQuery((current) => ({ ...current, ...changes, page: 1 }))
   }
