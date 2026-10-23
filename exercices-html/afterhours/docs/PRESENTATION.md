@@ -41,7 +41,11 @@ Ouvrir les fichiers suivants pour présenter les responsabilités :
 | `src/services/api.ts` | Construction des requêtes HTTP et traitement des réponses |
 | `src/features/api/useRemoteDataset.ts` | Chargement asynchrone, rafraîchissement et erreurs |
 | `src/features/session/useLocalSession.ts` | Actions CRUD et synchronisation avec l'API locale |
-| `src/context/NetworkContext.tsx` | Mise à disposition des ressources aux pages |
+| `src/context/NetworkContext.tsx` | Composition des Providers, sans état applicatif |
+| `src/context/ForumContext.tsx` | Ressources consultables et état de l'API |
+| `src/context/SessionContext.tsx` | Authentification et actions sur les contenus |
+| `src/context/PreferencesContext.tsx` | Favoris et thème |
+| `src/context/FeedQueryContext.tsx` | Filtres et pagination |
 | `src/features/feed/selectors.ts` | Fonctions de recherche, filtrage, tri et pagination |
 | `src/components/ui/Button.tsx` | Composant réutilisable et variantes visuelles |
 | `src/components/ui/Fields.tsx` | Champs de formulaire avec labels associés |
@@ -57,7 +61,7 @@ Cette organisation suit une séparation entre **accès aux données**, **logique
 
 **Pourquoi des hooks personnalisés ?** `useRemoteDataset` et `useLocalSession` isolent les traitements asynchrones du code des pages. Leur rôle reste clairement défini.
 
-**Pourquoi un contexte React ?** Il rend les ressources consultables dans les différentes routes sans transmettre les mêmes propriétés à chaque niveau de l'arbre de composants.
+**Pourquoi plusieurs contextes React ?** Un Provider rend ses valeurs accessibles dans l'arbre sans transmettre manuellement les propriétés à chaque niveau. Afterhours distingue les données du forum, la session, les préférences et les filtres : chaque page utilise les hooks correspondant à ses besoins.
 
 **Pourquoi une API locale ?** DummyJSON fournit un catalogue et des endpoints de pratique REST, mais ne persiste pas les mutations. Le routeur `/session-api` permet de réaliser les opérations utilisateur attendues dans l'application.
 
