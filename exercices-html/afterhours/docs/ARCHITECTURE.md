@@ -44,7 +44,11 @@ afterhours/
 │   │           ├── SourceSwitcher.tsx
 │   │           └── FeedControls.tsx
 │   ├── context/
-│   │   └── NetworkContext.tsx      # Réunit données distantes et locales
+│   │   ├── NetworkContext.tsx      # Compose uniquement les Providers
+│   │   ├── ForumContext.tsx        # Catalogue et état API
+│   │   ├── SessionContext.tsx      # Utilisateur et mutations locales
+│   │   ├── PreferencesContext.tsx  # Favoris, thème et stockage navigateur
+│   │   └── FeedQueryContext.tsx    # Recherche, filtres et pagination
 │   ├── data/                      # Catalogue complémentaire et réponses
 │   ├── pages/                     # Feed, Detail, Saved, Create, Account
 │   ├── services/
@@ -80,8 +84,8 @@ afterhours/
                     │                                  │
                     └──────────────┬───────────────────┘
                                    │
-                        NetworkContext.tsx
-                  (+ archives françaises fictives)
+                        ForumContext.tsx
+                  (+ catalogue complémentaire local)
                                    │
                    Pages et composants de l'interface
                                    │
@@ -89,6 +93,27 @@ afterhours/
 ```
 
 **Flux principal :** DummyJSON fournit les données de consultation initiales. Les endpoints d'écriture du fournisseur ne conservent pas durablement les modifications. Les contributions utilisateur sont donc traitées par l'API locale et enregistrées en mémoire du processus Node.js pendant son exécution.
+
+## Contextes spécialisés
+
+Le composant `NetworkProvider` conserve uniquement la composition des Providers, dans cet ordre :
+
+```text
+PreferencesProvider
+└── SessionProvider
+    └── ForumProvider
+        └── FeedQueryProvider
+            └── Application
+```
+
+Les pages importent les hooks adaptés à leurs besoins :
+
+- `useForum()` : publications, utilisateurs, commentaires et état de l'API ;
+- `useSession()` : authentification et opérations CRUD sur les contributions ;
+- `usePreferences()` : thème et favoris ;
+- `useFeedQuery()` : critères de recherche et numéro de page.
+
+Cette séparation évite un contexte unique contenant toutes les actions et préférences. Modifier un filtre n'oblige plus les composants qui lisent uniquement la session à s'abonner au même objet de contexte. Le lien entre session et favoris est limité à `onServerBoot`, appelé lors de la synchronisation du serveur local.
 
 ## Composants de navigation et d'action
 
