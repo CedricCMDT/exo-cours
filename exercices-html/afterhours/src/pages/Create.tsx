@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Button } from '../components/ui/Button'
 import { InputField, TextareaField } from '../components/ui/Fields'
-import { useNetwork } from '../context/NetworkContext'
+import { useSession } from '../context/SessionContext'
 import type { Post } from '../types'
 
 /**
@@ -13,7 +13,7 @@ import type { Post } from '../types'
  * n'est fourni par le navigateur.
  */
 export function Create() {
-  const { publish, user } = useNetwork()
+  const { publish, user } = useSession()
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [tag, setTag] = useState('social')
