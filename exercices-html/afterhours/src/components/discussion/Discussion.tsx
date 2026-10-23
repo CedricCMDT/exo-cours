@@ -3,7 +3,8 @@ import type { FormEvent } from 'react'
 import { Link } from 'react-router'
 import { Button } from '../ui/Button'
 import { TextareaField } from '../ui/Fields'
-import { useNetwork } from '../../context/NetworkContext'
+import { useSession } from '../../context/SessionContext'
+import { useForum } from '../../context/ForumContext'
 import { archiveReplies } from '../../data/archiveReplies'
 import type { Reply } from '../../types/reply'
 import type { Post } from '../../types'
@@ -20,7 +21,7 @@ type ReplyFormProps = {
  * une valeur renseignée rattache le commentaire à une autre réponse.
  */
 function ReplyForm({ postId, parentId, afterSend }: ReplyFormProps) {
-  const { addReply, user } = useNetwork()
+  const { addReply, user } = useSession()
   const [text, setText] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -63,7 +64,7 @@ type CommentProps = {
  * est plafonné afin de conserver un affichage exploitable sur mobile.
  */
 function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
-  const { user, editReply, deleteReply } = useNetwork()
+  const { user, editReply, deleteReply } = useSession()
   const [responding, setResponding] = useState(false)
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(comment.body)
@@ -140,7 +141,7 @@ function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
  * issus de DummyJSON et les contributions locales sont récupérés dans le contexte.
  */
 export function Discussion({ postId, post }: { postId: number; post?: Post }) {
-  const { replies } = useNetwork()
+  const { replies } = useForum()
   const [visibleRoots, setVisibleRoots] = useState(12)
   const archive = useMemo(() => post ? archiveReplies(post) : [], [post])
 
