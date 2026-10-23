@@ -1,14 +1,53 @@
 # AFTERHOURS
 
-**Forum expérimental en React + TypeScript, alimenté en priorité par une API REST.**
+**Application web de discussions — React, TypeScript et API REST**
 
-Afterhours présente les données de démonstration de [DummyJSON](https://dummyjson.com/) dans une interface futuriste : fil de discussions, recherche, tris, cartes de communautés, commentaires et laboratoire HTTP. Le projet comporte également des **archives françaises fictives** et une **mini-API locale** pour créer un compte et publier pendant une session.
+Afterhours est une application de forum développée dans le cadre d'un **travail dirigé de développement web**. Le projet met en pratique la consommation d'une API REST, la conception d'interfaces avec React, la gestion d'état, le routage et la factorisation de composants.
 
-> Projet pédagogique. Les publications de DummyJSON et les archives sont des données de démonstration, pas des contenus vérifiés ou un forum public.
+L'interface propose un fil de publications, des espaces thématiques, des discussions avec réponses imbriquées ainsi qu'un espace utilisateur. L'application utilise **DummyJSON** pour alimenter le catalogue principal et une API Node.js intégrée au serveur Vite pour gérer les contributions locales.
 
-## Lancer le projet
+## Sommaire
 
-**Prérequis :** Node.js 20.19+ ou 22.12+, npm et une connexion Internet pour les appels DummyJSON.
+- [Objectifs pédagogiques](#objectifs-pédagogiques)
+- [Technologies](#technologies)
+- [Installation et exécution](#installation-et-exécution)
+- [Fonctionnalités](#fonctionnalités)
+- [Architecture](#architecture)
+- [API et gestion des données](#api-et-gestion-des-données)
+- [Qualité du code](#qualité-du-code)
+- [Documentation complémentaire](#documentation-complémentaire)
+
+## Objectifs pédagogiques
+
+Ce TD couvre notamment les compétences suivantes :
+
+1. **Consommer une API REST** avec `fetch`, `async/await`, `Promise.all` et le traitement des réponses JSON.
+2. **Développer une application React** avec des composants réutilisables, des propriétés typées et des hooks personnalisés.
+3. **Structurer un projet TypeScript** en séparant l'interface, la logique métier, les types et l'accès aux données.
+4. **Gérer la navigation et les formulaires** : routes, validation, états de chargement et messages d'erreur.
+5. **Implémenter les opérations CRUD** sur des ressources locales, avec vérification des droits côté serveur.
+6. **Concevoir une interface responsive** avec un thème clair/sombre, des variables CSS et des animations.
+7. **Contrôler la qualité** au moyen de TypeScript, ESLint, Prettier et de tests d'interface.
+
+## Technologies
+
+| Technologie | Utilisation |
+| --- | --- |
+| React 19 | Construction de l'interface et gestion des composants |
+| TypeScript 5 | Typage des ressources, propriétés et fonctions |
+| Vite 7 | Serveur de développement et compilation |
+| React Router 7 | Navigation entre les pages |
+| DummyJSON | Récupération des publications, utilisateurs et commentaires |
+| Node.js | API locale intégrée au serveur de développement |
+| CSS / GSAP | Mise en page responsive, thèmes et animations |
+| Prettier / ESLint | Formatage et analyse statique |
+| Playwright | Tests fonctionnels dans Chromium |
+
+## Installation et exécution
+
+**Prérequis :** Node.js 20.19+ ou 22.12+, npm et une connexion Internet pour l'accès à DummyJSON.
+
+Depuis la racine du dépôt :
 
 ```bash
 cd exercices-html/afterhours
@@ -16,126 +55,134 @@ npm install
 npm run dev
 ```
 
-Ouvrir l'adresse indiquée par Vite (généralement `http://localhost:5173`).
+Le serveur Vite indique l'adresse de l'application dans le terminal (par défaut, `http://localhost:5173`).
 
-Vérifier le code avant une présentation :
+Pour vérifier la compilation :
 
 ```bash
 npm run build
 ```
 
-Aucune clé API ni base de données à installer.
+Aucune variable d'environnement ni base de données supplémentaire n'est nécessaire pour l'exécution du TD.
 
 ## Fonctionnalités
 
-- **API prioritaire :** chargement des posts, des auteurs et des commentaires avec trois requêtes `GET` vers DummyJSON.
-- **Exploration :** recherche textuelle, catégories, popularité, quatre modes de classement, pagination, favoris et navigation entre les sujets.
-- **Laboratoire REST :** démonstration de `GET`, `POST`, `PATCH` et `DELETE` avec affichage des réponses JSON et des statuts HTTP.
-- **Comptes et échanges locaux :** inscription, connexion, profil, nouveaux sujets, réponses imbriquées, modification et suppression de ses contenus.
-- **Archives fictives :** rubriques en français et discussions générées de façon déterministe. Elles servent de contenu alternatif si l'API externe est inaccessible.
-- **Interface :** thème sombre/clair, panneaux, animations GSAP/CSS, publicités parodiques **explicitement fictives**, notifications et fenêtre d'introduction refermables.
-- **Accessibilité :** navigation clavier, titres sémantiques, états d'erreur, mise en page responsive et respect de `prefers-reduced-motion`.
+**Consultation et navigation.** Affichage des publications, recherche textuelle, filtrage par catégorie et popularité, plusieurs classements, pagination et consultation d'un sujet.
 
-## Deux API, deux responsabilités
+**Discussions.** Lecture des commentaires associés aux publications, réponses imbriquées, ajout de commentaires et gestion des contributions de l'utilisateur connecté.
 
-| Source | Fonctionnement | Persistance |
-| --- | --- | --- |
-| **DummyJSON (externe)** | `GET /posts`, `GET /users`, `GET /comments` ; CRUD simulé dans le laboratoire | Données de démonstration fournies par le service |
-| **`/session-api` (locale)** | Comptes, publications et commentaires personnels ; cookie de session `HttpOnly` | Mémoire vive du processus Node.js : **effacée au redémarrage** |
-| **Archives françaises** | Données et réponses fictives fournies avec le code | Identiques à chaque démarrage |
+**Espace utilisateur.** Inscription, connexion, personnalisation du profil, création de publications et gestion des favoris.
 
-**Important :** les opérations `POST`, `PATCH` et `DELETE` de DummyJSON simulent un résultat, mais n'écrivent pas durablement dans sa base. Les créations personnelles sont envoyées à **notre API locale**, pas à DummyJSON. Actualiser le navigateur conserve les données locales tant que le serveur tourne ; redémarrer le serveur les efface.
+**Exploration REST.** Un panneau intégré permet d'exécuter les méthodes `GET`, `POST`, `PATCH` et `DELETE` sur les ressources de DummyJSON, puis d'inspecter le statut HTTP et la réponse JSON.
 
-Le thème et certains réglages d'interface peuvent rester dans `localStorage` : ce ne sont pas des données du forum.
+**Interface.** Tableau de bord des communautés, navigation responsive, composants de formulaire partagés, thèmes clair/sombre et animations GSAP/CSS.
 
-## Architecture factorisée
+## Architecture
 
-La nouvelle organisation distingue **UI partagée**, **fonctionnalités métier**, **accès aux APIs** et **pages**. Les pages n'ont plus besoin de connaître les détails des appels HTTP ou des états internes.
+Le code suit une organisation **par responsabilités et fonctionnalités**. Les pages assemblent les éléments ; les composants UI restent réutilisables ; les hooks et services concentrent l'accès aux données.
 
 ```text
 afterhours/
-├── .vscode/                     # Prettier automatique à l'enregistrement
-├── .editorconfig                # Convention d'indentation commune
-├── server/sessionApi.ts         # API Node temporaire
+├── docs/                           # Documentation technique
+├── server/
+│   └── sessionApi.ts                # Routes et stockage de l'API locale
 ├── src/
 │   ├── components/
-│   │   ├── ui/                  # Button, ButtonLink, Fields, Panel, PageHeader
-│   │   ├── feed/                # PostCard, ControlRoom
-│   │   ├── api/                 # ApiPlayground
-│   │   ├── discussion/          # Réponses et formulaire réutilisable
-│   │   └── experience/          # Publicités fictives et pop-up
+│   │   ├── ui/                      # Button, Fields, Panel, PageHeader
+│   │   ├── feed/                    # Carte de publication, tableau de bord
+│   │   ├── discussion/              # Commentaires et formulaire de réponse
+│   │   ├── api/                     # Explorateur des méthodes REST
+│   │   └── experience/              # Éléments interactifs de l'interface
 │   ├── features/
-│   │   ├── api/                 # useRemoteDataset
-│   │   ├── session/             # useLocalSession
-│   │   └── feed/                # selectors, FeedHero, FeedControls, SourceSwitcher
-│   ├── services/                # HTTP : api, demoApi
-│   ├── context/                 # Assemblage des données
-│   ├── pages/                   # Routes de l'application
-│   ├── styles/                  # CSS par rôle + tokens du thème clair/sombre
-│   ├── data/                    # Archives fictives
-│   ├── types/                   # Interfaces TypeScript
-│   └── utils/                   # Fonctions génériques
-├── tests/network.spec.ts        # Tests de l'API, des formulaires et du contraste
-├── docs/                        # Architecture détaillée et guide d'oral
+│   │   ├── api/                     # useRemoteDataset
+│   │   ├── session/                 # useLocalSession
+│   │   └── feed/                    # Sélecteurs, filtres et modules du fil
+│   ├── context/                     # Partage des données et préférences
+│   ├── data/                        # Publications et réponses du catalogue local
+│   ├── pages/                       # Feed, Detail, Create, Account, Saved
+│   ├── services/                    # Clients HTTP
+│   ├── styles/                      # Styles par module et variables de thème
+│   ├── types/                       # Types et contrats de données
+│   ├── utils/                       # Fonctions utilitaires
+│   ├── App.tsx                       # Déclaration des routes
+│   └── main.tsx                      # Initialisation de l'application
+├── tests/                           # Scénarios Playwright
+├── .vscode/                         # Configuration du formatage
+├── .editorconfig
+├── .prettierrc.json
 └── package.json
 ```
 
-**Exemple de réutilisation :** un seul `Button` avec les variantes `primary`, `secondary`, `ghost` et `danger`. Un seul `InputField` relie automatiquement le label au champ. Un seul fichier `styles/ui.css` gère leurs couleurs et le contraste clair/sombre. La logique `filterPosts()` / `orderPosts()` reste indépendante de React.
+### Principes de factorisation
 
-→ [Architecture détaillée](docs/ARCHITECTURE.md)
+- **`Button` / `ButtonLink`** : variantes de taille et d'apparence centralisées dans `styles/ui.css`.
+- **`InputField`, `TextareaField`, `SelectField`** : labels associés aux champs et gestion commune de leur présentation.
+- **`features/feed/selectors.ts`** : fonctions indépendantes de React pour filtrer, classer et paginer les publications.
+- **`useRemoteDataset` / `useLocalSession`** : séparation des requêtes externes et des opérations sur la session.
+- **`NetworkContext`** : point de partage des ressources entre les différentes pages.
 
-## Mise en forme automatique (VS Code et Prettier)
+Le détail des responsabilités est présenté dans [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-Prettier est **déjà présent dans les dépendances** et ses réglages sont fournis dans `.prettierrc.json`. Pour activer le formatage automatique :
+## API et gestion des données
 
-1. Ouvre directement le dossier **`exercices-html/afterhours`** avec **Fichier → Ouvrir un dossier** dans VS Code (les paramètres `.vscode/` doivent être à la racine du dossier ouvert).
-2. Accepte l'installation de l'extension recommandée **Prettier – Code formatter**.
-3. Enregistre un fichier CSS, TS ou TSX : il est mis en forme automatiquement.
+### 1. API externe — DummyJSON
 
-Commandes possibles depuis le terminal :
+Au chargement du catalogue, trois requêtes HTTP sont effectuées en parallèle :
 
-```powershell
-npm run format:css    # Reformatage de tous les CSS
-npm run format        # Reformatage CSS, React, TypeScript, JSON et Markdown
-npm run format:check  # Contrôle sans modifier les fichiers
-npm run lint          # Analyse du code
-npm run build         # Compilation TypeScript + Vite
-```
+| Méthode | Endpoint | Ressource |
+| --- | --- | --- |
+| GET | `/posts?limit=0` | Publications |
+| GET | `/users?limit=0&select=id,username,firstName,lastName,image` | Utilisateurs |
+| GET | `/comments?limit=0` | Commentaires |
 
-Les CSS du dépôt ont également été réindentés pour ne plus tenir sur une seule ligne. **Attention :** `npm run format` modifie les fichiers ; vérifie les changements avant un commit.
+Le service `src/services/api.ts` transforme les réponses dans les types `Post`, `Member` et `Reply`. Le hook `useRemoteDataset` gère les états de chargement, d'erreur et de rafraîchissement.
 
-## Thème clair
+Le panneau REST utilise également `GET /posts/1`, `POST /posts/add`, `PATCH /posts/1` et `DELETE /posts/1`. **DummyJSON fournit des opérations d'écriture non persistantes** : les réponses permettent d'étudier les échanges HTTP sans modifier durablement les ressources du fournisseur.
 
-Le thème clair repose sur des **variables CSS sémantiques** (`--ui-text`, `--ui-surface`, `--ui-input-bg`, etc.) et des styles de contraste pour les cartes, textes, panneaux et formulaires. Il ne se contente plus d'inverser la couleur d'arrière-plan. Les tests Playwright vérifient notamment que le titre et le texte d'une carte dépassent le rapport de contraste 4,5:1.
+### 2. API locale — `/session-api`
 
-## Comprendre l'API en 30 secondes
+L'API locale prend en charge les actions utilisateur :
 
-```ts
-const response = await fetch('https://dummyjson.com/posts?limit=0')
-if (!response.ok) throw new Error('Erreur HTTP')
-const json = await response.json()
-console.log(json.posts)
-```
+| Opération | Route |
+| --- | --- |
+| Consultation de la session | `GET /state` |
+| Inscription / connexion / déconnexion | `POST /register`, `POST /login`, `POST /logout` |
+| Mise à jour du profil | `PATCH /profile` |
+| Création de publication | `POST /posts` |
+| Modification / suppression d'une publication | `PATCH /posts/:id`, `DELETE /posts/:id` |
+| Ajout de commentaire | `POST /comments` |
+| Modification / suppression d'un commentaire | `PATCH /comments/:id`, `DELETE /comments/:id` |
 
-Dans le véritable projet, `src/services/api.ts` regroupe trois appels dans `Promise.all`. Le hook `useRemoteDataset` gère le chargement et les erreurs HTTP ; le hook `useLocalSession` gère les écritures temporaires ; `NetworkContext` les assemble pour les composants.
+Les comptes, publications et commentaires créés via cette API sont stockés **en mémoire du processus Node.js**. Ils restent disponibles après une actualisation du navigateur et sont réinitialisés au redémarrage du serveur.
 
-Pour observer les échanges : **F12 → Réseau (Network) → Fetch/XHR → Actualiser API**.
+Les données du catalogue local sont définies dans `src/data/`. Elles restent indépendantes des données renvoyées par DummyJSON. Les préférences d'affichage et les favoris utilisent le stockage du navigateur.
 
-## Limites et sécurité
+> **Périmètre technique :** les routes `/session-api` sont fournies par un plugin du serveur Vite en développement. La compilation statique `dist/` ne déploie pas à elle seule cette API Node.js.
 
-Ce projet est prévu pour **une démonstration locale** :
+## Qualité du code
 
-- `server/sessionApi.ts` fonctionne avec **`npm run dev`**, pas avec un simple hébergement statique de `dist/`.
-- Les comptes et leurs données ne sont pas destinés à une utilisation publique. Il manque notamment une vraie base de données, une protection contre les abus, des tests de sécurité et un déploiement serveur adapté.
-- Les archives françaises et leurs compteurs sont **fictifs**. Les commentaires importés depuis DummyJSON n'ont pas de date fournie par l'API.
-- Une panne réseau peut empêcher le chargement de DummyJSON ; les archives restent accessibles.
+Le projet dispose d'une configuration commune pour Prettier et ESLint, de réglages VS Code et de tests Playwright.
 
-## Présenter le projet
+| Commande | Fonction |
+| --- | --- |
+| `npm run format` | Appliquer le formatage Prettier |
+| `npm run format:css` | Formater les feuilles CSS |
+| `npm run format:check` | Vérifier le formatage sans modifier les fichiers |
+| `npm run lint` | Exécuter ESLint |
+| `npm run build` | Vérifier TypeScript et compiler avec Vite |
+| `npm run test:e2e` | Exécuter les tests Playwright |
+| `npm run check` | Regrouper les vérifications prévues par le projet |
 
-Consulter **[le guide d'oral](docs/PRESENTATION.md)**, **[l'architecture](docs/ARCHITECTURE.md)** et **[la revue de code](docs/REVUE_CODE.md)**.
+Pour le formatage automatique, ouvrir **le dossier `afterhours` comme dossier de travail dans VS Code** et utiliser l'extension Prettier recommandée dans `.vscode/extensions.json`.
 
-## Outils et assistance
+Les tests couvrent notamment la récupération et l'affichage des publications, la recherche, les formulaires, la persistance pendant la session et la lisibilité du thème clair.
 
-React, TypeScript, React Router, Vite, CSS, GSAP, Node.js et DummyJSON.
+## Documentation complémentaire
 
-ChatGPT a participé aux propositions visuelles, à la refactorisation, à la documentation et à la rédaction du code. Le fonctionnement doit être compris et expliqué lors de la présentation.
+- [Architecture technique](docs/ARCHITECTURE.md) — modules, flux de données et responsabilités.
+- [Présentation du TD](docs/PRESENTATION.md) — parcours de présentation et points techniques à expliquer.
+- [Revue de code](docs/REVUE_CODE.md) — factorisation, vérifications et points d'attention.
+
+---
+
+**Afterhours — TD de développement web, React / TypeScript / API REST.**
