@@ -1,14 +1,23 @@
 import type { Post, Query } from '../../types'
 
-/** Toute la logique métier du flux est ici ; les composants ne font que l'afficher. */
+/**
+ * Sélecteurs purs du fil de discussion.
+ *
+ * Ces fonctions ne dépendent ni de React ni du réseau. Elles peuvent être
+ * réutilisées dans plusieurs vues et testées avec de simples tableaux.
+ */
 export type FeedSource = 'api' | 'archive' | 'all'
 export type FeedOrder = 'recent' | 'clash' | 'ignored' | 'popular'
 
 export function controversy(post: Post): number {
-  // Un sujet qui a deux camps est plus discuté qu'un sujet unanimement apprécié.
+  // Le score valorise la présence de réactions opposées, pas leur seul volume.
   return Math.min(post.reactions.likes, post.reactions.dislikes)
 }
 
+/**
+ * Sélectionne une provenance. Les contributions locales restent visibles
+ * quel que soit l'onglet choisi par l'utilisateur.
+ */
 export function selectSource(posts: Post[], source: FeedSource): Post[] {
   return posts.filter(
     (post) =>
@@ -19,6 +28,7 @@ export function selectSource(posts: Post[], source: FeedSource): Post[] {
   )
 }
 
+/** Combine recherche, catégorie et seuil de popularité dans un seul passage. */
 export function filterPosts(posts: Post[], query: Query): Post[] {
   const search = query.text.trim().toLocaleLowerCase('fr')
   return posts.filter((post) => {
@@ -35,7 +45,7 @@ export function filterPosts(posts: Post[], query: Query): Post[] {
 }
 
 export function orderPosts(posts: Post[], order: FeedOrder): Post[] {
-  // sort() modifie le tableau : on copie pour préserver l'état React.
+  // sort() étant mutatif, la copie préserve les données partagées du contexte.
   return [...posts].sort((left, right) => {
     if (order === 'clash') return controversy(right) - controversy(left)
     if (order === 'popular')
@@ -57,6 +67,7 @@ export function feedCategories(posts: Post[]) {
     .slice(0, 24)
 }
 
+/** Fournit au moins une page, même lorsque la recherche ne renvoie aucun post. */
 export function pageCount(total: number, size: number) {
   return Math.max(1, Math.ceil(total / size))
 }
