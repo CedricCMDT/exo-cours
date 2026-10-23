@@ -5,7 +5,9 @@ import { PostCard } from '../components/feed/PostCard'
 import { ControlRoom } from '../components/feed/ControlRoom'
 import { FictionAd, NewsWire } from '../components/experience/Experience'
 import { ApiPlayground } from '../components/api/ApiPlayground'
-import { useNetwork } from '../context/NetworkContext'
+import { useForum } from '../context/ForumContext'
+import { useSession } from '../context/SessionContext'
+import { useFeedQuery } from '../context/FeedQueryContext'
 import { Button } from '../components/ui/Button'
 import { SourceSwitcher } from '../features/feed/components/SourceSwitcher'
 import { FeedControls } from '../features/feed/components/FeedControls'
@@ -21,10 +23,9 @@ import type { FeedOrder, FeedSource } from '../features/feed/selectors'
 const PAGE_SIZE = 10
 
 export function Feed() {
-  const {
-    posts: allPosts, members, replies, loading, error, reload, query,
-    setCriteria, setPage, apiStatus, apiError, apiCounts, reloadApi,
-  } = useNetwork()
+  const { posts: allPosts, members, replies, apiStatus, apiError, apiCounts, reloadApi } = useForum()
+  const { loading, error, reload } = useSession()
+  const { query, setCriteria, setPage } = useFeedQuery()
   // Le flux utilise l'API distante par défaut et sélectionne le catalogue
   // local en secours si le chargement distant échoue.
   const [source, setSource] = useState<FeedSource>('api')
