@@ -1,10 +1,14 @@
 import { Link } from 'react-router'
 import { PostCard } from '../components/feed/PostCard'
 import { PageHeader } from '../components/ui/PageHeader'
-import { useNetwork } from '../context/NetworkContext'
+import { usePreferences } from '../context/PreferencesContext'
+import { useForum } from '../context/ForumContext'
+import { useSession } from '../context/SessionContext'
 
 export function Saved() {
-  const { savedIds, posts, members, loading, error, reload } = useNetwork()
+  const { savedIds } = usePreferences()
+  const { posts, members } = useForum()
+  const { loading, error, reload } = useSession()
   const saved = savedIds.map(id => posts.find(p => p.id === id)).filter((p): p is NonNullable<typeof p> => Boolean(p))
   return <main className="narrow-page">
     <PageHeader eyebrow="FAVORIS / SESSION" title="Publications sauvegardées" description="Les discussions que tu veux retrouver." />
