@@ -1,14 +1,16 @@
 import { Link } from 'react-router'
 import { Button } from '../ui/Button'
 import type { Member, Post } from '../../types'
-import { useNetwork } from '../../context/NetworkContext'
+import { usePreferences } from '../../context/PreferencesContext'
+import { useForum } from '../../context/ForumContext'
 import { avatarFor } from '../../utils/avatar'
 import { archiveReplyCount } from '../../data/archiveReplies'
 
 // Instance mutualisée pour éviter de recréer un formateur à chaque publication.
 const formatDate = new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 export function PostCard({ post, member }: { post: Post; member?: Member }) {
-  const { savedIds, toggleSaved, replies } = useNetwork()
+  const { savedIds, toggleSaved } = usePreferences()
+  const { replies } = useForum()
   const saved = savedIds.includes(post.id)
   const name = member?.username || 'anonymous_' + post.userId
   const date = post.source === 'api'
