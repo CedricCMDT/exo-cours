@@ -5,6 +5,7 @@ import { useNetwork } from '../../context/NetworkContext'
 import { avatarFor } from '../../utils/avatar'
 import { archiveReplyCount } from '../../data/archiveReplies'
 
+// Instance mutualisée pour éviter de recréer un formateur à chaque publication.
 const formatDate = new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 export function PostCard({ post, member }: { post: Post; member?: Member }) {
   const { savedIds, toggleSaved, replies } = useNetwork()
@@ -13,9 +14,10 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
   const date = post.source === 'api'
     ? 'Données DummyJSON'
     : post.createdAt ? formatDate.format(new Date(post.createdAt)) : 'Session'
-  // Même formule de comptage que sur la page du sujet : pas de '+ 3' artificiel.
+  // Le total associe les réponses du catalogue et les commentaires chargés
+  // depuis les services, sans ajouter de valeur de présentation arbitraire.
   const count = archiveReplyCount(post) + replies.filter(reply => reply.postId === post.id).length
-  // Même carte pour les anciennes archives et les posts créés pendant la session.
+  // La même carte présente les ressources externes, intégrées et locales.
   const likes = post.reactions?.likes ?? 0
   const dislikes = post.reactions?.dislikes ?? 0
   const votes = likes + dislikes
@@ -31,8 +33,8 @@ export function PostCard({ post, member }: { post: Post; member?: Member }) {
     </div>
     <h3><Link to={'/posts/' + post.id}>{post.title}</Link></h3>
     <p>{post.body}</p>
-    {/* Une barre de réaction, purement visuelle : aucune valeur n'est inventée.
-        Sa longueur correspond au pourcentage réel de likes enregistrés. */}
+    {/* La largeur de la barre représente la part des réactions positives
+        dans les données de la publication affichée. */}
     {votes > 0 && <div className="post-votes" title={likes + ' likes et ' + dislikes + ' dislikes'}>
       <span style={{ width: positiveShare + '%' }} />
     </div>}
