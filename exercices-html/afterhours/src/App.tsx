@@ -1,5 +1,7 @@
 import { NavLink, Route, Routes } from 'react-router'
-import { useNetwork } from './context/NetworkContext'
+import { usePreferences } from './context/PreferencesContext'
+import { useSession } from './context/SessionContext'
+import { useForum } from './context/ForumContext'
 import { Button } from './components/ui/Button'
 import { IntrusionLayer } from './components/experience/Experience'
 import { Feed } from './pages/Feed'
@@ -13,7 +15,9 @@ import { Account } from './pages/Account'
  * Le thème change une classe CSS, il ne recharge jamais le site.
  */
 export function App() {
-  const { savedIds, theme, toggleTheme, user, posts } = useNetwork()
+  const { savedIds, theme, toggleTheme } = usePreferences()
+  const { user } = useSession()
+  const { posts } = useForum()
 
   return <>
     <div className="future-topline">
