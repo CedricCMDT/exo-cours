@@ -3,16 +3,15 @@ import type { Reply } from '../types/reply'
 import { communityMembers } from './community'
 
 /**
- * ARCHIVES FICTIVES — discussion dynamique, mais reproductible.
+ * Générateur déterministe des commentaires du catalogue intégré.
  *
- * Le même post garde les mêmes réponses (pseudos, dates et fils) à chaque
- * rechargement. Pas de Math.random() : tout dépend uniquement de l'ID du post.
- *
- * Ce sont des personnages inventés pour la démo, jamais de vrais utilisateurs.
- * Les commentaires ajoutés par le joueur sont stockés séparément côté serveur.
+ * Les contenus sont construits à partir de l'identifiant de publication :
+ * une même ressource conserve les mêmes auteurs, dates et relations parent/enfant
+ * à chaque chargement, sans nécessiter de stockage supplémentaire.
+ * Les contributions des utilisateurs sont prises en charge séparément par l'API locale.
  */
 
-// Trois premières réponses écrites à la main pour les 18 sujets éditoriaux.
+// Ensemble initial de réponses propres aux publications de chaque catégorie.
 const spotlightArguments: Record<string, [string, string, string]> = {
   societe: [
     "J'ai le droit d'avoir des convictions et de ne pas approuver l'homosexualité. Maintenant, si le moindre désaccord vous choque, c'est votre problème.",
@@ -517,7 +516,10 @@ function one<T>(list: readonly T[], random: () => number): T {
   return list[Math.floor(random() * list.length)]
 }
 
-/** Répartition irrégulière : un fil désert n'a pas 60 messages, un gros débat oui. */
+/**
+ * La distribution pondérée attribue des volumes de réponses variés.
+ * Le nombre obtenu reste stable pour une publication donnée.
+ */
 export function archiveReplyCount(post: Post): number {
   if (post.source !== 'community') return 0
   const roll = seeded(post.id * 41 + 771)() * 100
@@ -529,20 +531,20 @@ export function archiveReplyCount(post: Post): number {
   else if (roll < 91) count = 36 + Math.floor(random() * 42) // 36 à 77
   else count = 78 + Math.floor(random() * 76) // 78 à 153
 
-  // Quelques réactions supplémentaires quand le sujet a beaucoup circulé.
+  // L'activité de la publication participe au nombre de commentaires associés.
   const activity = post.reactions.likes + post.reactions.dislikes
   count += Math.min(9, Math.floor(Math.sqrt(activity) / 3))
-  // Les sujets d'ouverture de catégorie sont un peu plus suivis.
+  // Les publications introductives des catégories disposent d'un minimum de réponses.
   if ((post.id - 20000) % 70 === 0) count = Math.max(35, count)
   return count
 }
 
-/** Les trois premiers IDs « a/b/c » restent compatibles avec les anciennes archives. */
+/** Maintient des identifiants stables pour les premières réponses du catalogue. */
 function archiveId(postId: number, index: number): string {
   return `archive-${postId}-${index < 3 ? 'abc'[index] : index}`
 }
 
-/** Fabrique le texte selon le ton, sans appeler d'IA ou d'API. */
+/** Assemble le contenu à partir de modèles textuels propres à la catégorie. */
 function writeReply(category: string, _index: number, post: Post, random: () => number, nested: boolean): string {
   const byTopic = byCategory[category] || generalLines
   const roll = random()
@@ -566,8 +568,9 @@ function writeReply(category: string, _index: number, post: Post, random: () => 
 }
 
 /**
- * À utiliser uniquement lorsqu'on ouvre une archive.
- * Les IDs sont stables et les réponses forment des branches de 0 à 3 niveaux.
+ * Génère les réponses à la consultation d'un sujet du catalogue intégré.
+ * Les identifiants et liens parent/enfant restent déterministes ; la profondeur
+ * maximale est limitée à trois niveaux pour préserver la lisibilité des fils.
  */
 export function archiveReplies(post: Post): Reply[] {
   const count = archiveReplyCount(post)
