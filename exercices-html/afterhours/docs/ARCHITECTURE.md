@@ -1,12 +1,12 @@
-# Architecture d'Afterhours
+# Architecture technique — Afterhours
 
-## Objectif de cette refonte
+## Principes d'organisation
 
-L'application doit être **complexe visuellement mais simple à expliquer**. Les responsabilités sont désormais séparées selon trois niveaux :
+L'application applique une séparation des responsabilités afin de faciliter la maintenance, la réutilisation du code et l'évolution des fonctionnalités. Les modules sont organisés sur trois niveaux :
 
-1. **UI générique** : des composants réutilisables sans connaissance du forum ;
-2. **features** : la logique métier (API, session, recherche, filtres, tris) ;
-3. **pages** : assemblage des composants dans les routes React.
+1. **Composants UI** : éléments visuels réutilisables, indépendants des ressources métier ;
+2. **Fonctionnalités** : logique métier, chargement des données, gestion de session, filtres et tris ;
+3. **Pages** : composition des vues associées aux routes React.
 
 ```text
 afterhours/
@@ -40,11 +40,12 @@ afterhours/
 │   │   └── feed/
 │   │       ├── selectors.ts        # Filtrage, tri et pagination
 │   │       └── components/
+│   │           ├── FeedHero.tsx
 │   │           ├── SourceSwitcher.tsx
 │   │           └── FeedControls.tsx
 │   ├── context/
 │   │   └── NetworkContext.tsx      # Réunit données distantes et locales
-│   ├── data/                      # Archives françaises fictives
+│   ├── data/                      # Catalogue complémentaire et réponses
 │   ├── pages/                     # Feed, Detail, Saved, Create, Account
 │   ├── services/
 │   │   ├── api.ts                  # Client HTTP partagé
@@ -87,9 +88,9 @@ afterhours/
                      FeedControls, PostCard, Discussion…
 ```
 
-**API-first :** DummyJSON reste la source affichée par défaut. Les écritures sur DummyJSON sont simulées et ne modifient pas sa base. Les créations personnelles sont enregistrées dans la mémoire temporaire de Node.js : elles persistent après actualisation mais disparaissent lors du redémarrage du serveur.
+**Flux principal :** DummyJSON fournit les données de consultation initiales. Les endpoints d'écriture du fournisseur ne conservent pas durablement les modifications. Les contributions utilisateur sont donc traitées par l'API locale et enregistrées en mémoire du processus Node.js pendant son exécution.
 
-## Un bouton, toutes les pages
+## Composants de navigation et d'action
 
 Le composant `src/components/ui/Button.tsx` accepte les propriétés natives d'un bouton plus :
 
@@ -111,7 +112,7 @@ Le composant `src/components/ui/Button.tsx` accepte les propriétés natives d'u
 
 La classe commune `.ui-button` est gérée dans `styles/ui.css`. `ButtonLink` reste un **vrai lien HTML**, donc utilisable au clavier ou dans un nouvel onglet.
 
-## Des formulaires réutilisables
+## Composants de formulaire
 
 ```tsx
 <InputField
@@ -124,7 +125,7 @@ La classe commune `.ui-button` est gérée dans `styles/ui.css`. `ButtonLink` re
 
 Les `label` et `input` sont automatiquement liés grâce à `useId()`. La couleur, les erreurs et les espacements sont définis une seule fois.
 
-## Présentation séparée de la logique métier
+## Séparation de la logique métier
 
 Dans `features/feed/selectors.ts` :
 
@@ -136,17 +137,17 @@ Dans `features/feed/selectors.ts` :
 
 La page `Feed.tsx` appelle ces fonctions et affiche les résultats. Les contrôles de recherche vivent dans `FeedControls.tsx` ; le choix de l'API ou des archives vit dans `SourceSwitcher.tsx`.
 
-## Thèmes et accessibilité
+## Gestion des thèmes et accessibilité
 
 Les variables `--ui-text`, `--ui-surface`, `--ui-input-bg`, `--ui-primary-bg`, etc. définissent le design system. Les composants utilisent ces variables plutôt que de copier des codes hexadécimaux.
 
-L'ancien thème clair changeait simplement quelques fonds en blanc, laissant certains textes blancs. `ui.css` fournit des adaptations pour les cartes, panneaux, textes, formulaires, liens et interactions. Certaines parties (bannière néon, popup, publicités fictives) restent volontairement sombres parce qu'elles disposent de leur propre contraste.
+Le fichier `ui.css` définit les adaptations des cartes, panneaux, textes, formulaires, liens et états interactifs pour les deux thèmes. Les zones possédant une identité visuelle propre, comme la bannière principale et les fenêtres superposées, conservent une palette spécifique.
 
-Les nouvelles vérifications Playwright incluent le contraste du texte des cartes en thème clair (ratio 4,5:1 minimum dans ce test).
+Les tests Playwright incluent des contrôles de contraste pour les textes des cartes et les libellés des formulaires en thème clair.
 
-## Pourquoi ne pas tout mettre dans les composants ?
+## Dépendances entre modules
 
-Cela empêcherait la réutilisation. Un `Button` ne doit pas connaître DummyJSON ; un `FeedControls` ne doit pas connaître `fetch()` ; `orderPosts` ne doit pas connaître React. Cette séparation rend les éléments testables et compréhensibles indépendamment.
+La séparation limite les dépendances de chaque couche : `Button` ne connaît pas DummyJSON, `FeedControls` n'exécute pas de requêtes HTTP et `orderPosts` ne dépend pas de React. Les traitements peuvent ainsi être testés indépendamment de leur rendu.
 
 ## Outils de qualité
 
