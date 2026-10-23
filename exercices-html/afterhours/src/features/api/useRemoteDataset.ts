@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { fetchApiDataset } from '../../services/api'
 import type { ApiDataset } from '../../services/api'
 
@@ -51,5 +51,7 @@ export function useRemoteDataset() {
     [data],
   )
 
-  return { data, status, error, counts, reload: () => setRevision((value) => value + 1) }
+  const reload = useCallback(() => setRevision((value) => value + 1), [])
+
+  return { data, status, error, counts, reload }
 }
