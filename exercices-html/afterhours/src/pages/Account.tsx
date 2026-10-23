@@ -4,7 +4,8 @@ import { Link } from 'react-router'
 import { PageHeader } from '../components/ui/PageHeader'
 import { Button } from '../components/ui/Button'
 import { InputField, TextareaField } from '../components/ui/Fields'
-import { useNetwork } from '../context/NetworkContext'
+import { useSession } from '../context/SessionContext'
+import { useForum } from '../context/ForumContext'
 
 type AuthMode = 'login' | 'register'
 
@@ -13,7 +14,8 @@ type AuthMode = 'login' | 'register'
  * L'API DummyJSON sert uniquement à afficher des auteurs de démonstration.
  */
 export function Account() {
-  const { user, login, register, logout, updateBio, posts, replies } = useNetwork()
+  const { user, login, register, logout, updateBio } = useSession()
+  const { posts, replies } = useForum()
   const [mode, setMode] = useState<AuthMode>('login')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
