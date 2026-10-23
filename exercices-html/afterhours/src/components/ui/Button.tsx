@@ -17,7 +17,10 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
     children: ReactNode
   }
 
-/** Source unique des variantes de boutons : plus de styles copiés dans les pages. */
+/**
+ * Assemble les classes du design system à partir des propriétés visuelles.
+ * Chaque variante dispose d'une définition unique dans styles/ui.css.
+ */
 function buttonClass({ variant = 'secondary', size = 'md', fullWidth, className }: VisualProps) {
   return [
     'ui-button',
@@ -30,6 +33,10 @@ function buttonClass({ variant = 'secondary', size = 'md', fullWidth, className 
     .join(' ')
 }
 
+/**
+ * Préserve les attributs natifs HTML (`type`, `disabled`, `aria-*`).
+ * L'état `loading` désactive l'action pour éviter une double soumission.
+ */
 export function Button({
   children,
   variant,
@@ -56,7 +63,7 @@ export function Button({
 
 type ButtonLinkProps = LinkProps & VisualProps
 
-/** Un lien qui ressemble à un bouton reste un vrai lien, pas un click handler. */
+/** Conserve la sémantique de navigation React Router avec un style de bouton. */
 export function ButtonLink({
   children,
   variant,
