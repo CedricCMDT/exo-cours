@@ -1,106 +1,81 @@
-# Présentation d'Afterhours
+# Présentation technique — Afterhours
 
-**Objectif :** montrer une application React futuriste **dont le contenu principal provient d'une API REST**, tout en conservant des interactions locales temporaires.
+## 1. Contexte et objectifs du TD
 
-## Déroulé conseillé — environ 5 minutes
+**Afterhours** est une application web de discussions réalisée avec React et TypeScript. Le travail porte sur l'intégration d'une API REST, la gestion des ressources côté client, l'organisation des composants et les interactions utilisateur.
 
-### 1. Montrer l'interface (45 secondes)
+L'application s'appuie sur deux services distincts : DummyJSON pour consulter les publications, utilisateurs et commentaires, et une API Node.js intégrée à Vite pour gérer les créations et modifications locales.
 
-Présenter l'accueil futuriste : navigation, modules, filtres, fil de publications et page d'un sujet. Les publicités et notifications sont des éléments **fictifs et locaux**, pas une vraie régie. Le design reste indépendant des données.
+## 2. Déroulement de la présentation
 
-### 2. Prouver que l'API travaille (1 minute)
+### Présentation de l'interface
 
-1. Ouvrir les outils de développement avec **F12**.
-2. Aller dans l'onglet **Réseau / Network**, filtre **Fetch/XHR**.
-3. Cliquer sur **« Actualiser API »**.
-4. Montrer trois appels `GET` vers `dummyjson.com` :
-   - `/posts?limit=0`
-   - `/users?limit=0&select=id,username,firstName,lastName,image`
-   - `/comments?limit=0`
-5. Montrer la réponse JSON, puis les posts qui utilisent ces données.
+Afficher le fil principal, le panneau des catégories, le détail d'une publication et les différentes options de recherche et de classement. Présenter ensuite le passage entre les thèmes clair et sombre ainsi que l'adaptation de l'interface sur une largeur mobile.
 
-Les résultats DummyJSON sont des **données de test**, pas des utilisateurs en direct.
+### Intégration de l'API REST
 
-### 3. Montrer les méthodes REST (45 secondes)
+Ouvrir les outils de développement du navigateur (**F12 → Réseau → Fetch/XHR**), puis utiliser **Actualiser API** pour examiner les trois requêtes HTTP :
 
-Dans le **laboratoire HTTP** à droite, essayer successivement :
-
-| Méthode | Endpoint | Sens |
+| Méthode | Ressource | Utilisation |
 | --- | --- | --- |
-| GET | `/posts/1` | Lire un post |
-| POST | `/posts/add` | Simuler une création |
-| PATCH | `/posts/1` | Simuler une modification |
-| DELETE | `/posts/1` | Simuler une suppression |
+| GET | `/posts?limit=0` | Récupération des publications |
+| GET | `/users?limit=0&select=id,username,firstName,lastName,image` | Récupération des utilisateurs |
+| GET | `/comments?limit=0` | Récupération des commentaires |
 
-Afficher la réponse HTTP et le JSON. Préciser : **DummyJSON ne persiste pas les écritures simulées**.
+L'objectif est de montrer le cycle **requête HTTP → réponse JSON → conversion des données → rendu React**.
 
-### 4. Expliquer React et les composants (1 minute)
+Le composant `ApiPlayground` présente également les méthodes `GET`, `POST`, `PATCH` et `DELETE` sur DummyJSON. Les opérations d'écriture de ce fournisseur retournent une réponse sans enregistrer durablement les changements. Le stockage des contributions à l'application est donc assuré séparément par l'API locale.
 
-- `fetch()` récupère les données HTTP dans `services/api.ts`.
-- `Promise.all()` lance les trois téléchargements en parallèle.
-- `useRemoteDataset` récupère les données DummyJSON (avec gestion des erreurs).
-- `useLocalSession` centralise les comptes et les écritures temporaires.
-- `NetworkContext` assemble ces sources sans dupliquer le code HTTP.
-- `selectors.ts` contient `filterPosts()`, `orderPosts()` et le calcul des catégories.
-- `FeedHero`, `SourceSwitcher` et `FeedControls` rendent l'accueil modulaire.
-- `Button`, `ButtonLink`, `InputField`, `TextareaField`, `SelectField`, `Panel`, `PageHeader` sont des composants UI réutilisables.
+### Gestion des contributions locales
 
-**Exemple à citer :** `Button` reçoit `variant="primary"`, `variant="danger"` ou `variant="ghost"`. Les pages passent seulement un texte et une action, tandis que le fichier `styles/ui.css` gère automatiquement les couleurs et le contraste. `PageHeader` fournit lui aussi un en-tête accessible, réutilisé sur plusieurs pages.
+Créer un compte, publier un sujet et ajouter une réponse. Vérifier que les opérations restent disponibles après actualisation et que les droits de modification et de suppression sont contrôlés côté serveur.
 
-### 5. Montrer le serveur temporaire (1 minute)
+Le stockage en mémoire est une décision d'implémentation du TD : le redémarrage du processus Node.js réinitialise les ressources de la session.
 
-1. Créer un compte local.
-2. Publier un sujet et lui répondre.
-3. Actualiser la page : tout est encore là.
-4. Arrêter `npm run dev` avec **Ctrl+C**, puis relancer.
-5. Le compte et les publications créés ont disparu : ils étaient gardés en **mémoire vive**, pas en base de données.
+### Architecture et factorisation
 
-Il y a donc **deux APIs** : DummyJSON pour récupérer le contenu principal et la mini API locale pour les actions du visiteur.
+Ouvrir les fichiers suivants pour présenter les responsabilités :
 
-### 6. Donner une limite et un choix technique (30 secondes)
+| Fichier | Élément à expliquer |
+| --- | --- |
+| `src/services/api.ts` | Construction des requêtes HTTP et traitement des réponses |
+| `src/features/api/useRemoteDataset.ts` | Chargement asynchrone, rafraîchissement et erreurs |
+| `src/features/session/useLocalSession.ts` | Actions CRUD et synchronisation avec l'API locale |
+| `src/context/NetworkContext.tsx` | Mise à disposition des ressources aux pages |
+| `src/features/feed/selectors.ts` | Fonctions de recherche, filtrage, tri et pagination |
+| `src/components/ui/Button.tsx` | Composant réutilisable et variantes visuelles |
+| `src/components/ui/Fields.tsx` | Champs de formulaire avec labels associés |
+| `src/styles/ui.css` | Variables CSS et règles communes aux deux thèmes |
 
-> « J'ai choisi une API REST externe pour les données de démonstration, puis une mini API en mémoire pour les actions personnelles. C'est volontairement temporaire, puisque c'est un TP local. Pour un vrai réseau social, il faudrait une base de données, une authentification renforcée et un backend déployé. »
+Cette organisation suit une séparation entre **accès aux données**, **logique métier** et **présentation**, sans dupliquer les mêmes fonctions dans les pages.
 
-## Questions fréquentes du professeur
+## 3. Choix techniques à justifier
 
-**Pourquoi React ?** Pour réutiliser les composants et actualiser seulement les parties nécessaires de l'écran.
+**Pourquoi React ?** La composition de composants permet de partager les mêmes cartes, boutons et formulaires dans plusieurs vues. Les changements d'état mettent à jour l'interface sans recharger intégralement le document.
 
-**Pourquoi TypeScript ?** Pour préciser le format attendu de `Post`, `Member` et `Reply`, et détecter des incohérences à la compilation.
+**Pourquoi TypeScript ?** Les types `Post`, `Member` et `Reply` définissent les contrats manipulés par les composants et les services. Le compilateur signale les incohérences de typage.
 
-**Pourquoi un contexte ?** Pour éviter de transmettre les mêmes données de page en page à travers de nombreux composants intermédiaires.
+**Pourquoi des hooks personnalisés ?** `useRemoteDataset` et `useLocalSession` isolent les traitements asynchrones du code des pages. Leur rôle reste clairement défini.
 
-**Pourquoi ne pas tout sauvegarder chez DummyJSON ?** Son CRUD est simulé ; les changements ne sont pas enregistrés durablement.
+**Pourquoi un contexte React ?** Il rend les ressources consultables dans les différentes routes sans transmettre les mêmes propriétés à chaque niveau de l'arbre de composants.
 
-**Pourquoi conserver du contenu fictif en français ?** Pour proposer un mode archives et un secours visuel lorsque l'API est indisponible, sans présenter ces textes comme des données réellement récupérées.
+**Pourquoi une API locale ?** DummyJSON fournit un catalogue et des endpoints de pratique REST, mais ne persiste pas les mutations. Le routeur `/session-api` permet de réaliser les opérations utilisateur attendues dans l'application.
 
-**Pourquoi des classes CSS ?** Les classes sont réutilisables et ne dépendent pas du type de balise. Les titres `h1`, `h2` restent nécessaires à la structure HTML.
+**Pourquoi Prettier et ESLint ?** Prettier uniformise la présentation du code ; ESLint signale des problèmes de qualité et d'utilisation des règles React. Les réglages VS Code permettent le formatage à l'enregistrement.
 
-**Que fait GSAP ?** Il anime l'apparition des titres et des cartes. Les formes néon et mouvements permanents simples sont animés en CSS.
+## 4. Vérifications
 
-## Montrer la qualité du code
+Depuis le dossier `afterhours` :
 
-Pour montrer la factorisation au professeur, ouvre directement :
-
-1. `src/components/ui/Button.tsx` : bouton réutilisable et quatre variantes.
-2. `src/components/ui/Fields.tsx` : formulaires accessibles, sans dupliquer les labels.
-3. `src/features/feed/selectors.ts` : logique de filtres/tri indépendante des composants.
-4. `src/features/api/useRemoteDataset.ts` : récupération API externe.
-5. `src/features/session/useLocalSession.ts` : API locale et mutations temporaires.
-6. `src/styles/ui.css` : variables sémantiques, thème sombre/clair et contrastes.
-
-**Formateur :** le projet utilise Prettier ; `.vscode/settings.json` active le formatage automatique à chaque enregistrement dans VS Code. Ouvre **le dossier `afterhours`** en tant que workspace, accepte l'extension recommandée puis exécute `npm run format` pour harmoniser les fichiers existants.
-
-**Tests :** `npm run build` vérifie TypeScript et Vite, `npm run lint` vérifie les erreurs de code, et `npm run test:e2e` teste la navigation et les contrastes du mode clair (Chromium requis).
-
-## Avant l'oral
-
-```powershell
-git pull origin main
+```bash
 npm install
-npm run format
 npm run lint
 npm run build
-npm run dev
+npm run format:check
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Vérifier la console, les requêtes réseau, les cinq pages, le responsive, les formulaires et les commentaires. Si l'API externe est indisponible, expliquer le basculement vers les archives fictives au lieu de masquer l'erreur.
+Les tests Playwright examinent les principaux parcours : chargement des publications, filtres, navigation, inscription, publication, commentaires et contraste du texte en thème clair.
+
+Pour une lecture détaillée des modules, consulter [ARCHITECTURE.md](ARCHITECTURE.md). Les choix de factorisation et points d'attention sont décrits dans [REVUE_CODE.md](REVUE_CODE.md).
