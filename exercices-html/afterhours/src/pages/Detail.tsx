@@ -4,7 +4,9 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { Button } from '../components/ui/Button'
 import { InputField, TextareaField } from '../components/ui/Fields'
 import { Discussion } from '../components/discussion/Discussion'
-import { useNetwork } from '../context/NetworkContext'
+import { useForum } from '../context/ForumContext'
+import { useSession } from '../context/SessionContext'
+import { usePreferences } from '../context/PreferencesContext'
 
 /**
  * Page d'un sujet : aucune requête externe.
@@ -14,7 +16,9 @@ import { useNetwork } from '../context/NetworkContext'
 export function Detail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { posts, members, loading, user, savedIds, toggleSaved, editPost, deletePost } = useNetwork()
+  const { posts, members } = useForum()
+  const { loading, user, editPost, deletePost } = useSession()
+  const { savedIds, toggleSaved } = usePreferences()
   const post = posts.find(item => String(item.id) === id)
 
   // Ces champs n'apparaissent que si l'utilisateur est l'auteur du sujet.
