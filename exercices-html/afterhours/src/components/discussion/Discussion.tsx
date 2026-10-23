@@ -15,8 +15,9 @@ type ReplyFormProps = {
 }
 
 /**
- * Un seul formulaire pour répondre à un sujet ou à un commentaire.
- * Seul parentId change : null = réponse au sujet, ID = réponse imbriquée.
+ * Formulaire partagé par les réponses principales et imbriquées.
+ * Une valeur parentId nulle représente une réponse directe à la publication ;
+ * une valeur renseignée rattache le commentaire à une autre réponse.
  */
 function ReplyForm({ postId, parentId, afterSend }: ReplyFormProps) {
   const { addReply, user } = useNetwork()
@@ -57,8 +58,9 @@ type CommentProps = {
 }
 
 /**
- * Composant récursif : un commentaire affiche ses propres réponses.
- * La marge visuelle est limitée à 3 niveaux pour préserver la largeur mobile.
+ * Affichage récursif d'une branche de discussion.
+ * Les descendants sont identifiés avec parentId ; le retrait horizontal
+ * est plafonné afin de conserver un affichage exploitable sur mobile.
  */
 function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
   const { user, editReply, deleteReply } = useNetwork()
@@ -68,7 +70,7 @@ function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
   const [error, setError] = useState('')
 
   const children = all.filter(reply => reply.parentId === comment.id)
-  // Le serveur vérifie aussi les droits : ce test masque seulement les boutons.
+  // Contrôle d'affichage ; l'autorisation est également vérifiée côté serveur.
   const canEdit = Boolean(user && comment.userId === user.id)
 
   async function save(event: FormEvent<HTMLFormElement>) {
@@ -97,7 +99,7 @@ function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
       <div className="reply-card__meta">
         <strong>@{comment.author}</strong>
         {comment.automated && <span className="bot-marker">Compte automatisé</span>}
-        {/* DummyJSON ne donne pas de date pour ses commentaires. */}
+        {/* Le champ temporel est optionnel selon la provenance du commentaire. */}
         {typeof comment.createdAt === 'number' && (
           <time dateTime={new Date(comment.createdAt).toISOString()}>
             {new Date(comment.createdAt).toLocaleString('fr-FR')}
@@ -133,9 +135,9 @@ function Comment({ comment, all, postId, depth = 0 }: CommentProps) {
 }
 
 /**
- * Une archive génère ses réponses de démonstration de manière déterministe.
- * Un post DummyJSON affiche au contraire les commentaires réellement reçus
- * dans GET /comments ; les créations utilisateur viennent du serveur local.
+ * Rassemble les réponses associées à une publication.
+ * Le catalogue intégré fournit ses réponses déterministes ; les commentaires
+ * issus de DummyJSON et les contributions locales sont récupérés dans le contexte.
  */
 export function Discussion({ postId, post }: { postId: number; post?: Post }) {
   const { replies } = useNetwork()
@@ -147,6 +149,7 @@ export function Discussion({ postId, post }: { postId: number; post?: Post }) {
     [archive, replies, postId],
   )
 
+  // Toute réponse sans parent résolu est présentée à la racine du fil.
   const roots = useMemo(() => {
     const ids = new Set(all.map(reply => reply.id))
     return all.filter(reply => !reply.parentId || !ids.has(reply.parentId))
