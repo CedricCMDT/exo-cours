@@ -13,7 +13,11 @@ import { FeedHero } from '../features/feed/components/FeedHero'
 import { controversy, feedCategories, filterPosts, orderPosts, pageCount, selectSource as selectPostsBySource } from '../features/feed/selectors'
 import type { FeedOrder, FeedSource } from '../features/feed/selectors'
 
-// Présentation du flux : les règles de filtrage et de tri vivent dans features/feed/selectors.ts.
+/**
+ * Page d'assemblage du catalogue.
+ * Les sélecteurs de `features/feed` portent la logique de tri et filtrage ;
+ * les composants FeedHero, FeedControls et SourceSwitcher portent l'affichage.
+ */
 const PAGE_SIZE = 10
 
 export function Feed() {
@@ -21,8 +25,8 @@ export function Feed() {
     posts: allPosts, members, replies, loading, error, reload, query,
     setCriteria, setPage, apiStatus, apiError, apiCounts, reloadApi,
   } = useNetwork()
-  // Mode de départ = les données VRAIMENT récupérées depuis DummyJSON.
-  // Les archives françaises sont accessibles mais ne remplacent plus l'API.
+  // Le flux utilise l'API distante par défaut et sélectionne le catalogue
+  // local en secours si le chargement distant échoue.
   const [source, setSource] = useState<FeedSource>('api')
   const activeSource = apiStatus === 'error' && source === 'api' ? 'archive' : source
   const posts = useMemo(() => selectPostsBySource(allPosts, activeSource), [allPosts, activeSource])
@@ -34,7 +38,8 @@ export function Feed() {
   const root = useRef<HTMLElement>(null)
   const [order, setOrder] = useState<FeedOrder>('recent')
 
-  // Les chiffres sont calculés sur les archives fictives + les vrais posts de la session.
+  // Les indicateurs sont calculés à partir de la sélection en cours :
+  // ils sont donc recalculés lors d'un changement de source.
   const reactions = useMemo(
     () => posts.reduce((total, p) => total + p.reactions.likes + p.reactions.dislikes, 0),
     [posts],
@@ -58,7 +63,8 @@ export function Feed() {
     })
   }
 
-  // GSAP n'anime que des propriétés faciles à expliquer : opacité, position, échelle.
+  // Le contexte GSAP regroupe les animations de cette page et permet
+  // leur nettoyage lorsque le composant n'est plus affiché.
   useEffect(() => {
     if (!root.current || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const scene = gsap.context(() => {
