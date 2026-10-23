@@ -97,7 +97,7 @@ afterhours/
 │   │   ├── api/                     # useRemoteDataset
 │   │   ├── session/                 # useLocalSession
 │   │   └── feed/                    # Sélecteurs, filtres et modules du fil
-│   ├── context/                     # Partage des données et préférences
+│   ├── context/                     # Contextes distincts : forum, session, filtres, préférences
 │   ├── data/                        # Publications et réponses du catalogue local
 │   ├── pages/                       # Feed, Detail, Create, Account, Saved
 │   ├── services/                    # Clients HTTP
@@ -119,7 +119,10 @@ afterhours/
 - **`InputField`, `TextareaField`, `SelectField`** : labels associés aux champs et gestion commune de leur présentation.
 - **`features/feed/selectors.ts`** : fonctions indépendantes de React pour filtrer, classer et paginer les publications.
 - **`useRemoteDataset` / `useLocalSession`** : séparation des requêtes externes et des opérations sur la session.
-- **`NetworkContext`** : point de partage des ressources entre les différentes pages.
+- **`ForumContext`** : lecture des publications, membres, commentaires et état de l'API.
+- **`SessionContext`** : authentification et actions CRUD locales.
+- **`PreferencesContext`** : thème et favoris ; **`FeedQueryContext`** : filtres et pagination.
+- **`NetworkProvider`** : composition des quatre Providers, sans état métier.
 
 Le détail des responsabilités est présenté dans [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
